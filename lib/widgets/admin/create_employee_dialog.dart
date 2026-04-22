@@ -6,8 +6,6 @@ import '../../config/theme/app_spacing.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 
-/// Reusable dialog for credential generation.
-/// Used by Admin (to create admin employees) and Logistics Company (to create delivery partners).
 class CreateEmployeeDialog extends StatefulWidget {
   final String title;
   final UserRole targetRole;
@@ -131,7 +129,6 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ─── Header ──────────────────────────────────────────
           Row(
             children: [
               Container(
@@ -180,7 +177,6 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // ─── Fields ──────────────────────────────────────────
           _buildField(
             controller: _nameController,
             label: 'Full Name',
@@ -209,7 +205,6 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // ─── Password with Generate Button ───────────────────
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -259,7 +254,6 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
 
           const SizedBox(height: AppSpacing.lg),
 
-          // ─── Actions ─────────────────────────────────────────
           SizedBox(
             width: double.infinity,
             height: 48,
@@ -298,7 +292,6 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // ─── Success Icon ────────────────────────────────────
         Container(
           width: 72,
           height: 72,
@@ -334,7 +327,6 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
         ),
         const SizedBox(height: AppSpacing.lg),
 
-        // ─── Credential Card ─────────────────────────────────
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(AppSpacing.md),
@@ -360,7 +352,6 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
         ),
         const SizedBox(height: AppSpacing.lg),
 
-        // ─── Actions ─────────────────────────────────────────
         Row(
           children: [
             Expanded(

@@ -14,9 +14,6 @@ class FirestoreService {
   CollectionReference get _emergencyRequests =>
       _firestore.collection('emergencyRequests');
 
-  // ═══════════════════════════════════════════════════════════════════
-  // DONATION CRUD
-  // ═══════════════════════════════════════════════════════════════════
 
   Future<String> createDonation(DonationModel donation) async {
     final doc = await _donations.add(donation.toMap());
@@ -29,7 +26,6 @@ class FirestoreService {
         );
   }
 
-  // ─── Donor queries ────────────────────────────────────────────────
 
   Stream<List<DonationModel>> getDonationsByDonor(String donorId) {
     return _donations
@@ -51,7 +47,6 @@ class FirestoreService {
             s.docs.map((d) => DonationModel.fromFirestore(d)).toList());
   }
 
-  // ─── NGO queries ──────────────────────────────────────────────────
 
   Stream<List<DonationModel>> getPendingDonations() {
     return _donations
@@ -81,7 +76,6 @@ class FirestoreService {
             s.docs.map((d) => DonationModel.fromFirestore(d)).toList());
   }
 
-  // ─── Logistics queries ────────────────────────────────────────────
 
   Stream<List<DonationModel>> getDonationsByCompany(String companyId) {
     return _donations
@@ -129,9 +123,6 @@ class FirestoreService {
             s.docs.map((d) => DonationModel.fromFirestore(d)).toList());
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // DONATION STATUS UPDATES
-  // ═══════════════════════════════════════════════════════════════════
 
   Future<void> updateDonationStatus(
     String donationId,
@@ -146,7 +137,6 @@ class FirestoreService {
     await _donations.doc(donationId).update(updates);
   }
 
-  // NGO accepts a donation
   Future<void> acceptDonation(
     String donationId,
     String ngoId,
@@ -164,7 +154,6 @@ class FirestoreService {
     });
   }
 
-  // Reject donation
   Future<void> rejectDonation(
     String donationId,
     String reason,
@@ -176,7 +165,6 @@ class FirestoreService {
     });
   }
 
-  // Logistics company assigns an employee
   Future<void> assignEmployee(
     String donationId,
     String companyId,
@@ -205,7 +193,6 @@ class FirestoreService {
     });
   }
 
-  // Update live location during delivery
   Future<void> updateDeliveryLocation(
     String donationId,
     GeoPoint location,
@@ -216,9 +203,6 @@ class FirestoreService {
     });
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // EMERGENCY REQUESTS
-  // ═══════════════════════════════════════════════════════════════════
 
   Future<String> createEmergencyRequest(
       EmergencyRequestModel request) async {
@@ -287,9 +271,6 @@ class FirestoreService {
     });
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // USER & ROLE MANAGEMENT
-  // ═══════════════════════════════════════════════════════════════════
 
   Stream<List<UserModel>> getUsersByRole(UserRole role) {
     return _users
@@ -326,9 +307,7 @@ class FirestoreService {
     await _users.doc(uid).update({'location': location});
   }
 
-  // ─── Admin Verification ────────────────────────────────────────────
 
-  /// Stream of all users with pending verification status (NGOs + Logistics Companies)
   Stream<List<UserModel>> getPendingVerifications() {
     return _users
         .where('verificationStatus', isEqualTo: 'pending')
@@ -338,7 +317,6 @@ class FirestoreService {
             s.docs.map((d) => UserModel.fromFirestore(d)).toList());
   }
 
-  /// Approve a user registration
   Future<void> approveUser(String uid) async {
     await _users.doc(uid).update({
       'verificationStatus': VerificationStatus.approved.name,
@@ -346,7 +324,6 @@ class FirestoreService {
     });
   }
 
-  /// Reject a user registration with a reason
   Future<void> rejectUser(String uid, String reason) async {
     await _users.doc(uid).update({
       'verificationStatus': VerificationStatus.rejected.name,
@@ -355,7 +332,6 @@ class FirestoreService {
     });
   }
 
-  /// Stream of all admin employees (created by an admin)
   Stream<List<UserModel>> getAdminEmployees() {
     return _users
         .where('role', isEqualTo: 'admin')
@@ -364,7 +340,6 @@ class FirestoreService {
             s.docs.map((d) => UserModel.fromFirestore(d)).toList());
   }
 
-  /// Get platform-wide statistics for the admin dashboard
   Future<Map<String, int>> getPlatformStats() async {
     final usersSnapshot = await _users.get();
     final donationsSnapshot = await _donations.get();
@@ -414,9 +389,6 @@ class FirestoreService {
     };
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // STATISTICS
-  // ═══════════════════════════════════════════════════════════════════
 
   Future<Map<String, int>> getDonorStats(String donorId) async {
     final snapshot =
@@ -465,7 +437,6 @@ class FirestoreService {
       }
     }
 
-    // Also count pending donations available
     final pendingSnapshot =
         await _donations.where('status', isEqualTo: 'pending').get();
 
@@ -534,9 +505,6 @@ class FirestoreService {
     };
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // NOTIFICATIONS
-  // ═══════════════════════════════════════════════════════════════════
 
   Future<void> createNotification({
     required String userId,
@@ -554,14 +522,12 @@ class FirestoreService {
     });
   }
 
-  // Notify all donors within radius of an emergency
   Future<void> notifyNearbyDonors(
     GeoPoint center,
     double radiusKm,
     String title,
     String body,
   ) async {
-    // Get all donors
     final donorsSnapshot =
         await _users.where('role', isEqualTo: 'donor').get();
 

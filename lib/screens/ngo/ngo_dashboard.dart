@@ -86,7 +86,6 @@ class _NgoDashboardState extends State<NgoDashboard> {
     );
   }
 
-  // ─── Emergency FAB ──────────────────────────────────────────────
 
   Widget _buildEmergencyFAB() {
     return FloatingActionButton.extended(
@@ -247,9 +246,6 @@ class _NgoDashboardState extends State<NgoDashboard> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// OVERVIEW TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _OverviewTab extends StatelessWidget {
   const _OverviewTab();
@@ -289,7 +285,6 @@ class _OverviewTab extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xl),
 
-        // Stats
         Row(
           children: [
             Expanded(
@@ -338,9 +333,6 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// AVAILABLE DONATIONS TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _AvailableDonationsTab extends StatelessWidget {
   const _AvailableDonationsTab();
@@ -482,9 +474,6 @@ class _AvailableDonationsTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// MY EMERGENCIES TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _MyEmergenciesTab extends StatelessWidget {
   const _MyEmergenciesTab();
@@ -561,9 +550,6 @@ class _MyEmergenciesTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// SHARED WIDGETS
-// ═══════════════════════════════════════════════════════════════════
 
 class _StatCard extends StatelessWidget {
   final String label;

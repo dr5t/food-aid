@@ -75,9 +75,6 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// ACTIVE TASKS TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _ActiveTasksTab extends StatelessWidget {
   const _ActiveTasksTab();
@@ -131,9 +128,6 @@ class _ActiveTasksTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// COMPLETED TASKS TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _CompletedTasksTab extends StatelessWidget {
   const _CompletedTasksTab();
@@ -201,9 +195,6 @@ class _CompletedTasksTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// ACTIVE TASK CARD WITH STATUS PROGRESSION
-// ═══════════════════════════════════════════════════════════════════
 
 class _ActiveTaskCard extends StatelessWidget {
   final DonationModel donation;
@@ -221,7 +212,6 @@ class _ActiveTaskCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Row(
               children: [
                 Container(
@@ -264,7 +254,6 @@ class _ActiveTaskCard extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.md),
 
-            // Route info
             Row(
               children: [
                 const Icon(Icons.circle, size: 8,
@@ -308,12 +297,10 @@ class _ActiveTaskCard extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.md),
 
-            // Progress Steps
             _StatusStepper(currentStatus: donation.status),
 
             const SizedBox(height: AppSpacing.md),
 
-            // Action Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -398,9 +385,6 @@ class _ActiveTaskCard extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// STATUS STEPPER
-// ═══════════════════════════════════════════════════════════════════
 
 class _StatusStepper extends StatelessWidget {
   final DonationStatus currentStatus;
@@ -475,7 +459,6 @@ class _StatusStepper extends StatelessWidget {
           );
         }
 
-        // Connector line
         final lineIdx = (i - 1) ~/ 2;
         final isComplete = lineIdx < currentIdx;
 

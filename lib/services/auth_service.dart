@@ -32,7 +32,6 @@ class AuthService {
 
     await credential.user?.updateDisplayName(name);
 
-    // Donors are auto-approved; NGOs and Logistics Companies need admin approval
     final verificationStatus = (role == UserRole.ngo ||
             role == UserRole.logisticsCompany)
         ? VerificationStatus.pending
@@ -119,13 +118,7 @@ class AuthService {
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // CREDENTIAL GENERATION — Create accounts for employees
-  // Uses a secondary FirebaseApp to avoid signing out the current admin
-  // ═══════════════════════════════════════════════════════════════════
 
-  /// Creates a user account with generated credentials.
-  /// Used by: Admin (for admin employees) and Logistics Company (for delivery partners).
   Future<UserModel> createUserWithCredentials({
     required String name,
     required String email,
@@ -136,7 +129,6 @@ class AuthService {
     String? organizationName,
     String phone = '',
   }) async {
-    // Create a secondary FirebaseApp to avoid logging out the current user
     FirebaseApp? secondaryApp;
     try {
       secondaryApp = Firebase.app('SecondaryApp');
@@ -173,7 +165,6 @@ class AuthService {
 
       await _firestore.collection('users').doc(user.uid).set(user.toMap());
 
-      // Sign out from secondary app so it doesn't persist
       await secondaryAuth.signOut();
 
       return user;
@@ -183,7 +174,6 @@ class AuthService {
     }
   }
 
-  /// Generates a random password with specified length.
   static String generatePassword({int length = 12}) {
     const chars =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%&*';

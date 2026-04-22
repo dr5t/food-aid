@@ -4,7 +4,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LocationService {
-  // ─── Permissions ──────────────────────────────────────────────────
 
   Future<bool> checkPermission() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -20,7 +19,6 @@ class LocationService {
     return true;
   }
 
-  // ─── Current Position ─────────────────────────────────────────────
 
   Future<Position?> getCurrentPosition() async {
     final hasPermission = await checkPermission();
@@ -39,7 +37,6 @@ class LocationService {
     return GeoPoint(position.latitude, position.longitude);
   }
 
-  // ─── Geocoding ────────────────────────────────────────────────────
 
   Future<GeoPoint?> geocodeAddress(String address) async {
     try {
@@ -77,7 +74,6 @@ class LocationService {
     return location != null;
   }
 
-  // ─── Distance ─────────────────────────────────────────────────────
 
   double distanceBetween(GeoPoint a, GeoPoint b) {
     return Geolocator.distanceBetween(
@@ -86,20 +82,19 @@ class LocationService {
           b.latitude,
           b.longitude,
         ) /
-        1000.0; // Convert to km
+        1000.0;
   }
 
   bool isWithinRadius(GeoPoint a, GeoPoint b, double radiusKm) {
     return distanceBetween(a, b) <= radiusKm;
   }
 
-  // ─── Live Location Stream ─────────────────────────────────────────
 
   Stream<Position> getPositionStream() {
     return Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 50, // Update every 50 meters
+        distanceFilter: 50,
       ),
     );
   }

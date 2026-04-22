@@ -18,7 +18,6 @@ class DonationProvider extends ChangeNotifier {
   StreamSubscription? _donationsSub;
   StreamSubscription? _pendingSub;
 
-  // ─── Getters ──────────────────────────────────────────────────────
 
   List<DonationModel> get donations => _donations;
   List<DonationModel> get pendingDonations => _pendingDonations;
@@ -48,7 +47,6 @@ class DonationProvider extends ChangeNotifier {
     return result;
   }
 
-  // ─── Stream Listeners ─────────────────────────────────────────────
 
   void listenDonorDonations(String donorId) {
     _donationsSub?.cancel();
@@ -131,7 +129,6 @@ class DonationProvider extends ChangeNotifier {
     });
   }
 
-  // ─── Filters ──────────────────────────────────────────────────────
 
   void setSearchQuery(String query) {
     _searchQuery = query;
@@ -149,7 +146,6 @@ class DonationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ─── Actions ──────────────────────────────────────────────────────
 
   Future<String> createDonation(DonationModel donation) async {
     return _firestoreService.createDonation(donation);
@@ -196,7 +192,6 @@ class DonationProvider extends ChangeNotifier {
     );
   }
 
-  // ─── Cleanup ──────────────────────────────────────────────────────
 
   @override
   void dispose() {

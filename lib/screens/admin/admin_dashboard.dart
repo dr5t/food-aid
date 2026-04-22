@@ -138,9 +138,6 @@ class _AdminDashboardState extends State<AdminDashboard>
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// OVERVIEW TAB
-// ═══════════════════════════════════════════════════════════════════════
 
 class _OverviewTab extends StatelessWidget {
   final bool isDark;
@@ -160,7 +157,6 @@ class _OverviewTab extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
-          // ─── Welcome ─────────────────────────────────────────
           Text(
             'Platform Overview',
             style: GoogleFonts.inter(
@@ -181,7 +177,6 @@ class _OverviewTab extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // ─── Stats Grid ──────────────────────────────────────
           GridView.count(
             crossAxisCount: 2,
             shrinkWrap: true,
@@ -222,7 +217,6 @@ class _OverviewTab extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          // ─── Role Breakdown ──────────────────────────────────
           Text(
             'User Breakdown',
             style: GoogleFonts.inter(
@@ -380,9 +374,6 @@ class _RoleRow extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// VERIFICATIONS TAB
-// ═══════════════════════════════════════════════════════════════════════
 
 class _VerificationsTab extends StatelessWidget {
   final bool isDark;
@@ -522,7 +513,6 @@ class _VerificationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ─── Header ────────────────────────────────────────
           Row(
             children: [
               CircleAvatar(
@@ -581,7 +571,6 @@ class _VerificationCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
 
-          // ─── Details ───────────────────────────────────────
           _detailRow(Icons.person_outline, user.name),
           _detailRow(Icons.email_outlined, user.email),
           if (user.phone.isNotEmpty)
@@ -595,7 +584,6 @@ class _VerificationCard extends StatelessWidget {
 
           const SizedBox(height: AppSpacing.md),
 
-          // ─── Actions ───────────────────────────────────────
           Row(
             children: [
               Expanded(
@@ -660,9 +648,6 @@ class _VerificationCard extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// TEAM TAB
-// ═══════════════════════════════════════════════════════════════════════
 
 class _TeamTab extends StatelessWidget {
   final bool isDark;

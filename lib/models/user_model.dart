@@ -15,18 +15,16 @@ class UserModel {
   final String? avatarUrl;
   final DateTime createdAt;
 
-  // Role-specific fields
   final DonorType? donorType;
   final String? organizationName;
   final String? organizationDescription;
-  final String? companyId; // Logistics employee → linked company
+  final String? companyId;
   final String? address;
   final GeoPoint? location;
   final bool isVerified;
 
-  // Verification system
   final VerificationStatus verificationStatus;
-  final String? createdBy; // UID of admin/company who created this user
+  final String? createdBy;
   final String? rejectionReason;
 
   const UserModel({
@@ -144,19 +142,15 @@ class UserModel {
     );
   }
 
-  /// Whether this user needs admin verification before accessing their dashboard.
   bool get requiresVerification =>
       role == UserRole.ngo || role == UserRole.logisticsCompany;
 
-  /// Whether this user is approved and can access their dashboard.
   bool get isApproved =>
       !requiresVerification || verificationStatus == VerificationStatus.approved;
 
-  /// Whether this user is still waiting for admin approval.
   bool get isPendingVerification =>
       requiresVerification && verificationStatus == VerificationStatus.pending;
 
-  /// Whether admin has rejected this user's registration.
   bool get isRejected =>
       requiresVerification && verificationStatus == VerificationStatus.rejected;
 

@@ -84,9 +84,6 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// OVERVIEW
-// ═══════════════════════════════════════════════════════════════════
 
 class _OverviewTab extends StatelessWidget {
   const _OverviewTab();
@@ -204,9 +201,6 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// UNASSIGNED DONATIONS TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _UnassignedTab extends StatelessWidget {
   const _UnassignedTab();
@@ -374,9 +368,6 @@ class _UnassignedTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// EMPLOYEES TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _EmployeesTab extends StatelessWidget {
   const _EmployeesTab();
@@ -389,7 +380,6 @@ class _EmployeesTab extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          // Header info
           Container(
             margin: const EdgeInsets.all(AppSpacing.md),
             padding: const EdgeInsets.all(AppSpacing.md),
@@ -533,9 +523,6 @@ class _EmployeesTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// SHARED WIDGETS
-// ═══════════════════════════════════════════════════════════════════
 
 class _StatCard extends StatelessWidget {
   final String label;

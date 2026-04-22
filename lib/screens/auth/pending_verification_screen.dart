@@ -22,7 +22,6 @@ class PendingVerificationScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              // ─── Status Icon ──────────────────────────────────
               Container(
                 width: 120,
                 height: 120,
@@ -42,7 +41,6 @@ class PendingVerificationScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              // ─── Title ────────────────────────────────────────
               Text(
                 isRejected
                     ? 'Registration Rejected'
@@ -56,7 +54,6 @@ class PendingVerificationScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // ─── Description ──────────────────────────────────
               Text(
                 isRejected
                     ? 'Unfortunately, your registration has been rejected by our team.'
@@ -71,7 +68,6 @@ class PendingVerificationScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
 
-              // ─── Rejection Reason ─────────────────────────────
               if (isRejected && user?.rejectionReason != null) ...[
                 const SizedBox(height: AppSpacing.lg),
                 Container(
@@ -113,7 +109,6 @@ class PendingVerificationScreen extends StatelessWidget {
 
               const SizedBox(height: AppSpacing.xl),
 
-              // ─── Info Cards ───────────────────────────────────
               if (!isRejected) ...[
                 _buildInfoRow(
                   context,
@@ -139,7 +134,6 @@ class PendingVerificationScreen extends StatelessWidget {
 
               const Spacer(),
 
-              // ─── Refresh Button ───────────────────────────────
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -163,7 +157,6 @@ class PendingVerificationScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // ─── Logout Button ────────────────────────────────
               SizedBox(
                 width: double.infinity,
                 height: 52,

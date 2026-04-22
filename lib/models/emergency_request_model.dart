@@ -15,7 +15,7 @@ class EmergencyRequestModel {
   final String id;
   final String ngoId;
   final String ngoName;
-  final String mealType; // "veg" or "nonVeg"
+  final String mealType;
   final int quantity;
   final GeoPoint ngoLocation;
   final String ngoAddress;
@@ -24,12 +24,10 @@ class EmergencyRequestModel {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  // Filled when a donor accepts
   final String? donorId;
   final String? donorName;
   final String? donationId;
 
-  // Filled when logistics assigned
   final String? companyId;
   final String? companyName;
   final String? employeeId;

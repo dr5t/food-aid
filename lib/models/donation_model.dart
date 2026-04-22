@@ -29,13 +29,11 @@ class DonationModel {
   final String id;
   final String donorId;
   final String donorName;
-  final String? donorType; // hotel, wedding, home, etc.
+  final String? donorType;
 
-  // NGO that accepted the donation
   final String? ngoId;
   final String? ngoName;
 
-  // Logistics
   final String? companyId;
   final String? companyName;
   final String? employeeId;
@@ -45,24 +43,21 @@ class DonationModel {
   final String description;
   final FoodType foodType;
   final MealType mealType;
-  final int? quantity; // optional
+  final int? quantity;
   final String unit;
   final DonationStatus status;
 
-  // Location
   final String pickupAddress;
   final GeoPoint? pickupLocation;
   final String? deliveryAddress;
   final GeoPoint? deliveryLocation;
-  final GeoPoint? currentLocation; // live tracking of employee
+  final GeoPoint? currentLocation;
 
-  // Timing
-  final DateTime expiryDate; // mandatory
+  final DateTime expiryDate;
   final DateTime? pickupTime;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  // Emergency
   final bool isEmergency;
   final String? emergencyRequestId;
 

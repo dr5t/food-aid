@@ -39,7 +39,6 @@ class AppRouter {
         }
 
         if (isAuthenticated && isOnPublicRoute) {
-          // Check if user needs verification first
           if (authProvider.isPendingVerification ||
               authProvider.isRejected) {
             return '/pending-verification';
@@ -47,7 +46,6 @@ class AppRouter {
           return _dashboardForRole(authProvider.role);
         }
 
-        // If authenticated and on pending-verification, but now approved → redirect to dashboard
         if (isAuthenticated &&
             currentPath == '/pending-verification' &&
             authProvider.isApproved) {
@@ -93,7 +91,6 @@ class AppRouter {
           ),
         ),
 
-        // ─── Admin ────────────────────────────────────────────
         GoRoute(
           path: '/admin',
           pageBuilder: (context, state) => _buildPage(
@@ -102,7 +99,6 @@ class AppRouter {
           ),
         ),
 
-        // ─── Donor ────────────────────────────────────────────
         GoRoute(
           path: '/donor',
           pageBuilder: (context, state) => _buildPage(
@@ -136,7 +132,6 @@ class AppRouter {
           ],
         ),
 
-        // ─── NGO ──────────────────────────────────────────────
         GoRoute(
           path: '/ngo',
           pageBuilder: (context, state) => _buildPage(
@@ -145,7 +140,6 @@ class AppRouter {
           ),
         ),
 
-        // ─── Logistics Company ────────────────────────────────
         GoRoute(
           path: '/company',
           pageBuilder: (context, state) => _buildPage(
@@ -154,7 +148,6 @@ class AppRouter {
           ),
         ),
 
-        // ─── Logistics Employee ───────────────────────────────
         GoRoute(
           path: '/employee',
           pageBuilder: (context, state) => _buildPage(
@@ -163,7 +156,6 @@ class AppRouter {
           ),
         ),
 
-        // ─── Shared ───────────────────────────────────────────
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => _buildPage(

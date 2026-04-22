@@ -9,12 +9,10 @@ class LogisticsProvider extends ChangeNotifier {
 
   LogisticsProvider(this._firestoreService);
 
-  // Company-level
   List<DonationModel> _companyDonations = [];
   List<UserModel> _employees = [];
   List<DonationModel> _unassignedDonations = [];
 
-  // Employee-level
   List<DonationModel> _activeTasks = [];
   List<DonationModel> _completedTasks = [];
 
@@ -27,7 +25,6 @@ class LogisticsProvider extends ChangeNotifier {
   StreamSubscription? _activeTasksSub;
   StreamSubscription? _completedTasksSub;
 
-  // ─── Getters ──────────────────────────────────────────────────────
 
   List<DonationModel> get companyDonations => _companyDonations;
   List<UserModel> get employees => _employees;
@@ -38,7 +35,6 @@ class LogisticsProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  // ─── Company Listeners ────────────────────────────────────────────
 
   void listenCompanyData(String companyId) {
     _companySub?.cancel();
@@ -71,7 +67,6 @@ class LogisticsProvider extends ChangeNotifier {
     });
   }
 
-  // ─── Employee Listeners ───────────────────────────────────────────
 
   void listenEmployeeData(String employeeId) {
     _activeTasksSub?.cancel();
@@ -98,7 +93,6 @@ class LogisticsProvider extends ChangeNotifier {
     });
   }
 
-  // ─── Company Actions ──────────────────────────────────────────────
 
   Future<void> assignEmployee(
     String donationId,
@@ -120,7 +114,6 @@ class LogisticsProvider extends ChangeNotifier {
     await _firestoreService.unassignEmployee(donationId);
   }
 
-  // ─── Employee Actions ─────────────────────────────────────────────
 
   Future<void> markPicked(String donationId) async {
     await _firestoreService.updateDonationStatus(
@@ -159,7 +152,6 @@ class LogisticsProvider extends ChangeNotifier {
     await _firestoreService.updateDonationStatus(donationId, status);
   }
 
-  // ─── Cleanup ──────────────────────────────────────────────────────
 
   @override
   void dispose() {

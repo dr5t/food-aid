@@ -57,7 +57,6 @@ class _SignupScreenState extends State<SignupScreen> {
               children: [
                 const SizedBox(height: AppSpacing.md),
 
-                // ─── Header ───────────────────────────────────────
                 Text(
                   'Create Account',
                   style: GoogleFonts.inter(
@@ -78,7 +77,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
-                // ─── Role Selection ───────────────────────────────
                 Text(
                   'I am a...',
                   style: GoogleFonts.inter(
@@ -91,7 +89,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 _buildRoleSelector(),
                 const SizedBox(height: AppSpacing.lg),
 
-                // ─── Common Fields ────────────────────────────────
                 _buildTextField(
                   controller: _nameController,
                   label: 'Full Name',
@@ -148,7 +145,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   maxLines: 2,
                 ),
 
-                // ─── Role-specific Fields ─────────────────────────
                 if (_selectedRole == UserRole.donor) ...[
                   const SizedBox(height: AppSpacing.lg),
                   _buildDonorTypeSelector(),
@@ -185,7 +181,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ],
 
-                // ─── Review Notice ────────────────────────────────
                 if (_selectedRole == UserRole.ngo ||
                     _selectedRole == UserRole.logisticsCompany) ...[
                   const SizedBox(height: AppSpacing.md),
@@ -224,7 +219,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 const SizedBox(height: AppSpacing.xl),
 
-                // ─── Error ────────────────────────────────────────
                 if (authProvider.error != null)
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
@@ -252,7 +246,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
 
-                // ─── Submit ───────────────────────────────────────
                 SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -279,7 +272,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 const SizedBox(height: AppSpacing.lg),
 
-                // ─── Login Link ───────────────────────────────────
                 Center(
                   child: TextButton(
                     onPressed: () => Navigator.of(context).pop(),
@@ -316,13 +308,8 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // ROLE SELECTOR
-  // ═══════════════════════════════════════════════════════════════════
 
   Widget _buildRoleSelector() {
-    // Note: logisticsEmployee and admin roles are not available for self-signup.
-    // Employees are created by their logistics company; admin employees by an admin.
     return Wrap(
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
@@ -389,9 +376,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // DONOR TYPE SELECTOR
-  // ═══════════════════════════════════════════════════════════════════
 
   Widget _buildDonorTypeSelector() {
     return Column(
@@ -451,9 +435,6 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // SHARED TEXT FIELD
-  // ═══════════════════════════════════════════════════════════════════
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -481,9 +462,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // SUBMIT
-  // ═══════════════════════════════════════════════════════════════════
 
   Future<void> _handleSignup() async {
     if (!_formKey.currentState!.validate()) return;
@@ -516,7 +494,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
 
     if (success && mounted) {
-      // Router handles redirect automatically
     }
   }
 }

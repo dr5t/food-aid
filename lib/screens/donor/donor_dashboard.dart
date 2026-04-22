@@ -64,7 +64,6 @@ class _DonorDashboardState extends State<DonorDashboard> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Navigate to create donation
         },
         icon: const Icon(Icons.add),
         label: const Text('Donate Food'),
@@ -94,9 +93,6 @@ class _DonorDashboardState extends State<DonorDashboard> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// OVERVIEW TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _OverviewTab extends StatelessWidget {
   const _OverviewTab();
@@ -116,7 +112,6 @@ class _OverviewTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        // Greeting
         Text(
           'Hello, ${user?.name.split(' ').first ?? 'Donor'} 👋',
           style: GoogleFonts.inter(
@@ -136,7 +131,6 @@ class _OverviewTab extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.xl),
 
-        // Stats Grid
         Row(
           children: [
             Expanded(
@@ -183,7 +177,6 @@ class _OverviewTab extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.xl),
 
-        // Recent Donations
         Text(
           'Recent Donations',
           style: GoogleFonts.inter(
@@ -238,9 +231,6 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// MY DONATIONS TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _MyDonationsTab extends StatelessWidget {
   const _MyDonationsTab();
@@ -252,7 +242,6 @@ class _MyDonationsTab extends StatelessWidget {
 
     return Column(
       children: [
-        // Search
         Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: TextField(
@@ -270,7 +259,6 @@ class _MyDonationsTab extends StatelessWidget {
           ),
         ),
 
-        // Filter Chips
         SizedBox(
           height: 40,
           child: ListView(
@@ -296,7 +284,6 @@ class _MyDonationsTab extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
 
-        // List
         Expanded(
           child: provider.filteredDonations.isEmpty
               ? Center(
@@ -323,9 +310,6 @@ class _MyDonationsTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// EMERGENCY ALERTS TAB
-// ═══════════════════════════════════════════════════════════════════
 
 class _EmergencyAlertsTab extends StatelessWidget {
   const _EmergencyAlertsTab();
@@ -469,9 +453,6 @@ class _EmergencyAlertsTab extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// SHARED WIDGETS
-// ═══════════════════════════════════════════════════════════════════
 
 class _StatCard extends StatelessWidget {
   final String label;

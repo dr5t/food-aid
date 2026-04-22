@@ -19,7 +19,6 @@ class AuthProvider extends ChangeNotifier {
   bool get isInitialized => _isInitialized;
   UserRole? get role => _user?.role;
 
-  /// Whether the current user's verification status allows dashboard access.
   VerificationStatus? get verificationStatus => _user?.verificationStatus;
   bool get isApproved => _user?.isApproved ?? false;
   bool get isPendingVerification => _user?.isPendingVerification ?? false;
@@ -41,7 +40,6 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
-  /// Refresh user data from Firestore (e.g. after admin approves them).
   Future<void> refreshUser() async {
     final updated = await _authService.getCurrentUserModel();
     if (updated != null) {
@@ -157,9 +155,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // ─── Credential Generation (delegates to AuthService) ──────────────
 
-  /// Create an employee account under a logistics company.
   Future<UserModel?> createLogisticsEmployee({
     required String name,
     required String email,

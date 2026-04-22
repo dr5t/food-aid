@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  // ═══════════════════════════════════════════════════════════════════
-  // LIGHT THEME
-  // ═══════════════════════════════════════════════════════════════════
 
   static const Color primary = Color(0xFF4CAF50);
   static const Color primaryLight = Color(0xFF81C784);
@@ -23,9 +20,6 @@ class AppColors {
   static const Color textSecondary = Color(0xFF757575);
   static const Color textHint = Color(0xFFBDBDBD);
 
-  // ═══════════════════════════════════════════════════════════════════
-  // DARK THEME
-  // ═══════════════════════════════════════════════════════════════════
 
   static const Color darkBackground = Color(0xFF121212);
   static const Color darkSurface = Color(0xFF1E1E1E);
@@ -36,9 +30,6 @@ class AppColors {
   static const Color darkDivider = Color(0xFF3A3A3A);
   static const Color darkPrimary = Color(0xFF66BB6A);
 
-  // ═══════════════════════════════════════════════════════════════════
-  // SEMANTIC COLORS (shared)
-  // ═══════════════════════════════════════════════════════════════════
 
   static const Color error = Color(0xFFE53935);
   static const Color errorLight = Color(0xFFFFEBEE);
@@ -57,9 +48,6 @@ class AppColors {
   static const Color darkSkeleton1 = Color(0xFF2C2C2C);
   static const Color darkSkeleton2 = Color(0xFF3A3A3A);
 
-  // ═══════════════════════════════════════════════════════════════════
-  // STATUS COLORS
-  // ═══════════════════════════════════════════════════════════════════
 
   static const Color statusPending = Color(0xFFFFA726);
   static const Color statusAccepted = Color(0xFF42A5F5);
@@ -71,7 +59,6 @@ class AppColors {
   static const Color statusRejected = Color(0xFFEF5350);
   static const Color statusExpired = Color(0xFF9E9E9E);
 
-  // Emergency
   static const Color emergency = Color(0xFFFF1744);
   static const Color emergencyLight = Color(0xFFFF8A80);
   static const Color emergencyBg = Color(0xFFFFEBEE);

@@ -21,7 +21,6 @@ class AdminProvider extends ChangeNotifier {
   StreamSubscription? _usersSub;
   StreamSubscription? _employeesSub;
 
-  // ─── Getters ──────────────────────────────────────────────────────
 
   List<UserModel> get pendingVerifications => _pendingVerifications;
   List<UserModel> get allUsers => _allUsers;
@@ -32,7 +31,6 @@ class AdminProvider extends ChangeNotifier {
 
   int get pendingCount => _pendingVerifications.length;
 
-  // ─── Listeners ────────────────────────────────────────────────────
 
   void startListening() {
     _isLoading = true;
@@ -77,7 +75,6 @@ class AdminProvider extends ChangeNotifier {
 
   Future<void> refreshStats() => _loadStats();
 
-  // ─── Verification Actions ─────────────────────────────────────────
 
   Future<bool> approveUser(String uid) async {
     try {
@@ -103,9 +100,7 @@ class AdminProvider extends ChangeNotifier {
     }
   }
 
-  // ─── Credential Generation ────────────────────────────────────────
 
-  /// Creates an admin employee account. Returns the created UserModel.
   Future<UserModel?> createAdminEmployee({
     required String name,
     required String email,
@@ -142,7 +137,6 @@ class AdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ─── Cleanup ──────────────────────────────────────────────────────
 
   @override
   void dispose() {

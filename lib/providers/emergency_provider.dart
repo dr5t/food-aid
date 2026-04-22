@@ -18,7 +18,6 @@ class EmergencyProvider extends ChangeNotifier {
   StreamSubscription? _openSub;
   StreamSubscription? _ngoSub;
 
-  // ─── Getters ──────────────────────────────────────────────────────
 
   List<EmergencyRequestModel> get openRequests => _requests;
   List<EmergencyRequestModel> get ngoRequests => _ngoRequests;
@@ -28,7 +27,6 @@ class EmergencyProvider extends ChangeNotifier {
   List<EmergencyRequestModel> get activeNgoRequests =>
       _ngoRequests.where((r) => r.isActive).toList();
 
-  // ─── Listeners ────────────────────────────────────────────────────
 
   void listenOpenRequests() {
     _openSub?.cancel();
@@ -57,7 +55,6 @@ class EmergencyProvider extends ChangeNotifier {
     });
   }
 
-  // Filter open requests within a radius of a given location
   List<EmergencyRequestModel> getRequestsNear(
       GeoPoint location, double radiusKm) {
     return _requests.where((r) {
@@ -71,7 +68,6 @@ class EmergencyProvider extends ChangeNotifier {
     }).toList();
   }
 
-  // ─── Actions ──────────────────────────────────────────────────────
 
   Future<String> createEmergencyRequest(
       EmergencyRequestModel request) async {
@@ -80,7 +76,6 @@ class EmergencyProvider extends ChangeNotifier {
     try {
       final id = await _firestoreService.createEmergencyRequest(request);
 
-      // Notify nearby donors
       await _firestoreService.notifyNearbyDonors(
         request.ngoLocation,
         request.radiusKm,
@@ -118,7 +113,6 @@ class EmergencyProvider extends ChangeNotifier {
     );
   }
 
-  // ─── Helper ───────────────────────────────────────────────────────
 
   double _haversineKm(
       double lat1, double lon1, double lat2, double lon2) {
@@ -133,7 +127,6 @@ class EmergencyProvider extends ChangeNotifier {
     return r * 2 * atan2(sqrt(a), sqrt(1 - a));
   }
 
-  // ─── Cleanup ──────────────────────────────────────────────────────
 
   @override
   void dispose() {

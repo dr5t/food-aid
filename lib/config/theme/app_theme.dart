@@ -6,9 +6,6 @@ import 'app_spacing.dart';
 class AppTheme {
   AppTheme._();
 
-  // ═══════════════════════════════════════════════════════════════════
-  // LIGHT THEME
-  // ═══════════════════════════════════════════════════════════════════
 
   static ThemeData get light {
     final colorScheme = ColorScheme.fromSeed(
@@ -26,9 +23,6 @@ class AppTheme {
     return _buildTheme(colorScheme, Brightness.light);
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // DARK THEME
-  // ═══════════════════════════════════════════════════════════════════
 
   static ThemeData get dark {
     final colorScheme = ColorScheme.fromSeed(
@@ -46,9 +40,6 @@ class AppTheme {
     return _buildTheme(colorScheme, Brightness.dark);
   }
 
-  // ═══════════════════════════════════════════════════════════════════
-  // SHARED BUILDER
-  // ═══════════════════════════════════════════════════════════════════
 
   static ThemeData _buildTheme(ColorScheme cs, Brightness brightness) {
     final isDark = brightness == Brightness.dark;

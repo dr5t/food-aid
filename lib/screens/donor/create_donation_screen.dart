@@ -56,7 +56,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
-            // ─── Title ────────────────────────────────────────
             _SectionLabel('What are you donating?'),
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
@@ -82,7 +81,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // ─── Food Type ───────────────────────────────────
             _SectionLabel('Food Type'),
             const SizedBox(height: AppSpacing.sm),
             Row(
@@ -138,7 +136,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
             ),
             const SizedBox(height: AppSpacing.lg),
 
-            // ─── Meal Type ───────────────────────────────────
             _SectionLabel('Meal Type'),
             const SizedBox(height: AppSpacing.sm),
             Row(
@@ -169,7 +166,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // ─── Quantity (optional) ─────────────────────────
             _SectionLabel('Quantity (Optional)'),
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
@@ -182,7 +178,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // ─── Expiry Date (Mandatory) ─────────────────────
             _SectionLabel('Expiry Date & Time *', isRequired: true),
             const SizedBox(height: AppSpacing.sm),
             GestureDetector(
@@ -211,7 +206,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
             ),
             const SizedBox(height: AppSpacing.xl),
 
-            // ─── Location ────────────────────────────────────
             _SectionLabel('Pickup Location'),
             const SizedBox(height: AppSpacing.sm),
             TextFormField(
@@ -296,7 +290,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
 
             const SizedBox(height: AppSpacing.xxl),
 
-            // ─── Submit ──────────────────────────────────────
             SizedBox(
               width: double.infinity,
               height: 52,
@@ -327,7 +320,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
     );
   }
 
-  // ─── Handlers ──────────────────────────────────────────────────
 
   Future<void> _pickExpiry() async {
     final date = await showDatePicker(
@@ -467,9 +459,6 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// WIDGETS
-// ═══════════════════════════════════════════════════════════════════
 
 class _SectionLabel extends StatelessWidget {
   final String text;

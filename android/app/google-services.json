@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "824398629774",
+    "project_id": "food-aid-2026",
+    "storage_bucket": "food-aid-2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824398629774:android:633aeaf9db90c2a89e72df",
+        "android_client_info": {
+          "package_name": "com.foodaid.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUUVxN4XZ41m25lqUJQEUOcg5JVDkKFXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

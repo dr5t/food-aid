@@ -180,6 +180,7 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
           _buildField(
             controller: _nameController,
             label: 'Full Name',
+            hint: 'e.g. Rahul Sharma',
             icon: Icons.person_outline,
             validator: (v) =>
                 v == null || v.isEmpty ? 'Name is required' : null,
@@ -433,6 +434,7 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
+    String? hint,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
@@ -443,6 +445,7 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
       style: GoogleFonts.inter(fontSize: 15),
       decoration: InputDecoration(
         labelText: label,
+        hintText: hint,
         labelStyle: GoogleFonts.inter(fontSize: 14),
         prefixIcon: Icon(icon, size: 20),
         contentPadding:

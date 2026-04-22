@@ -1,14 +1,1 @@
-{
-  "firestore": {
-    "database": "(default)",
-    "location": "nam5",
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "auth": {
-    "providers": {
-      "anonymous": false,
-      "emailPassword": true
-    }
-  }
-}
+{"firestore":{"database":"(default)","location":"nam5","rules":"firestore.rules","indexes":"firestore.indexes.json"},"auth":{"providers":{"anonymous":false,"emailPassword":true}},"flutter":{"platforms":{"android":{"default":{"projectId":"food-aid-2026","appId":"1:824398629774:android:633aeaf9db90c2a89e72df","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"food-aid-2026","configurations":{"android":"1:824398629774:android:633aeaf9db90c2a89e72df","web":"1:824398629774:web:82b5c87b8857cea59e72df"}}}}}}

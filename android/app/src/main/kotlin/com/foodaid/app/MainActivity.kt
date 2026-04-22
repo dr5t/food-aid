@@ -1,4 +1,4 @@
-package com.foodaid.food_aid
+package com.foodaid.app
 
 import io.flutter.embedding.android.FlutterActivity
 

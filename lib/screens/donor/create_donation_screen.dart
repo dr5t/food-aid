@@ -62,7 +62,7 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
               controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'Food Title',
-                hintText: 'e.g. Rice and Dal, Wedding Leftovers',
+                hintText: 'e.g. Rajma Chawal, Wedding Buffet Leftovers',
                 prefixIcon: Icon(Icons.fastfood_outlined, size: 20),
               ),
               validator: (v) =>
@@ -212,7 +212,7 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
               controller: _addressController,
               decoration: InputDecoration(
                 labelText: 'Address',
-                hintText: 'Enter your pickup address',
+                hintText: 'e.g. Rajpur Road, Dehradun',
                 prefixIcon:
                     const Icon(Icons.location_on_outlined, size: 20),
                 suffixIcon: _isLocating

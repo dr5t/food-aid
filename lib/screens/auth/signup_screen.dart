@@ -142,6 +142,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   controller: _addressController,
                   label: 'Address',
                   icon: Icons.location_on_outlined,
+                  hint: 'e.g. Rajpur Road, Dehradun',
                   maxLines: 2,
                 ),
 
@@ -156,6 +157,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     controller: _orgNameController,
                     label: 'Organization Name',
                     icon: Icons.business_outlined,
+                    hint: 'e.g. Dehradun Food Rescue',
                     validator: (v) => v == null || v.isEmpty
                         ? 'Organization name is required'
                         : null,
@@ -175,6 +177,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     controller: _orgNameController,
                     label: 'Company Name',
                     icon: Icons.local_shipping_outlined,
+                    hint: 'e.g. Doon Logistics',
                     validator: (v) => v == null || v.isEmpty
                         ? 'Company name is required'
                         : null,

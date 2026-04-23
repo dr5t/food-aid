@@ -140,6 +140,7 @@ class _OverviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final admin = context.watch<AdminProvider>();
+    final authProvider = context.watch<AuthProvider>();
     final stats = admin.platformStats;
 
     if (admin.isLoading && stats.isEmpty) {

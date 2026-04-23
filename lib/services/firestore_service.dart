@@ -409,6 +409,7 @@ class FirestoreService {
               employees++;
               break;
             case 'admin':
+            case 'superAdmin':
               admins++;
               break;
           }

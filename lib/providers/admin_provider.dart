@@ -20,6 +20,7 @@ class AdminProvider extends ChangeNotifier {
   StreamSubscription? _pendingSub;
   StreamSubscription? _usersSub;
   StreamSubscription? _employeesSub;
+  StreamSubscription? _statsSub;
 
 
   List<UserModel> get pendingVerifications => _pendingVerifications;
@@ -60,20 +61,21 @@ class AdminProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    _loadStats();
-  }
-
-  Future<void> _loadStats() async {
-    try {
-      _platformStats = await _firestoreService.getPlatformStats();
+    _statsSub?.cancel();
+    _statsSub = _firestoreService.getPlatformStats().listen((stats) {
+      _platformStats = stats;
       notifyListeners();
-    } catch (e) {
+    }, onError: (e) {
       _error = 'Failed to load stats: $e';
       notifyListeners();
-    }
+    });
   }
 
-  Future<void> refreshStats() => _loadStats();
+  Future<void> refreshStats() async {
+    // With real-time streams, refresh is mostly redundant but we can keep it 
+    // to force notifyListeners or just leave it empty.
+    notifyListeners();
+  }
 
 
   Future<bool> approveUser(String uid) async {
@@ -143,6 +145,7 @@ class AdminProvider extends ChangeNotifier {
     _pendingSub?.cancel();
     _usersSub?.cancel();
     _employeesSub?.cancel();
+    _statsSub?.cancel();
     super.dispose();
   }
 }

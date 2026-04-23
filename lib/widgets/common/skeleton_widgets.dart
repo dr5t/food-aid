@@ -11,7 +11,7 @@ class SkeletonTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final baseColor = isDark ? const Color(0xFF0F0F12) : AppColors.skeleton1;
-    final highlightColor = isDark ? AppColors.neonCyan.withOpacity(0.2) : AppColors.skeleton2;
+    final highlightColor = isDark ? AppColors.neonCyan.withValues(alpha: 0.2) : AppColors.skeleton2;
 
     return Stack(
       children: [
@@ -61,7 +61,7 @@ class SkeletonTile extends StatelessWidget {
         if (isDark)
           Positioned.fill(
             child: IgnorePointer(
-              child: _ScanlineOverlay(color: AppColors.neonCyan.withOpacity(0.08)),
+              child: _ScanlineOverlay(color: AppColors.neonCyan.withValues(alpha: 0.08)),
             ),
           ),
         if (isDark)
@@ -82,7 +82,7 @@ class SkeletonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final baseColor = isDark ? const Color(0xFF0F0F12) : AppColors.skeleton1;
-    final highlightColor = isDark ? AppColors.neonPurple.withOpacity(0.2) : AppColors.skeleton2;
+    final highlightColor = isDark ? AppColors.neonPurple.withValues(alpha: 0.2) : AppColors.skeleton2;
 
     return Stack(
       children: [
@@ -138,7 +138,7 @@ class SkeletonCard extends StatelessWidget {
         if (isDark)
           Positioned.fill(
             child: IgnorePointer(
-              child: _ScanlineOverlay(color: AppColors.neonPurple.withOpacity(0.08)),
+              child: _ScanlineOverlay(color: AppColors.neonPurple.withValues(alpha: 0.08)),
             ),
           ),
         if (isDark)
@@ -149,6 +149,36 @@ class SkeletonCard extends StatelessWidget {
           ),
       ],
     ).animate().fadeIn(duration: 400.ms);
+  }
+}
+
+class SkeletonStats extends StatelessWidget {
+  const SkeletonStats({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? const Color(0xFF0F0F12) : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.neonCyan.withValues(alpha: 0.2) : AppColors.skeleton2;
+
+    return Shimmer.fromColors(
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      child: GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        mainAxisSpacing: AppSpacing.md,
+        crossAxisSpacing: AppSpacing.md,
+        childAspectRatio: 1.5,
+        children: List.generate(4, (index) => Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          ),
+        )),
+      ),
+    );
   }
 }
 
@@ -205,9 +235,9 @@ class _ScanlinePainter extends CustomPainter {
         end: Alignment.bottomCenter,
         colors: [
           Colors.transparent,
-          color.withOpacity(0.1),
-          color.withOpacity(0.4),
-          color.withOpacity(0.1),
+          color.withValues(alpha: 0.1),
+          color.withValues(alpha: 0.4),
+          color.withValues(alpha: 0.1),
           Colors.transparent,
         ],
         stops: const [0.0, 0.45, 0.5, 0.55, 1.0],
@@ -222,7 +252,7 @@ class _ScanlinePainter extends CustomPainter {
     
     // Draw subtle grid
     final gridPaint = Paint()
-      ..color = color.withOpacity(0.1)
+      ..color = color.withValues(alpha: 0.1)
       ..strokeWidth = 0.5;
       
     const double spacing = 12.0;
@@ -245,7 +275,7 @@ class _CornerAccents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: _CornerPainter(color.withOpacity(0.3)),
+      painter: _CornerPainter(color.withValues(alpha: 0.3)),
     );
   }
 }

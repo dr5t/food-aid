@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
@@ -8,6 +11,7 @@ import '../../providers/emergency_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/common/connection_status_indicator.dart';
 import '../../widgets/common/skeleton_widgets.dart';
+import '../../widgets/common/hitech_loader.dart';
 
 class DonorDashboard extends StatefulWidget {
   const DonorDashboard({super.key});
@@ -36,24 +40,35 @@ class _DonorDashboardState extends State<DonorDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Food Aid',
-          style: GoogleFonts.inter(fontWeight: FontWeight.w700),
+          'FOOD AID',
+          style: GoogleFonts.orbitron(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 2,
+            fontSize: 18,
+            color: isDark ? AppColors.neonCyan : null,
+          ),
         ),
         actions: [
           const ConnectionStatusIndicator(),
           IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 22),
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 20),
             onPressed: () => context.read<ThemeProvider>().toggleTheme(),
           ),
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, size: 22),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout, size: 22),
+            icon: const Icon(Icons.logout, size: 20),
             onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: isDark ? AppColors.neonCyanGradient : null,
+              color: isDark ? null : Colors.black12,
+            ),
+          ),
+        ),
       ),
       body: IndexedStack(
         index: _currentIndex,
@@ -64,36 +79,51 @@ class _DonorDashboardState extends State<DonorDashboard> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Donate Food'),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
-            label: 'Overview',
+        onPressed: () {},
+        icon: const Icon(Icons.add, color: Colors.black),
+        label: Text('DONATE', style: GoogleFonts.orbitron(fontWeight: FontWeight.w700, color: Colors.black)),
+        backgroundColor: AppColors.neonCyan,
+      ).animate().scale(delay: 400.ms, duration: 400.ms, curve: Curves.backOut),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black12,
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.volunteer_activism_outlined),
-            activeIcon: Icon(Icons.volunteer_activism),
-            label: 'My Donations',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.warning_amber),
-            activeIcon: Icon(Icons.warning),
-            label: 'Emergencies',
-          ),
-        ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (i) => setState(() => _currentIndex = i),
+          selectedItemColor: AppColors.neonCyan,
+          unselectedItemColor: isDark ? Colors.white38 : Colors.black38,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.grid_view_outlined),
+              activeIcon: Icon(Icons.grid_view_rounded),
+              label: 'STATUS',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history_outlined),
+              activeIcon: Icon(Icons.history_rounded),
+              label: 'HISTORY',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bolt_outlined),
+              activeIcon: Icon(Icons.bolt_rounded),
+              label: 'ALERTS',
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
 
 class _OverviewTab extends StatelessWidget {
   const _OverviewTab();
@@ -105,162 +135,116 @@ class _OverviewTab extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final active = donations.where((d) => d.isActive).length;
-    final delivered =
-        donations.where((d) => d.status == DonationStatus.delivered).length;
-    final pending =
-        donations.where((d) => d.status == DonationStatus.pending).length;
-
+    final delivered = donations.where((d) => d.status == DonationStatus.delivered).length;
     final provider = context.watch<DonationProvider>();
     final isFetching = provider.isFetching;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Text(
-          'Hello, ${user?.name.split(' ').first ?? 'Donor'} 👋',
-          style: GoogleFonts.inter(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-        ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
-        const SizedBox(height: 4),
-        Text(
-          'Your contributions make a difference',
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary,
-          ),
-        ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideX(begin: -0.1),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'HELLO, ${user?.name.toUpperCase().split(' ').first ?? 'DONOR'}',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? AppColors.neonCyan : null,
+                  ),
+                ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
+                Text(
+                  'Dehradun Operational Node',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    color: isDark ? Colors.white54 : Colors.black54,
+                    letterSpacing: 1,
+                  ),
+                ).animate().fadeIn(delay: 100.ms),
+              ],
+            ),
+            if (isFetching) 
+              const HitechCircularLoader(size: 24)
+            else
+              const Icon(Icons.verified_user_outlined, color: AppColors.success, size: 24)
+                  .animate().scale(duration: 400.ms),
+          ],
+        ),
         const SizedBox(height: AppSpacing.xl),
 
-        if (isFetching)
-          Column(
-            children: [
-              Row(
-                children: const [
-                  Expanded(child: SkeletonCard()),
-                  SizedBox(width: AppSpacing.md),
-                  Expanded(child: SkeletonCard()),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                children: const [
-                  Expanded(child: SkeletonCard()),
-                  SizedBox(width: AppSpacing.md),
-                  Expanded(child: SkeletonCard()),
-                ],
-              ),
-            ],
-          ).animate().fadeIn()
+        if (isFetching && donations.isEmpty)
+          const SkeletonStats().animate().fadeIn()
         else
-          Column(
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: AppSpacing.md,
+            crossAxisSpacing: AppSpacing.md,
+            childAspectRatio: 1.5,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Total',
-                      value: '${donations.length}',
-                      icon: Icons.inventory_2_outlined,
-                      color: AppColors.neonCyan,
-                      gradient: AppColors.neonCyanGradient,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Active',
-                      value: '$active',
-                      icon: Icons.local_shipping_outlined,
-                      color: AppColors.neonPurple,
-                      gradient: AppColors.neonPurpleGradient,
-                    ),
-                  ),
-                ],
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
-              const SizedBox(height: AppSpacing.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Delivered',
-                      value: '$delivered',
-                      icon: Icons.check_circle_outline,
-                      color: AppColors.neonGreen,
-                      gradient: AppColors.neonGreenGradient,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Pending',
-                      value: '$pending',
-                      icon: Icons.pending_outlined,
-                      color: AppColors.neonAmber,
-                      gradient: AppColors.neonAmberGradient,
-                    ),
-                  ),
-                ],
-              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
+              _StatCard(
+                label: 'TOTAL UNITS',
+                value: '${donations.length}',
+                icon: Icons.inventory_2_outlined,
+                color: AppColors.neonCyan,
+                gradient: AppColors.neonCyanGradient,
+              ),
+              _StatCard(
+                label: 'ACTIVE LINKS',
+                value: '$active',
+                icon: Icons.sensors_rounded,
+                color: AppColors.neonPurple,
+                gradient: AppColors.neonPurpleGradient,
+              ),
+              _StatCard(
+                label: 'DELIVERED',
+                value: '$delivered',
+                icon: Icons.check_circle_outline,
+                color: AppColors.neonGreen,
+                gradient: AppColors.neonGreenGradient,
+              ),
+              _StatCard(
+                label: 'STATION: DDN',
+                value: 'ONLINE',
+                icon: Icons.radar_rounded,
+                color: AppColors.neonAmber,
+                gradient: AppColors.neonAmberGradient,
+              ),
             ],
-          ),
+          ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
 
         const SizedBox(height: AppSpacing.xl),
 
-        Text(
-          'Recent Donations',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+        Row(
+          children: [
+            Text(
+              'RECENT TELEMETRY',
+              style: GoogleFonts.orbitron(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1,
+              ),
+            ),
+            const Spacer(),
+            Container(
+              width: 40,
+              height: 2,
+              decoration: BoxDecoration(
+                gradient: AppColors.neonGradient,
+              ),
+            ),
+          ],
         ).animate().fadeIn(delay: 400.ms),
         const SizedBox(height: AppSpacing.md),
 
-        if (isFetching)
-          Column(
-            children: List.generate(3, (index) => const SkeletonTile()),
-          ).animate().fadeIn()
+        if (isFetching && donations.isEmpty)
+          const SkeletonList(itemCount: 3).animate().fadeIn()
         else if (donations.isEmpty)
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xxl),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.volunteer_activism_outlined,
-                    size: 56,
-                    color: isDark
-                        ? AppColors.darkTextHint
-                        : AppColors.textHint,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    'No donations yet',
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Tap the + button to donate food',
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: isDark
-                          ? AppColors.darkTextHint
-                          : AppColors.textHint,
-                    ),
-                  ),
-                ],
-              ).animate().fadeIn().scale(),
-            ),
-          )
+          _EmptyHitechState(isDark: isDark)
         else
           ...donations.take(5).map((d) => _DonationTile(donation: d)
               .animate()
@@ -271,6 +255,214 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+  final LinearGradient gradient;
+
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(
+          color: isDark ? color.withOpacity(0.2) : Colors.black12,
+          width: 1,
+        ),
+        gradient: isDark ? LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color.withOpacity(0.05),
+            Colors.transparent,
+          ],
+        ) : null,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: color),
+            const Spacer(),
+            Text(
+              value,
+              style: GoogleFonts.orbitron(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: isDark ? color : null,
+              ),
+            ),
+            Text(
+              label,
+              style: GoogleFonts.orbitron(
+                fontSize: 8,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white38 : Colors.black38,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DonationTile extends StatelessWidget {
+  final DonationModel donation;
+
+  const _DonationTile({required this.donation});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final statusColor = _statusColor(donation.status);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white.withOpacity(0.02) : Colors.white,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(
+          color: isDark ? statusColor.withOpacity(0.1) : Colors.black.withOpacity(0.05),
+        ),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 4),
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: statusColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            _statusIcon(donation.status),
+            color: statusColor,
+            size: 20,
+          ),
+        ),
+        title: Text(
+          donation.title.toUpperCase(),
+          style: GoogleFonts.orbitron(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        subtitle: Text(
+          '${donation.foodTypeLabel} · ${donation.quantityDisplay}'.toUpperCase(),
+          style: GoogleFonts.orbitron(
+            fontSize: 9,
+            color: isDark ? Colors.white38 : Colors.black38,
+          ),
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                border: Border.all(color: statusColor.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                donation.statusLabel.toUpperCase(),
+                style: GoogleFonts.orbitron(
+                  fontSize: 8,
+                  fontWeight: FontWeight.w700,
+                  color: statusColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _statusColor(DonationStatus s) {
+    switch (s) {
+      case DonationStatus.pending: return AppColors.neonAmber;
+      case DonationStatus.accepted: return AppColors.neonBlue;
+      case DonationStatus.assigned: return AppColors.neonPurple;
+      case DonationStatus.picked: return AppColors.neonCyan;
+      case DonationStatus.inTransit: return AppColors.neonCyan;
+      case DonationStatus.nearLocation: return AppColors.neonGreen;
+      case DonationStatus.delivered: return AppColors.success;
+      case DonationStatus.rejected: return AppColors.error;
+      case DonationStatus.expired: return AppColors.disabled;
+    }
+  }
+
+  IconData _statusIcon(DonationStatus s) {
+    switch (s) {
+      case DonationStatus.pending: return Icons.radar_rounded;
+      case DonationStatus.accepted: return Icons.handshake_outlined;
+      case DonationStatus.assigned: return Icons.assignment_ind_outlined;
+      case DonationStatus.picked: return Icons.inventory_2_outlined;
+      case DonationStatus.inTransit: return Icons.local_shipping_outlined;
+      case DonationStatus.nearLocation: return Icons.location_on_outlined;
+      case DonationStatus.delivered: return Icons.verified_outlined;
+      case DonationStatus.rejected: return Icons.block_flipped;
+      case DonationStatus.expired: return Icons.timer_off_outlined;
+    }
+  }
+}
+
+class _EmptyHitechState extends StatelessWidget {
+  final bool isDark;
+  const _EmptyHitechState({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xxl),
+        child: Column(
+          children: [
+            Icon(
+              Icons.sensors_off_rounded,
+              size: 48,
+              color: isDark ? Colors.white10 : Colors.black12,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'NO DATA STREAMS FOUND',
+              style: GoogleFonts.orbitron(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white24 : Colors.black24,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'INITIATE DONATION PROTOCOL TO START',
+              style: GoogleFonts.orbitron(
+                fontSize: 8,
+                color: isDark ? Colors.white10 : Colors.black12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).animate().fadeIn();
+  }
+}
 
 class _MyDonationsTab extends StatelessWidget {
   const _MyDonationsTab();
@@ -286,65 +478,26 @@ class _MyDonationsTab extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.md),
           child: TextField(
             onChanged: provider.setSearchQuery,
+            style: GoogleFonts.orbitron(fontSize: 12),
             decoration: InputDecoration(
-              hintText: 'Search donations...',
-              prefixIcon: const Icon(Icons.search, size: 20),
-              suffixIcon: provider.searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear, size: 18),
-                      onPressed: () => provider.setSearchQuery(''),
-                    )
-                  : null,
+              hintText: 'SEARCH DATABASES...',
+              hintStyle: GoogleFonts.orbitron(fontSize: 10, color: isDark ? Colors.white24 : Colors.black24),
+              prefixIcon: Icon(Icons.search_rounded, size: 18, color: isDark ? AppColors.neonCyan : null),
+              contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
           ),
         ),
-
-        SizedBox(
-          height: 40,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            children: [
-              _FilterChip(
-                label: 'All',
-                isSelected: provider.statusFilter == null,
-                onTap: () => provider.setStatusFilter(null),
-              ),
-              ...DonationStatus.values
-                  .where((s) => s != DonationStatus.expired)
-                  .map((s) => _FilterChip(
-                        label: s.name[0].toUpperCase() +
-                            s.name.substring(1),
-                        isSelected: provider.statusFilter == s,
-                        onTap: () => provider.setStatusFilter(s),
-                      )),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
-
         Expanded(
-          child: provider.isFetching
+          child: provider.isFetching && provider.filteredDonations.isEmpty
               ? ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   itemCount: 5,
                   itemBuilder: (_, __) => const SkeletonTile(),
                 )
               : provider.filteredDonations.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No donations found',
-                        style: GoogleFonts.inter(
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.textSecondary,
-                        ),
-                      ).animate().fadeIn(),
-                    )
+                  ? Center(child: Text('NO RESULTS', style: GoogleFonts.orbitron(fontSize: 12, color: Colors.white24)))
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                       itemCount: provider.filteredDonations.length,
                       itemBuilder: (_, i) => _DonationTile(
                         donation: provider.filteredDonations[i],
@@ -355,7 +508,6 @@ class _MyDonationsTab extends StatelessWidget {
     );
   }
 }
-
 
 class _EmergencyAlertsTab extends StatelessWidget {
   const _EmergencyAlertsTab();
@@ -371,32 +523,19 @@ class _EmergencyAlertsTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.check_circle_outline,
-              size: 56,
-              color: AppColors.success.withValues(alpha: 0.5),
-            ),
+            Icon(Icons.security_rounded, size: 48, color: AppColors.success.withOpacity(0.2)),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'No active emergencies',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
+              'PERIMETER SECURE',
+              style: GoogleFonts.orbitron(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.success.withOpacity(0.5),
               ),
             ),
-            const SizedBox(height: AppSpacing.xs),
             Text(
-              'Emergency requests from nearby NGOs will appear here',
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: isDark
-                    ? AppColors.darkTextHint
-                    : AppColors.textHint,
-              ),
-              textAlign: TextAlign.center,
+              'No active emergency pings in Dehradun sector',
+              style: GoogleFonts.orbitron(fontSize: 8, color: isDark ? Colors.white24 : Colors.black24),
             ),
           ],
         ),
@@ -408,8 +547,16 @@ class _EmergencyAlertsTab extends StatelessWidget {
       itemCount: requests.length,
       itemBuilder: (_, i) {
         final req = requests[i];
-        return Card(
+        return Container(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.emergency.withOpacity(0.3)),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            gradient: LinearGradient(
+              colors: [AppColors.emergency.withOpacity(0.1), Colors.transparent],
+              begin: Alignment.topLeft,
+            ),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
@@ -417,363 +564,66 @@ class _EmergencyAlertsTab extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.emergency.withValues(alpha: 0.1),
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.radiusSm),
-                      ),
-                      child: const Icon(Icons.warning,
-                          color: AppColors.emergency, size: 20),
-                    ),
+                    const Icon(Icons.warning_amber_rounded, color: AppColors.emergency, size: 20)
+                        .animate(onPlay: (c) => c.repeat())
+                        .shimmer(duration: 1.seconds),
                     const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '🚨 Emergency Request',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.emergency,
-                            ),
-                          ),
-                          Text(
-                            req.ngoName,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: isDark
-                                  ? AppColors.darkTextSecondary
-                                  : AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
+                    Text(
+                      'EMERGENCY LINK: ${req.ngoName.toUpperCase()}',
+                      style: GoogleFonts.orbitron(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.emergency,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
-                Row(
-                  children: [
-                    _InfoChip(
-                        Icons.restaurant, req.mealTypeLabel),
-                    const SizedBox(width: AppSpacing.sm),
-                    _InfoChip(Icons.people,
-                        '${req.quantity} meals needed'),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _InfoChip(Icons.location_on, req.ngoAddress),
+                _EmergencyDetail(Icons.restaurant_rounded, req.mealTypeLabel.toUpperCase()),
+                _EmergencyDetail(Icons.people_rounded, '${req.quantity} MEALS REQUIRED'),
+                _EmergencyDetail(Icons.location_on_rounded, req.ngoAddress.toUpperCase()),
                 const SizedBox(height: AppSpacing.md),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      final user =
-                          context.read<AuthProvider>().user;
-                      if (user != null) {
-                        await context
-                            .read<EmergencyProvider>()
-                            .donorAcceptRequest(
-                              req.id,
-                              user.uid,
-                              user.name,
-                            );
-                      }
-                    },
+                    onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.emergency,
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Accept & Donate'),
+                    child: Text('RESPOND NOW', style: GoogleFonts.orbitron(fontWeight: FontWeight.w800)),
                   ),
                 ),
               ],
             ),
           ),
-        );
+        ).animate().shake(delay: (i * 100).ms);
       },
     );
   }
 }
 
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
+class _EmergencyDetail extends StatelessWidget {
   final IconData icon;
-  final Color color;
-  final LinearGradient? gradient;
-
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-    this.gradient,
-  });
+  final String text;
+  const _EmergencyDetail(this.icon, this.text);
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      decoration: BoxDecoration(
-        gradient: isDark ? gradient?.withOpacity(0.05) : null,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: Card(
-        color: isDark ? Colors.transparent : null,
-        elevation: isDark ? 0 : 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          side: isDark
-              ? BorderSide(color: color.withOpacity(0.2), width: 1)
-              : BorderSide.none,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    ),
-                    child: Icon(icon, size: 18, color: color),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                value,
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? color : null,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-extension on LinearGradient {
-  LinearGradient withOpacity(double opacity) {
-    return LinearGradient(
-      colors: colors.map((c) => c.withOpacity(opacity)).toList(),
-      begin: begin,
-      end: end,
-      stops: stops,
-      transform: transform,
-    );
-  }
-}
-
-class _DonationTile extends StatelessWidget {
-  final DonationModel donation;
-
-  const _DonationTile({required this.donation});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.xs,
-        ),
-        leading: Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            color: _statusColor(donation.status).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          ),
-          child: Icon(
-            _statusIcon(donation.status),
-            color: _statusColor(donation.status),
-            size: 20,
-          ),
-        ),
-        title: Text(
-          donation.title,
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          '${donation.foodTypeLabel} · ${donation.quantityDisplay}',
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary,
-          ),
-        ),
-        trailing: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 4,
-          ),
-          decoration: BoxDecoration(
-            color: _statusColor(donation.status).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-          ),
-          child: Text(
-            donation.statusLabel,
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: _statusColor(donation.status),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Color _statusColor(DonationStatus s) {
-    switch (s) {
-      case DonationStatus.pending:
-        return AppColors.statusPending;
-      case DonationStatus.accepted:
-        return AppColors.statusAccepted;
-      case DonationStatus.assigned:
-        return AppColors.statusAssigned;
-      case DonationStatus.picked:
-        return AppColors.statusPicked;
-      case DonationStatus.inTransit:
-        return AppColors.statusInTransit;
-      case DonationStatus.nearLocation:
-        return AppColors.statusNearLocation;
-      case DonationStatus.delivered:
-        return AppColors.statusDelivered;
-      case DonationStatus.rejected:
-        return AppColors.statusRejected;
-      case DonationStatus.expired:
-        return AppColors.statusExpired;
-    }
-  }
-
-  IconData _statusIcon(DonationStatus s) {
-    switch (s) {
-      case DonationStatus.pending:
-        return Icons.pending;
-      case DonationStatus.accepted:
-        return Icons.thumb_up_outlined;
-      case DonationStatus.assigned:
-        return Icons.assignment_ind;
-      case DonationStatus.picked:
-        return Icons.inventory;
-      case DonationStatus.inTransit:
-        return Icons.local_shipping;
-      case DonationStatus.nearLocation:
-        return Icons.near_me;
-      case DonationStatus.delivered:
-        return Icons.check_circle;
-      case DonationStatus.rejected:
-        return Icons.cancel;
-      case DonationStatus.expired:
-        return Icons.timer_off;
-    }
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _FilterChip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     return Padding(
-      padding: const EdgeInsets.only(right: 6),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Chip(
-          label: Text(label),
-          backgroundColor: isSelected
-              ? primary.withValues(alpha: 0.12)
-              : null,
-          labelStyle: GoogleFonts.inter(
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            color: isSelected ? primary : null,
-          ),
-          side: BorderSide(
-            color: isSelected ? primary : Colors.transparent,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _InfoChip(this.icon, this.label);
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary),
-        const SizedBox(width: 4),
-        Flexible(
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.textSecondary,
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 14, color: Colors.white38),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.orbitron(fontSize: 9, color: Colors.white70, letterSpacing: 0.5),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

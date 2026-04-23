@@ -351,7 +351,7 @@ class _RoleRow extends StatelessWidget {
           ),
           Text(
             '$count',
-            style: GoogleFonts.jetbrainsMono(
+            style: GoogleFonts.jetBrainsMono(
               fontSize: 16,
               fontWeight: FontWeight.w900,
               color: color,
@@ -501,7 +501,7 @@ class _VerificationCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 22,
-                backgroundColor: accentColor.withOpacity(0.1),
+                backgroundColor: accentColor.withValues(alpha: 0.1),
                 child: Icon(
                   isNgo ? Icons.business_rounded : Icons.local_shipping_rounded,
                   color: accentColor,
@@ -540,7 +540,7 @@ class _VerificationCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.neonOrange.withOpacity(0.1),
+                  color: AppColors.neonOrange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                   border: Border.all(color: AppColors.neonOrange.withOpacity(0.3)),
                 ),
@@ -593,7 +593,7 @@ class _VerificationCard extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     elevation: 5,
-                    shadowColor: AppColors.neonCyan.withOpacity(0.5),
+                    shadowColor: AppColors.neonCyan.withValues(alpha: 0.5),
                   ),
                   child: Text('AUTHORIZE', style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
                 ),
@@ -681,7 +681,7 @@ class _TeamTab extends StatelessWidget {
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withOpacity(0.05)
+                        ? Colors.white.withValues(alpha: 0.05)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
@@ -695,7 +695,7 @@ class _TeamTab extends StatelessWidget {
                       CircleAvatar(
                         radius: 22,
                         backgroundColor:
-                            AppColors.primary.withOpacity(0.1),
+                            AppColors.primary.withValues(alpha: 0.1),
                         child: Text(
                           emp.initials,
                           style: GoogleFonts.inter(
@@ -737,7 +737,7 @@ class _TeamTab extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(

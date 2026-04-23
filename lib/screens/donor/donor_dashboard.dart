@@ -82,7 +82,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
         icon: const Icon(Icons.add, color: Colors.black),
         label: Text('DONATE', style: GoogleFonts.orbitron(fontWeight: FontWeight.w700, color: Colors.black)),
         backgroundColor: AppColors.neonCyan,
-      ).animate().scale(delay: 400.ms, duration: 400.ms, curve: Curves.backOut),
+      ).animate().scale(delay: 400.ms, duration: 400.ms, curve: Curves.easeOutBack),
       bottomNavigationBar: CyberBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
@@ -256,7 +256,7 @@ class _StatCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return CyberCard(
-      borderColor: color.withOpacity(0.3),
+      borderColor: color.withValues(alpha: 0.3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -298,14 +298,14 @@ class _DonationTile extends StatelessWidget {
 
     return CyberCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      borderColor: statusColor.withOpacity(0.2),
+      borderColor: statusColor.withValues(alpha: 0.2),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 0),
         leading: Container(
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: statusColor.withOpacity(0.1),
+            color: statusColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -481,7 +481,7 @@ class _EmergencyAlertsTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.security_rounded, size: 48, color: AppColors.success.withOpacity(0.2)),
+            Icon(Icons.security_rounded, size: 48, color: AppColors.success.withValues(alpha: 0.2)),
             const SizedBox(height: AppSpacing.md),
             Text(
               'PERIMETER SECURE',
@@ -508,10 +508,10 @@ class _EmergencyAlertsTab extends StatelessWidget {
         return Container(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.emergency.withOpacity(0.3)),
+            border: Border.all(color: AppColors.emergency.withValues(alpha: 0.3)),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             gradient: LinearGradient(
-              colors: [AppColors.emergency.withOpacity(0.1), Colors.transparent],
+              colors: [AppColors.emergency.withValues(alpha: 0.1), Colors.transparent],
               begin: Alignment.topLeft,
             ),
           ),

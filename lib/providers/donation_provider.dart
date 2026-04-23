@@ -13,6 +13,7 @@ class DonationProvider extends ChangeNotifier {
   String _searchQuery = '';
   DonationStatus? _statusFilter;
   bool _isLoading = false;
+  bool _isFetching = false;
   String? _error;
 
   StreamSubscription? _donationsSub;
@@ -22,6 +23,7 @@ class DonationProvider extends ChangeNotifier {
   List<DonationModel> get donations => _donations;
   List<DonationModel> get pendingDonations => _pendingDonations;
   bool get isLoading => _isLoading;
+  bool get isFetching => _isFetching;
   String? get error => _error;
   String get searchQuery => _searchQuery;
   DonationStatus? get statusFilter => _statusFilter;
@@ -49,19 +51,19 @@ class DonationProvider extends ChangeNotifier {
 
 
   void listenDonorDonations(String donorId) {
-    _donationsSub?.cancel();
-    _isLoading = true;
+    _isFetching = true;
     notifyListeners();
-
-    _donationsSub =
-        _firestoreService.getDonationsByDonor(donorId).listen((list) {
-      _donations = list;
-      _isLoading = false;
-      _error = null;
-      notifyListeners();
-    }, onError: (e) {
-      _error = e.toString();
-      _isLoading = false;
+    _firestoreService
+        .collectionStream<DonationModel>(
+          path: FirestoreService.donationsPath,
+          builder: (data, id) => DonationModel.fromMap(data, id),
+          queryBuilder: (q) => q
+              .where('donorId', isEqualTo: donorId)
+              .orderBy('createdAt', descending: true),
+        )
+        .listen((d) {
+      _donations = d;
+      _isFetching = false;
       notifyListeners();
     });
   }

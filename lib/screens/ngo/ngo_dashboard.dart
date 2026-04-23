@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 import '../../models/donation_model.dart';
@@ -10,6 +7,8 @@ import '../../providers/auth_provider.dart';
 import '../../providers/donation_provider.dart';
 import '../../providers/emergency_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../widgets/common/connection_status_indicator.dart';
+import '../../widgets/common/skeleton_widgets.dart';
 
 class NgoDashboard extends StatefulWidget {
   const NgoDashboard({super.key});
@@ -43,6 +42,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
           style: GoogleFonts.inter(fontWeight: FontWeight.w700),
         ),
         actions: [
+          const ConnectionStatusIndicator(),
           IconButton(
             icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 22),
             onPressed: () => context.read<ThemeProvider>().toggleTheme(),
@@ -263,6 +263,10 @@ class _OverviewTab extends StatelessWidget {
     final delivered =
         donations.where((d) => d.status == DonationStatus.delivered).length;
 
+    final donationProvider = context.watch<DonationProvider>();
+    final emergencyProvider = context.watch<EmergencyProvider>();
+    final isFetching = donationProvider.isLoading;
+
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
@@ -272,7 +276,7 @@ class _OverviewTab extends StatelessWidget {
             fontSize: 24,
             fontWeight: FontWeight.w700,
           ),
-        ),
+        ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
         const SizedBox(height: 4),
         Text(
           'Manage donations and emergency requests',
@@ -282,52 +286,81 @@ class _OverviewTab extends StatelessWidget {
                 ? AppColors.darkTextSecondary
                 : AppColors.textSecondary,
           ),
-        ),
+        ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideX(begin: -0.1),
         const SizedBox(height: AppSpacing.xl),
 
-        Row(
-          children: [
-            Expanded(
-              child: _StatCard(
-                label: 'Available',
-                value: '${pending.length}',
-                icon: Icons.inventory_2_outlined,
-                color: AppColors.info,
+        if (isFetching)
+          Column(
+            children: [
+              Row(
+                children: const [
+                  Expanded(child: SkeletonCard()),
+                  SizedBox(width: AppSpacing.md),
+                  Expanded(child: SkeletonCard()),
+                ],
               ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: _StatCard(
-                label: 'Accepted',
-                value: '$accepted',
-                icon: Icons.thumb_up_outlined,
-                color: AppColors.statusAccepted,
+              const SizedBox(height: AppSpacing.md),
+              Row(
+                children: const [
+                  Expanded(child: SkeletonCard()),
+                  SizedBox(width: AppSpacing.md),
+                  Expanded(child: SkeletonCard()),
+                ],
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Row(
-          children: [
-            Expanded(
-              child: _StatCard(
-                label: 'Delivered',
-                value: '$delivered',
-                icon: Icons.check_circle_outline,
-                color: AppColors.success,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: _StatCard(
-                label: 'Emergencies',
-                value: '${emergencies.length}',
-                icon: Icons.warning_amber,
-                color: AppColors.emergency,
-              ),
-            ),
-          ],
-        ),
+            ],
+          ).animate().fadeIn()
+        else
+          Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Available',
+                      value: '${pending.length}',
+                      icon: Icons.inventory_2_outlined,
+                      color: AppColors.neonCyan,
+                      gradient: AppColors.neonCyanGradient,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Accepted',
+                      value: '$accepted',
+                      icon: Icons.thumb_up_outlined,
+                      color: AppColors.neonPurple,
+                      gradient: AppColors.neonPurpleGradient,
+                    ),
+                  ),
+                ],
+              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
+              const SizedBox(height: AppSpacing.md),
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Delivered',
+                      value: '$delivered',
+                      icon: Icons.check_circle_outline,
+                      color: AppColors.neonGreen,
+                      gradient: AppColors.neonGreenGradient,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Emergencies',
+                      value: '${emergencies.length}',
+                      icon: Icons.warning_amber,
+                      color: AppColors.neonAmber,
+                      gradient: AppColors.neonAmberGradient,
+                    ),
+                  ),
+                ],
+              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
+            ],
+          ),
       ],
     );
   }
@@ -551,56 +584,86 @@ class _MyEmergenciesTab extends StatelessWidget {
 }
 
 
-class _StatCard extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
   final Color color;
+  final LinearGradient? gradient;
 
   const _StatCard({
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
+    this.gradient,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: isDark ? gradient?.withOpacity(0.05) : null,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: Card(
+        color: isDark ? Colors.transparent : null,
+        elevation: isDark ? 0 : 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          side: isDark
+              ? BorderSide(color: color.withOpacity(0.2), width: 1)
+              : BorderSide.none,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: Icon(icon, size: 18, color: color),
               ),
-              child: Icon(icon, size: 18, color: color),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              value,
-              style: GoogleFonts.inter(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                value,
+                style: GoogleFonts.inter(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? color : null,
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.textSecondary,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+extension on LinearGradient {
+  LinearGradient withOpacity(double opacity) {
+    return LinearGradient(
+      colors: colors.map((c) => c.withOpacity(opacity)).toList(),
+      begin: begin,
+      end: end,
+      stops: stops,
+      transform: transform,
     );
   }
 }

@@ -233,7 +233,7 @@ class AuthProvider extends ChangeNotifier {
     required String password,
     required String companyId,
     required String companyName,
-    String phone = '',
+    String? phone,
   }) async {
     if (_user == null) return null;
 
@@ -246,7 +246,7 @@ class AuthProvider extends ChangeNotifier {
         createdByUid: _user!.uid,
         companyId: companyId,
         organizationName: companyName,
-        phone: phone,
+        phone: phone ?? '',
       );
       return employee;
     } catch (e) {

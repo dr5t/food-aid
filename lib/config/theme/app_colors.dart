@@ -76,12 +76,12 @@ class AppColors {
 
   // Glassmorphism Colors
   static Color glassBackground(Brightness brightness) => brightness == Brightness.dark
-      ? Colors.white.withOpacity(0.03)
-      : Colors.black.withOpacity(0.05);
+      ? Colors.white.withValues(alpha: 0.03)
+      : Colors.black.withValues(alpha: 0.05);
   
   static Color glassBorder(Brightness brightness) => brightness == Brightness.dark
-      ? Colors.white.withOpacity(0.08)
-      : Colors.black.withOpacity(0.1);
+      ? Colors.white.withValues(alpha: 0.08)
+      : Colors.black.withValues(alpha: 0.1);
 
   // Neon Gradients
   static const LinearGradient neonGradient = LinearGradient(
@@ -178,7 +178,7 @@ class AppColors {
 
   static List<BoxShadow> customGlow(Color color) => [
     BoxShadow(
-      color: color.withOpacity(0.3),
+      color: color.withValues(alpha: 0.3),
       blurRadius: 12,
       spreadRadius: 2,
     ),

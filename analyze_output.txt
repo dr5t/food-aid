@@ -1,0 +1,457 @@
+Analyzing food aid...                                           
+
+  error • The argument type 'NgoDashboard' can't be assigned to the parameter type 'Widget'.  • lib/config/routes/app_router.dart:155:13 • argument_type_not_assignable
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/config/theme/app_text_styles.dart:29:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/config/theme/app_text_styles.dart:33:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/config/theme/app_text_styles.dart:46:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/config/theme/app_text_styles.dart:50:41 • deprecated_member_use
+  error • The named parameter 'flexibleSpace' isn't defined • lib/config/theme/app_theme.dart:79:9 • undefined_named_parameter
+  error • The method 'fromMap' isn't defined for the type 'DonationModel' • lib/providers/donation_provider.dart:59:48 • undefined_method
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:279:26 • deprecated_member_use
+  error • The method 'jetbrainsMono' isn't defined for the type 'GoogleFonts' • lib/screens/admin/admin_dashboard.dart:354:32 • undefined_method
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:388:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:496:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:504:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:543:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:545:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:596:53 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:649:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:684:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:689:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:698:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/admin_dashboard.dart:740:52 • deprecated_member_use
+  error • The argument type 'Future<UserModel?> Function({required String email, required String name, required String password, String phone})' can't be assigned to the parameter type 'Future<UserModel?> Function({required String email, required String name, required String password, String? phone})'.  • lib/screens/admin/admin_dashboard.dart:779:27 • argument_type_not_assignable
+  error • The named parameter 'child' isn't defined • lib/screens/donor/donor_dashboard.dart:62:9 • undefined_named_parameter
+  error • The getter 'backOut' isn't defined for the type 'Curves' • lib/screens/donor/donor_dashboard.dart:85:72 • undefined_getter
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:143:56 • deprecated_member_use
+  error • The name 'SkeletonStats' isn't a class • lib/screens/donor/donor_dashboard.dart:160:17 • creation_with_non_type
+  error • The name 'SkeletonList' isn't a class • lib/screens/donor/donor_dashboard.dart:226:17 • creation_with_non_type
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:259:26 • deprecated_member_use
+  error • The named parameter 'margin' isn't defined • lib/screens/donor/donor_dashboard.dart:300:7 • undefined_named_parameter
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:301:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:308:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:338:55 • deprecated_member_use
+  error • The getter 'black24' isn't defined for the type 'Colors' • lib/screens/donor/donor_dashboard.dart:407:57 • undefined_getter
+  error • The getter 'black24' isn't defined for the type 'Colors' • lib/screens/donor/donor_dashboard.dart:442:101 • undefined_getter
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:484:77 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:491:42 • deprecated_member_use
+  error • The getter 'black24' isn't defined for the type 'Colors' • lib/screens/donor/donor_dashboard.dart:496:96 • undefined_getter
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:511:59 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/donor/donor_dashboard.dart:514:44 • deprecated_member_use
+warning • Unused import: '../../providers/theme_provider.dart' • lib/screens/logistics/company_dashboard.dart:12:8 • unused_import
+warning • Unused import: '../../services/auth_service.dart' • lib/screens/logistics/company_dashboard.dart:13:8 • unused_import
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/company_dashboard.dart:137:11 • unused_local_variable
+warning • Unused import: '../../providers/theme_provider.dart' • lib/screens/logistics/employee_dashboard.dart:10:8 • unused_import
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:35:11 • unused_local_variable
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:125:11 • unused_local_variable
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:160:11 • unused_local_variable
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:221:11 • unused_local_variable
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:18:28 • extends_non_class
+  error • No associated named super constructor parameter • lib/screens/ngo/ngo_dashboard.dart:19:29 • super_formal_parameter_without_associated_named
+  error • Undefined class 'State' • lib/screens/ngo/ngo_dashboard.dart:22:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:22:23 • override_on_non_overriding_member
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:25:34 • extends_non_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:29:8 • override_on_non_overriding_member
+  error • The method 'initState' isn't defined in a superclass of '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:30:11 • undefined_super_member
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:31:18 • undefined_identifier
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:33:7 • undefined_identifier
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:34:7 • undefined_identifier
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:35:7 • undefined_identifier
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:40:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:40:10 • override_on_non_overriding_member
+  error • Undefined class 'BuildContext' • lib/screens/ngo/ngo_dashboard.dart:40:16 • undefined_class
+  error • Undefined name 'Theme' • lib/screens/ngo/ngo_dashboard.dart:41:20 • undefined_identifier
+  error • Undefined name 'Brightness' • lib/screens/ngo/ngo_dashboard.dart:41:52 • undefined_identifier
+  error • The method 'Scaffold' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:43:12 • undefined_method
+  error • The method 'IconButton' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:49:11 • undefined_method
+  error • The method 'Icon' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:50:19 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:50:33 • undefined_identifier
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:50:52 • undefined_identifier
+  error • The method 'IconButton' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:53:11 • undefined_method
+  error • The name 'Icon' isn't a class • lib/screens/ngo/ngo_dashboard.dart:54:25 • creation_with_non_type
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:54:30 • undefined_identifier
+  error • The named parameter 'child' isn't defined • lib/screens/ngo/ngo_dashboard.dart:60:9 • undefined_named_parameter
+  error • The method 'IndexedStack' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:60:16 • undefined_method
+  error • The method 'setState' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:72:23 • undefined_method
+  error • The method 'CyberNavItem' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:74:11 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:74:11 • non_constant_list_element
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:75:19 • undefined_identifier
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:76:25 • undefined_identifier
+  error • The method 'CyberNavItem' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:79:11 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:79:11 • non_constant_list_element
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:80:19 • undefined_identifier
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:81:25 • undefined_identifier
+  error • The method 'CyberNavItem' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:84:11 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:84:11 • non_constant_list_element
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:85:19 • undefined_identifier
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:86:25 • undefined_identifier
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:95:3 • undefined_class
+  error • The method 'Padding' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:96:12 • undefined_method
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:97:22 • undefined_identifier
+  error • Undefined name 'FloatingActionButton' • lib/screens/ngo/ngo_dashboard.dart:98:14 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:100:46 • deprecated_member_use
+  error • The method 'RoundedRectangleBorder' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:103:16 • undefined_method
+  error • Undefined name 'BorderRadius' • lib/screens/ngo/ngo_dashboard.dart:104:25 • undefined_identifier
+  error • The name 'BorderSide' isn't a class • lib/screens/ngo/ngo_dashboard.dart:105:23 • creation_with_non_type
+  error • The name 'Icon' isn't a class • lib/screens/ngo/ngo_dashboard.dart:107:21 • creation_with_non_type
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:107:26 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:108:16 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:110:18 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:112:25 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:117:64 • deprecated_member_use
+  error • The method 'TextEditingController' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:123:27 • undefined_method
+  error • The method 'showDialog' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:125:5 • undefined_method
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:126:16 • undefined_identifier
+  error • The method 'StatefulBuilder' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:128:16 • undefined_method
+  error • The method 'Theme' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:130:20 • undefined_method
+  error • Undefined name 'Theme' • lib/screens/ngo/ngo_dashboard.dart:131:21 • undefined_identifier
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:131:30 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:132:57 • deprecated_member_use
+  error • The method 'AlertDialog' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:134:22 • undefined_method
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:135:34 • undefined_identifier
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:136:33 • undefined_identifier
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:137:37 • undefined_identifier
+  error • The named parameter 'glowColor' isn't defined • lib/screens/ngo/ngo_dashboard.dart:140:19 • undefined_named_parameter
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:140:50 • deprecated_member_use
+  error • The method 'Column' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:141:26 • undefined_method
+  error • Undefined name 'MainAxisSize' • lib/screens/ngo/ngo_dashboard.dart:142:35 • undefined_identifier
+  error • Undefined name 'CrossAxisAlignment' • lib/screens/ngo/ngo_dashboard.dart:143:41 • undefined_identifier
+  error • The method 'Row' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:145:23 • undefined_method
+  error • The name 'Icon' isn't a class • lib/screens/ngo/ngo_dashboard.dart:147:33 • creation_with_non_type
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:147:38 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:149:33 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:150:27 • undefined_method
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:159:29 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:160:23 • undefined_method
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:164:34 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:167:29 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:168:23 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:170:32 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:172:39 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:173:34 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:176:29 • creation_with_non_type
+  error • The method 'Row' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:177:23 • undefined_method
+  error • The method 'Expanded' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:179:27 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:182:37 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:189:33 • creation_with_non_type
+  error • The method 'Expanded' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:190:27 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:193:37 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:202:29 • creation_with_non_type
+  error • The method 'TextFormField' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:203:23 • undefined_method
+  error • Undefined name 'TextInputType' • lib/screens/ngo/ngo_dashboard.dart:205:39 • undefined_identifier
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:206:32 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:206:60 • undefined_identifier
+  error • The method 'InputDecoration' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:207:37 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:209:39 • undefined_identifier
+  error • The name 'Icon' isn't a class • lib/screens/ngo/ngo_dashboard.dart:210:45 • creation_with_non_type
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:210:50 • undefined_identifier
+  error • The name 'UnderlineInputBorder' isn't a class • lib/screens/ngo/ngo_dashboard.dart:211:48 • creation_with_non_type
+  error • The method 'BorderSide' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:212:41 • undefined_method
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:212:59 • undefined_identifier
+  error • The name 'UnderlineInputBorder' isn't a class • lib/screens/ngo/ngo_dashboard.dart:214:48 • creation_with_non_type
+  error • The method 'BorderSide' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:215:41 • undefined_method
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:219:29 • creation_with_non_type
+  error • The method 'Row' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:220:23 • undefined_method
+  error • Undefined name 'MainAxisAlignment' • lib/screens/ngo/ngo_dashboard.dart:221:44 • undefined_identifier
+  error • The method 'TextButton' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:223:27 • undefined_method
+  error • Undefined name 'Navigator' • lib/screens/ngo/ngo_dashboard.dart:224:46 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:225:36 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:227:38 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:227:66 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:230:33 • creation_with_non_type
+  error • The method 'ElevatedButton' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:231:27 • undefined_method
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:237:44 • undefined_identifier
+  error • The name 'GeoPoint' isn't a class • lib/screens/ngo/ngo_dashboard.dart:247:43 • creation_with_non_type
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:254:37 • undefined_identifier
+  error • Undefined name 'Navigator' • lib/screens/ngo/ngo_dashboard.dart:258:48 • undefined_identifier
+  error • Undefined name 'mounted' • lib/screens/ngo/ngo_dashboard.dart:259:35 • undefined_identifier
+  error • Undefined name 'ScaffoldMessenger' • lib/screens/ngo/ngo_dashboard.dart:260:33 • undefined_identifier
+  error • Undefined name 'context' • lib/screens/ngo/ngo_dashboard.dart:260:54 • undefined_identifier
+  error • The method 'SnackBar' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:261:35 • undefined_method
+  error • The method 'Text' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:263:46 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:265:46 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:266:48 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:267:53 • undefined_identifier
+  error • Undefined name 'ElevatedButton' • lib/screens/ngo/ngo_dashboard.dart:275:36 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:277:48 • undefined_identifier
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:278:46 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:280:36 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:282:38 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:283:45 • undefined_identifier
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:303:28 • extends_non_class
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:307:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:307:10 • override_on_non_overriding_member
+  error • Undefined class 'BuildContext' • lib/screens/ngo/ngo_dashboard.dart:307:16 • undefined_class
+warning • The value of the local variable 'isDark' isn't used • lib/screens/ngo/ngo_dashboard.dart:312:11 • unused_local_variable
+  error • Undefined name 'Theme' • lib/screens/ngo/ngo_dashboard.dart:312:20 • undefined_identifier
+  error • Undefined name 'Brightness' • lib/screens/ngo/ngo_dashboard.dart:312:52 • undefined_identifier
+warning • The value of the local variable 'emergencyProvider' isn't used • lib/screens/ngo/ngo_dashboard.dart:320:11 • unused_local_variable
+  error • The method 'ListView' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:323:12 • undefined_method
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:324:22 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:326:9 • undefined_method
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:333:15 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:334:9 • undefined_method
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:341:15 • creation_with_non_type
+  error • The method 'Column' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:344:11 • undefined_method
+  error • The method 'Row' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:346:15 • undefined_method
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:348:19 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:348:19 • non_constant_list_element
+  error • The method 'SizedBox' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:349:19 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:349:19 • non_constant_list_element
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:350:19 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:350:19 • non_constant_list_element
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:353:21 • creation_with_non_type
+  error • The method 'Row' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:354:15 • undefined_method
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:356:19 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:356:19 • non_constant_list_element
+  error • The method 'SizedBox' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:357:19 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:357:19 • non_constant_list_element
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:358:19 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:358:19 • non_constant_list_element
+  error • The method 'Column' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:364:11 • undefined_method
+  error • The method 'Row' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:366:15 • undefined_method
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:368:19 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:372:29 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:377:25 • creation_with_non_type
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:378:19 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:382:29 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:389:21 • creation_with_non_type
+  error • The method 'Row' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:390:15 • undefined_method
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:392:19 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:396:29 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:401:25 • creation_with_non_type
+  error • The method 'Expanded' isn't defined for the type '_OverviewTab' • lib/screens/ngo/ngo_dashboard.dart:402:19 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:406:29 • undefined_identifier
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:421:38 • extends_non_class
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:425:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:425:10 • override_on_non_overriding_member
+  error • Undefined class 'BuildContext' • lib/screens/ngo/ngo_dashboard.dart:425:16 • undefined_class
+  error • Undefined name 'Theme' • lib/screens/ngo/ngo_dashboard.dart:427:20 • undefined_identifier
+  error • Undefined name 'Brightness' • lib/screens/ngo/ngo_dashboard.dart:427:52 • undefined_identifier
+  error • The method 'Center' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:430:14 • undefined_method
+  error • The method 'Column' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:431:16 • undefined_method
+  error • Undefined name 'MainAxisAlignment' • lib/screens/ngo/ngo_dashboard.dart:432:30 • undefined_identifier
+  error • The method 'Icon' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:434:13 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:434:18 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:438:19 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:439:13 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:441:22 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:443:29 • undefined_identifier
+  error • Undefined name 'ListView' • lib/screens/ngo/ngo_dashboard.dart:454:12 • undefined_identifier
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:455:22 • undefined_identifier
+  error • The named parameter 'margin' isn't defined • lib/screens/ngo/ngo_dashboard.dart:460:11 • undefined_named_parameter
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:460:25 • undefined_identifier
+  error • The method 'Column' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:461:18 • undefined_method
+  error • Undefined name 'CrossAxisAlignment' • lib/screens/ngo/ngo_dashboard.dart:462:33 • undefined_identifier
+  error • The method 'Row' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:464:15 • undefined_method
+  error • The method 'Expanded' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:466:19 • undefined_method
+  error • The method 'Text' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:467:28 • undefined_method
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:471:37 • undefined_identifier
+  error • The method 'Container' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:477:21 • undefined_method
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:478:38 • undefined_identifier
+  error • The method 'BoxDecoration' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:480:35 • undefined_method
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:481:48 • deprecated_member_use
+  error • Undefined name 'Border' • lib/screens/ngo/ngo_dashboard.dart:482:33 • undefined_identifier
+  error • Undefined name 'BorderRadius' • lib/screens/ngo/ngo_dashboard.dart:484:29 • undefined_identifier
+  error • The getter 'radiusXs' isn't defined for the type 'AppSpacing' • lib/screens/ngo/ngo_dashboard.dart:484:62 • undefined_getter
+  error • The method 'Text' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:486:30 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:488:32 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:490:39 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:497:21 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:498:15 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:500:24 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:502:26 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:506:21 • creation_with_non_type
+  error • The method 'Wrap' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:507:15 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:511:29 • undefined_identifier
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:512:29 • undefined_identifier
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:513:29 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:516:21 • creation_with_non_type
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:517:25 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:518:21 • creation_with_non_type
+  error • The method 'Row' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:519:15 • undefined_method
+  error • The method 'Expanded' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:521:19 • undefined_method
+  error • The method 'OutlinedButton' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:522:28 • undefined_method
+  error • Undefined name 'OutlinedButton' • lib/screens/ngo/ngo_dashboard.dart:524:30 • undefined_identifier
+  error • The name 'BorderSide' isn't a class • lib/screens/ngo/ngo_dashboard.dart:525:37 • creation_with_non_type
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:525:55 • undefined_identifier
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:526:40 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:528:30 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:530:32 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:530:74 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:534:25 • creation_with_non_type
+  error • The method 'Expanded' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:535:19 • undefined_method
+  error • The method 'ElevatedButton' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:536:28 • undefined_method
+  error • Undefined name 'ElevatedButton' • lib/screens/ngo/ngo_dashboard.dart:554:30 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:555:61 • deprecated_member_use
+  error • The name 'BorderSide' isn't a class • lib/screens/ngo/ngo_dashboard.dart:557:37 • creation_with_non_type
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:558:40 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_AvailableDonationsTab' • lib/screens/ngo/ngo_dashboard.dart:560:30 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:562:32 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:564:39 • undefined_identifier
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:580:33 • extends_non_class
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:584:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:584:10 • override_on_non_overriding_member
+  error • Undefined class 'BuildContext' • lib/screens/ngo/ngo_dashboard.dart:584:16 • undefined_class
+  error • Undefined name 'Theme' • lib/screens/ngo/ngo_dashboard.dart:586:20 • undefined_identifier
+  error • Undefined name 'Brightness' • lib/screens/ngo/ngo_dashboard.dart:586:52 • undefined_identifier
+  error • The method 'Center' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:589:14 • undefined_method
+  error • The method 'Text' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:590:16 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:592:18 • undefined_identifier
+  error • Undefined name 'ListView' • lib/screens/ngo/ngo_dashboard.dart:601:12 • undefined_identifier
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:602:22 • undefined_identifier
+  error • The named parameter 'margin' isn't defined • lib/screens/ngo/ngo_dashboard.dart:608:11 • undefined_named_parameter
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:608:25 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:609:30 • deprecated_member_use
+  error • The method 'ListTile' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:610:18 • undefined_method
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:611:29 • undefined_identifier
+  error • The method 'Container' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:612:22 • undefined_method
+  error • The method 'BoxDecoration' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:615:27 • undefined_method
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:616:30 • deprecated_member_use
+  error • Undefined name 'BorderRadius' • lib/screens/ngo/ngo_dashboard.dart:617:31 • undefined_identifier
+  error • The getter 'radiusXs' isn't defined for the type 'AppSpacing' • lib/screens/ngo/ngo_dashboard.dart:617:64 • undefined_getter
+  error • Undefined name 'Border' • lib/screens/ngo/ngo_dashboard.dart:618:25 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/ngo/ngo_dashboard.dart:618:49 • deprecated_member_use
+  error • The method 'Icon' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:620:22 • undefined_method
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:621:32 • undefined_identifier
+  error • Undefined name 'Icons' • lib/screens/ngo/ngo_dashboard.dart:621:54 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:626:20 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:628:22 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:630:29 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:631:24 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:634:23 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:636:22 • undefined_identifier
+  error • The method 'TextButton' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:643:19 • undefined_method
+  error • The method 'Text' isn't defined for the type '_MyEmergenciesTab' • lib/screens/ngo/ngo_dashboard.dart:646:28 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:648:30 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:651:37 • undefined_identifier
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:664:25 • extends_non_class
+  error • Undefined class 'IconData' • lib/screens/ngo/ngo_dashboard.dart:667:9 • undefined_class
+  error • Undefined class 'Color' • lib/screens/ngo/ngo_dashboard.dart:668:9 • undefined_class
+  error • Undefined class 'LinearGradient' • lib/screens/ngo/ngo_dashboard.dart:669:9 • undefined_class
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:680:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:680:10 • override_on_non_overriding_member
+  error • Undefined class 'BuildContext' • lib/screens/ngo/ngo_dashboard.dart:680:16 • undefined_class
+  error • The named parameter 'glowColor' isn't defined • lib/screens/ngo/ngo_dashboard.dart:683:7 • undefined_named_parameter
+  error • The method 'Column' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:684:14 • undefined_method
+  error • Undefined name 'CrossAxisAlignment' • lib/screens/ngo/ngo_dashboard.dart:685:29 • undefined_identifier
+  error • The method 'Row' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:687:11 • undefined_method
+  error • Undefined name 'MainAxisAlignment' • lib/screens/ngo/ngo_dashboard.dart:688:32 • undefined_identifier
+  error • The method 'Text' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:690:15 • undefined_method
+  error • The method 'Icon' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:698:15 • undefined_method
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:701:17 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:702:11 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:704:20 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:706:27 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:707:22 • undefined_identifier
+  error • The method 'Shadow' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:709:17 • undefined_method
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:716:17 • creation_with_non_type
+  error • The method 'Container' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:717:11 • undefined_method
+  error • The method 'BoxDecoration' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:720:25 • undefined_method
+  error • The method 'BoxShadow' isn't defined for the type '_StatCard' • lib/screens/ngo/ngo_dashboard.dart:723:17 • undefined_method
+  error • Undefined class 'LinearGradient' • lib/screens/ngo/ngo_dashboard.dart:737:14 • undefined_class
+  error • Undefined class 'LinearGradient' • lib/screens/ngo/ngo_dashboard.dart:738:3 • undefined_class
+warning • The declaration 'withOpacity' isn't referenced • lib/screens/ngo/ngo_dashboard.dart:738:18 • unused_element
+  error • Undefined name 'colors' • lib/screens/ngo/ngo_dashboard.dart:740:15 • undefined_identifier
+  error • Undefined name 'begin' • lib/screens/ngo/ngo_dashboard.dart:741:14 • undefined_identifier
+  error • Undefined name 'end' • lib/screens/ngo/ngo_dashboard.dart:742:12 • undefined_identifier
+  error • Undefined name 'stops' • lib/screens/ngo/ngo_dashboard.dart:743:14 • undefined_identifier
+  error • Undefined name 'transform' • lib/screens/ngo/ngo_dashboard.dart:744:18 • undefined_identifier
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:749:31 • extends_non_class
+  error • Undefined class 'IconData' • lib/screens/ngo/ngo_dashboard.dart:751:9 • undefined_class
+  error • Undefined class 'Color' • lib/screens/ngo/ngo_dashboard.dart:752:9 • undefined_class
+  error • Undefined class 'VoidCallback' • lib/screens/ngo/ngo_dashboard.dart:754:9 • undefined_class
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:765:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:765:10 • override_on_non_overriding_member
+  error • Undefined class 'BuildContext' • lib/screens/ngo/ngo_dashboard.dart:765:16 • undefined_class
+  error • The method 'GestureDetector' isn't defined for the type '_MealTypeOption' • lib/screens/ngo/ngo_dashboard.dart:766:12 • undefined_method
+  error • The method 'AnimatedContainer' isn't defined for the type '_MealTypeOption' • lib/screens/ngo/ngo_dashboard.dart:768:14 • undefined_method
+  error • Undefined name 'EdgeInsets' • lib/screens/ngo/ngo_dashboard.dart:770:24 • undefined_identifier
+  error • The method 'BoxDecoration' isn't defined for the type '_MealTypeOption' • lib/screens/ngo/ngo_dashboard.dart:771:21 • undefined_method
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:772:56 • undefined_identifier
+  error • Undefined name 'BorderRadius' • lib/screens/ngo/ngo_dashboard.dart:773:25 • undefined_identifier
+  error • Undefined name 'Border' • lib/screens/ngo/ngo_dashboard.dart:774:19 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:775:41 • undefined_identifier
+  error • The method 'BoxShadow' isn't defined for the type '_MealTypeOption' • lib/screens/ngo/ngo_dashboard.dart:779:13 • undefined_method
+  error • The method 'Column' isn't defined for the type '_MealTypeOption' • lib/screens/ngo/ngo_dashboard.dart:786:16 • undefined_method
+  error • The method 'Icon' isn't defined for the type '_MealTypeOption' • lib/screens/ngo/ngo_dashboard.dart:788:13 • undefined_method
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:788:52 • undefined_identifier
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:789:19 • creation_with_non_type
+  error • The method 'Text' isn't defined for the type '_MealTypeOption' • lib/screens/ngo/ngo_dashboard.dart:790:13 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:792:22 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:794:42 • undefined_identifier
+  error • Undefined name 'FontWeight' • lib/screens/ngo/ngo_dashboard.dart:794:60 • undefined_identifier
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:795:45 • undefined_identifier
+  error • Classes can only extend other classes • lib/screens/ngo/ngo_dashboard.dart:806:25 • extends_non_class
+  error • Undefined class 'IconData' • lib/screens/ngo/ngo_dashboard.dart:807:9 • undefined_class
+  error • Undefined class 'Color' • lib/screens/ngo/ngo_dashboard.dart:809:9 • undefined_class
+  error • Undefined class 'Widget' • lib/screens/ngo/ngo_dashboard.dart:814:3 • undefined_class
+warning • The method doesn't override an inherited method • lib/screens/ngo/ngo_dashboard.dart:814:10 • override_on_non_overriding_member
+  error • Undefined class 'BuildContext' • lib/screens/ngo/ngo_dashboard.dart:814:16 • undefined_class
+  error • Undefined name 'Colors' • lib/screens/ngo/ngo_dashboard.dart:815:35 • undefined_identifier
+  error • The method 'Row' isn't defined for the type '_InfoChip' • lib/screens/ngo/ngo_dashboard.dart:816:12 • undefined_method
+  error • Undefined name 'MainAxisSize' • lib/screens/ngo/ngo_dashboard.dart:817:21 • undefined_identifier
+  error • The method 'Icon' isn't defined for the type '_InfoChip' • lib/screens/ngo/ngo_dashboard.dart:819:9 • undefined_method
+  error • The name 'SizedBox' isn't a class • lib/screens/ngo/ngo_dashboard.dart:820:15 • creation_with_non_type
+  error • The method 'Flexible' isn't defined for the type '_InfoChip' • lib/screens/ngo/ngo_dashboard.dart:821:9 • undefined_method
+  error • The method 'Text' isn't defined for the type '_InfoChip' • lib/screens/ngo/ngo_dashboard.dart:822:18 • undefined_method
+  error • Undefined name 'GoogleFonts' • lib/screens/ngo/ngo_dashboard.dart:824:20 • undefined_identifier
+  error • Undefined name 'TextOverflow' • lib/screens/ngo/ngo_dashboard.dart:830:23 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/onboarding/onboarding_screen.dart:70:49 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/onboarding/onboarding_screen.dart:201:66 • deprecated_member_use
+  error • The method 'animate' isn't defined for the type 'Container' • lib/screens/onboarding/onboarding_screen.dart:212:13 • undefined_method
+  error • The getter 'seconds' isn't defined for the type 'int' • lib/screens/onboarding/onboarding_screen.dart:212:68 • undefined_getter
+warning • The declaration 'withOpacity' isn't referenced • lib/screens/onboarding/onboarding_screen.dart:239:12 • unused_element
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/onboarding/onboarding_screen.dart:243:39 • deprecated_member_use
+warning • The value of the field '_fadeAnimation' isn't used • lib/screens/splash/splash_screen.dart:20:26 • unused_field
+warning • The value of the field '_scaleAnimation' isn't used • lib/screens/splash/splash_screen.dart:21:26 • unused_field
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/splash/splash_screen.dart:89:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/splash/splash_screen.dart:153:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/app_button.dart:74:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/app_button.dart:106:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/app_button.dart:135:58 • deprecated_member_use
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:54:33 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:54:71 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:64:24 • undefined_identifier
+  error • The getter 'bodyMedium' isn't defined for the type 'AppTextStyles' • lib/widgets/common/app_input.dart:79:34 • undefined_getter
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:90:39 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:90:77 • undefined_identifier
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/connection_status_indicator.dart:40:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_app_bar.dart:49:34 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_app_bar.dart:50:34 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_app_bar.dart:54:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_app_bar.dart:82:49 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_bottom_nav_bar.dart:28:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_bottom_nav_bar.dart:37:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_bottom_nav_bar.dart:55:59 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_bottom_nav_bar.dart:79:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/cyber_bottom_nav_bar.dart:96:61 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/database_status_indicator.dart:18:22 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/database_status_indicator.dart:20:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/database_status_indicator.dart:24:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/database_status_indicator.dart:101:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/database_status_indicator.dart:104:37 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/hitech_loader.dart:40:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/hitech_loader.dart:55:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/hitech_loader.dart:68:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/hitech_loader.dart:121:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/hitech_loader.dart:129:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/hitech_loader.dart:197:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/neon_indicator.dart:27:26 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/neon_indicator.dart:32:26 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/neon_indicator.dart:51:31 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/scanning_overlay.dart:16:29 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/scanning_overlay.dart:32:49 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/scanning_overlay.dart:81:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/scanning_overlay.dart:108:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:14:56 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:64:65 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:85:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:141:67 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:208:17 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:209:17 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:210:17 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:225:23 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/common/skeleton_widgets.dart:248:37 • deprecated_member_use
+
+453 issues found. (ran in 5.9s)

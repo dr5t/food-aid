@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
@@ -97,7 +100,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
       padding: const EdgeInsets.only(bottom: 80), // Avoid overlap with bottom nav
       child: FloatingActionButton.extended(
         onPressed: () => _showEmergencyDialog(),
-        backgroundColor: AppColors.neonAmber.withOpacity(0.2),
+        backgroundColor: AppColors.neonAmber.withValues(alpha: 0.2),
         foregroundColor: AppColors.neonAmber,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -114,7 +117,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
           ),
         ),
       ).animate(onPlay: (controller) => controller.repeat())
-        .shimmer(duration: 2000.ms, color: AppColors.neonAmber.withOpacity(0.3)),
+        .shimmer(duration: 2000.ms, color: AppColors.neonAmber.withValues(alpha: 0.3)),
     );
   }
 
@@ -137,7 +140,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
                 insetPadding: const EdgeInsets.symmetric(horizontal: 20),
                 content: CyberCard(
                   borderColor: AppColors.neonAmber,
-                  glowColor: AppColors.neonAmber.withOpacity(0.2),
+                  glowColor: AppColors.neonAmber.withValues(alpha: 0.2),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,7 +481,7 @@ class _AvailableDonationsTab extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.error.withOpacity(0.1),
+                        color: AppColors.error.withValues(alpha: 0.1),
                         border: Border.all(color: AppColors.error),
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusXs),
@@ -552,7 +555,7 @@ class _AvailableDonationsTab extends StatelessWidget {
                               }
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.neonCyan.withOpacity(0.2),
+                        backgroundColor: AppColors.neonCyan.withValues(alpha: 0.2),
                         foregroundColor: AppColors.neonCyan,
                         side: const BorderSide(color: AppColors.neonCyan),
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -606,16 +609,16 @@ class _MyEmergenciesTab extends StatelessWidget {
         final color = req.isActive ? AppColors.neonAmber : AppColors.neonGreen;
         return CyberCard(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
-          borderColor: color.withOpacity(0.5),
+          borderColor: color.withValues(alpha: 0.5),
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             leading: Container(
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
-                border: Border.all(color: color.withOpacity(0.3)),
+                border: Border.all(color: color.withValues(alpha: 0.3)),
               ),
               child: Icon(
                 req.isActive ? Icons.warning_amber : Icons.check_circle_outline,
@@ -679,8 +682,8 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CyberCard(
-      borderColor: color.withOpacity(0.5),
-      glowColor: color.withOpacity(0.2),
+      borderColor: color.withValues(alpha: 0.5),
+      glowColor: color.withValues(alpha: 0.2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -707,7 +710,7 @@ class _StatCard extends StatelessWidget {
               color: Colors.white,
               shadows: [
                 Shadow(
-                  color: color.withOpacity(0.5),
+                  color: color.withValues(alpha: 0.5),
                   blurRadius: 8,
                 ),
               ],
@@ -721,7 +724,7 @@ class _StatCard extends StatelessWidget {
               color: color,
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.5),
+                  color: color.withValues(alpha: 0.5),
                   blurRadius: 4,
                   spreadRadius: 1,
                 ),
@@ -769,7 +772,7 @@ class _MealTypeOption extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.1) : Colors.white.withOpacity(0.02),
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.white.withOpacity(0.02),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
             color: isSelected ? color : Colors.white12,
@@ -777,7 +780,7 @@ class _MealTypeOption extends StatelessWidget {
           ),
           boxShadow: isSelected ? [
             BoxShadow(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               blurRadius: 8,
               spreadRadius: 1,
             )

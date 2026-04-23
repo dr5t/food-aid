@@ -276,20 +276,18 @@ class _OverviewTab extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
         Text(
-          'Hello, ${user?.organizationName ?? user?.name ?? 'NGO'} 👋',
-          style: GoogleFonts.inter(
+          'HELLO, ${user?.organizationName?.toUpperCase() ?? user?.name?.toUpperCase() ?? 'NGO'}',
+          style: AppTextStyles.hitechHeading.copyWith(
             fontSize: 24,
-            fontWeight: FontWeight.w700,
+            color: AppColors.neonCyan,
           ),
         ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
         const SizedBox(height: 4),
         Text(
-          'Manage donations and emergency requests',
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary,
+          'ACCESSING MISSION CONTROL // SYSTEM NOMINAL',
+          style: AppTextStyles.hitechSubtitle.copyWith(
+            fontSize: 12,
+            letterSpacing: 1.5,
           ),
         ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideX(begin: -0.1),
         const SizedBox(height: AppSpacing.xl),
@@ -589,13 +587,14 @@ class _MyEmergenciesTab extends StatelessWidget {
 }
 
 
+class _StatCard extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
   final Color color;
   final LinearGradient? gradient;
 
-  _StatCard({
+  const _StatCard({
     required this.label,
     required this.value,
     required this.icon,
@@ -605,57 +604,57 @@ class _MyEmergenciesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      decoration: BoxDecoration(
-        gradient: isDark ? gradient?.withOpacity(0.05) : null,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      ),
-      child: Card(
-        color: isDark ? Colors.transparent : null,
-        elevation: isDark ? 0 : 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          side: isDark
-              ? BorderSide(color: color.withOpacity(0.2), width: 1)
-              : BorderSide.none,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return CyberCard(
+      borderColor: color.withOpacity(0.5),
+      glowColor: color.withOpacity(0.2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                ),
-                child: Icon(icon, size: 18, color: color),
-              ),
-              const SizedBox(height: AppSpacing.sm),
               Text(
-                value,
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? color : null,
+                label.toUpperCase(),
+                style: AppTextStyles.hitechSubtitle.copyWith(
+                  fontSize: 10,
+                  color: color,
+                  letterSpacing: 1,
                 ),
               ),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.textSecondary,
-                ),
-              ),
+              Icon(icon, size: 16, color: color),
             ],
           ),
-        ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            value,
+            style: GoogleFonts.orbitron(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              shadows: [
+                Shadow(
+                  color: color.withOpacity(0.5),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            height: 2,
+            width: 40,
+            decoration: BoxDecoration(
+              color: color,
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(0.5),
+                  blurRadius: 4,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

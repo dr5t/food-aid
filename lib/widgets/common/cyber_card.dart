@@ -9,7 +9,9 @@ class CyberCard extends StatelessWidget {
   final bool showGlow;
   final bool showCorners;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
   final Gradient? backgroundGradient;
+  final Color? glowColor;
 
   const CyberCard({
     super.key,
@@ -19,7 +21,9 @@ class CyberCard extends StatelessWidget {
     this.showGlow = false,
     this.showCorners = true,
     this.padding,
+    this.margin,
     this.backgroundGradient,
+    this.glowColor,
   });
 
   @override
@@ -27,46 +31,48 @@ class CyberCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final finalBorderColor = borderColor ?? (isDark ? AppColors.neonCyan.withValues(alpha: 0.3) : Colors.black12);
     
-    return Stack(
-      children: [
-        // Glass Effect Background
-        ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              padding: padding ?? const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(borderRadius),
-                border: Border.all(
-                  color: finalBorderColor,
-                  width: 1.5,
+    return Container(
+      margin: margin,
+      child: Stack(
+        children: [
+          // Glass Effect Background
+          ClipRRect(
+            borderRadius: BorderRadius.circular(borderRadius),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                padding: padding ?? const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  border: Border.all(
+                    color: finalBorderColor,
+                    width: 1.5,
+                  ),
+                  gradient: backgroundGradient ?? LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: isDark 
+                      ? [
+                          Colors.white.withValues(alpha: 0.05),
+                          Colors.white.withValues(alpha: 0.01),
+                        ]
+                      : [
+                          Colors.black.withValues(alpha: 0.02),
+                          Colors.black.withValues(alpha: 0.005),
+                        ],
+                  ),
+                  boxShadow: (showGlow || glowColor != null) ? [
+                    BoxShadow(
+                      color: glowColor ?? finalBorderColor.withValues(alpha: 0.2),
+                      blurRadius: 15,
+                      spreadRadius: 2,
+                    )
+                  ] : null,
                 ),
-                gradient: backgroundGradient ?? LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: isDark 
-                    ? [
-                        Colors.white.withValues(alpha: 0.05),
-                        Colors.white.withValues(alpha: 0.01),
-                      ]
-                    : [
-                        Colors.black.withValues(alpha: 0.02),
-                        Colors.black.withValues(alpha: 0.005),
-                      ],
-                ),
-                boxShadow: showGlow ? [
-                  BoxShadow(
-                    color: finalBorderColor.withValues(alpha: 0.2),
-                    blurRadius: 15,
-                    spreadRadius: 2,
-                  )
-                ] : null,
+                child: child,
               ),
-              child: child,
             ),
           ),
-        ),
 
         // Cyber Corners
         if (showCorners)

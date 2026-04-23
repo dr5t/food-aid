@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 import '../../models/donation_model.dart';
@@ -74,17 +75,17 @@ class _NgoDashboardState extends State<NgoDashboard> {
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          CyberNavItem(
+          CyberBottomNavItem(
             icon: Icons.dashboard_outlined,
             activeIcon: Icons.dashboard,
             label: 'OVERVIEW',
           ),
-          CyberNavItem(
+          CyberBottomNavItem(
             icon: Icons.inventory_2_outlined,
             activeIcon: Icons.inventory_2,
             label: 'AVAILABLE',
           ),
-          CyberNavItem(
+          CyberBottomNavItem(
             icon: Icons.warning_amber,
             activeIcon: Icons.warning,
             label: 'EMERGENCIES',

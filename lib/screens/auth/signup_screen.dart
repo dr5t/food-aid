@@ -1,10 +1,15 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
+import '../../config/theme/app_text_styles.dart';
 import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/common/app_button.dart';
+import '../../widgets/common/app_input.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -15,402 +20,373 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _orgNameController = TextEditingController();
-  final _orgDescController = TextEditingController();
-  final _companyIdController = TextEditingController();
-  final _addressController = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _orgNameCtrl = TextEditingController();
+  final _orgDescCtrl = TextEditingController();
+  final _addressCtrl = TextEditingController();
 
   UserRole _selectedRole = UserRole.donor;
   DonorType _selectedDonorType = DonorType.home;
-  bool _obscurePassword = true;
+  bool _obscure = true;
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _phoneController.dispose();
-    _orgNameController.dispose();
-    _orgDescController.dispose();
-    _companyIdController.dispose();
-    _addressController.dispose();
+    _nameCtrl.dispose();
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    _phoneCtrl.dispose();
+    _orgNameCtrl.dispose();
+    _orgDescCtrl.dispose();
+    _addressCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleSignup() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final auth = context.read<AuthProvider>();
+    final success = await auth.signUp(
+      name: _nameCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
+      password: _passCtrl.text,
+      role: _selectedRole,
+      phone: _phoneCtrl.text.trim(),
+      donorType: _selectedRole == UserRole.donor ? _selectedDonorType : null,
+      organizationName: (_selectedRole == UserRole.ngo || _selectedRole == UserRole.logisticsCompany)
+          ? _orgNameCtrl.text.trim()
+          : null,
+      organizationDescription: _selectedRole == UserRole.ngo ? _orgDescCtrl.text.trim() : null,
+      address: _addressCtrl.text.trim().isNotEmpty ? _addressCtrl.text.trim() : null,
+    );
+
+    if (success && mounted) {
+      if (auth.isPendingVerification) {
+        context.go('/pending-verification');
+      } else {
+        final role = auth.role;
+        if (role != null) {
+          String location = '/donor';
+          switch (role) {
+            case UserRole.admin: location = '/admin'; break;
+            case UserRole.ngo: location = '/ngo'; break;
+            case UserRole.logisticsCompany: location = '/company'; break;
+            case UserRole.logisticsEmployee: location = '/employee'; break;
+            default: location = '/donor';
+          }
+          context.go(location);
+        }
+      }
+    } else if (!success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(auth.error ?? 'Signup failed'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
+    final auth = context.watch<AuthProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: AppSpacing.md),
+      body: Stack(
+        children: [
+          // Animated Background Glows
+          Positioned(
+            top: -100,
+            left: -100,
+            child: _buildGlow(AppColors.neonPink, 300),
+          ).animate(onPlay: (c) => c.repeat()).move(
+                begin: const Offset(-20, -20),
+                end: const Offset(20, 20),
+                duration: 6.seconds,
+                curve: Curves.easeInOut,
+              ),
+          Positioned(
+            bottom: -50,
+            right: -50,
+            child: _buildGlow(AppColors.neonBlue, 250),
+          ).animate(onPlay: (c) => c.repeat()).move(
+                begin: const Offset(20, 20),
+                end: const Offset(-20, -20),
+                duration: 5.seconds,
+                curve: Curves.easeInOut,
+              ),
 
-                Text(
-                  'Create Account',
-                  style: GoogleFonts.inter(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  'Join Food Aid and help reduce food waste',
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xl),
-
-                Text(
-                  'I am a...',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _buildRoleSelector(),
-                const SizedBox(height: AppSpacing.lg),
-
-                _buildTextField(
-                  controller: _nameController,
-                  label: 'Full Name',
-                  icon: Icons.person_outline,
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Name is required' : null,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _buildTextField(
-                  controller: _emailController,
-                  label: 'Email',
-                  icon: Icons.email_outlined,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Email is required';
-                    if (!v.contains('@')) return 'Enter a valid email';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _buildTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  icon: Icons.lock_outline,
-                  obscure: _obscurePassword,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      size: 20,
-                    ),
-                    onPressed: () =>
-                        setState(() => _obscurePassword = !_obscurePassword),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.isEmpty) return 'Password is required';
-                    if (v.length < 6) return 'At least 6 characters';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _buildTextField(
-                  controller: _phoneController,
-                  label: 'Phone Number',
-                  icon: Icons.phone_outlined,
-                  keyboardType: TextInputType.phone,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                _buildTextField(
-                  controller: _addressController,
-                  label: 'Address',
-                  icon: Icons.location_on_outlined,
-                  hint: 'e.g. Rajpur Road, Dehradun',
-                  maxLines: 2,
-                ),
-
-                if (_selectedRole == UserRole.donor) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildDonorTypeSelector(),
-                ],
-
-                if (_selectedRole == UserRole.ngo) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    controller: _orgNameController,
-                    label: 'Organization Name',
-                    icon: Icons.business_outlined,
-                    hint: 'e.g. Dehradun Food Rescue',
-                    validator: (v) => v == null || v.isEmpty
-                        ? 'Organization name is required'
-                        : null,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildTextField(
-                    controller: _orgDescController,
-                    label: 'Organization Description',
-                    icon: Icons.description_outlined,
-                    maxLines: 3,
-                  ),
-                ],
-
-                if (_selectedRole == UserRole.logisticsCompany) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildTextField(
-                    controller: _orgNameController,
-                    label: 'Company Name',
-                    icon: Icons.local_shipping_outlined,
-                    hint: 'e.g. Doon Logistics',
-                    validator: (v) => v == null || v.isEmpty
-                        ? 'Company name is required'
-                        : null,
-                  ),
-                ],
-
-                if (_selectedRole == UserRole.ngo ||
-                    _selectedRole == UserRole.logisticsCompany) ...[
-                  const SizedBox(height: AppSpacing.md),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: Colors.amber.withOpacity(0.3),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline_rounded,
-                          color: Colors.amber.shade700,
-                          size: 20,
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            'Your registration will be reviewed by our team before activation.',
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: Colors.amber.shade800,
-                              height: 1.4,
-                            ),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: AppSpacing.screenPadding,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        padding: const EdgeInsets.all(28),
+                        decoration: BoxDecoration(
+                          color: isDark 
+                              ? Colors.white.withOpacity(0.05) 
+                              : Colors.black.withOpacity(0.02),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: isDark 
+                                ? Colors.white.withOpacity(0.1) 
+                                : Colors.black.withOpacity(0.05),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Text(
+                                  'JOIN THE NETWORK',
+                                  style: AppTextStyles.heading.copyWith(
+                                    letterSpacing: 2,
+                                    fontWeight: FontWeight.w900,
+                                    foreground: Paint()
+                                      ..shader = AppColors.neonGradient.createShader(
+                                        const Rect.fromLTWH(0, 0, 300, 70),
+                                      ),
+                                  ),
+                                ),
+                              ).animate().fadeIn().moveY(begin: 10, end: 0),
+                              AppSpacing.verticalXs,
+                              Center(
+                                child: Text(
+                                  'Initiating registration for Dehradun Node',
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: isDark ? AppColors.neonCyan : AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ).animate().fadeIn(delay: 200.ms),
+                              AppSpacing.verticalLg,
+                              
+                              _buildRoleSelector().animate().fadeIn(delay: 300.ms),
+                              AppSpacing.verticalMd,
 
-                const SizedBox(height: AppSpacing.xl),
+                              _buildSectionTitle('Identity Details'),
+                              AppInput(
+                                controller: _nameCtrl,
+                                label: 'Full Name',
+                                hint: 'e.g. Aryan Sharma',
+                                prefixIcon: Icons.person_add_alt_1_rounded,
+                                validator: (v) => v == null || v.isEmpty ? 'Name is required' : null,
+                              ).animate().fadeIn(delay: 400.ms),
+                              AppSpacing.verticalMd,
+                              AppInput(
+                                controller: _emailCtrl,
+                                label: 'Cyber Mail',
+                                hint: 'aryan@dehradun.aid',
+                                prefixIcon: Icons.alternate_email_rounded,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (v) {
+                                  if (v == null || v.isEmpty) return 'Email is required';
+                                  if (!v.contains('@')) return 'Enter a valid email';
+                                  return null;
+                                },
+                              ).animate().fadeIn(delay: 500.ms),
+                              AppSpacing.verticalMd,
+                              AppInput(
+                                controller: _passCtrl,
+                                label: 'Access Key',
+                                hint: '••••••••',
+                                prefixIcon: Icons.vpn_key_rounded,
+                                obscureText: _obscure,
+                                suffix: IconButton(
+                                  icon: Icon(_obscure ? Icons.visibility_off_rounded : Icons.visibility_rounded, size: 20),
+                                  onPressed: () => setState(() => _obscure = !_obscure),
+                                ),
+                                validator: (v) => (v == null || v.length < 6) ? 'At least 6 characters' : null,
+                              ).animate().fadeIn(delay: 600.ms),
+                              
+                              AppSpacing.verticalLg,
+                              _buildSectionTitle('Location & Contact'),
+                              AppInput(
+                                controller: _phoneCtrl,
+                                label: 'Comm-Link (Phone)',
+                                hint: '+91 9876543210',
+                                prefixIcon: Icons.phone_iphone_rounded,
+                                keyboardType: TextInputType.phone,
+                              ).animate().fadeIn(delay: 700.ms),
+                              AppSpacing.verticalMd,
+                              AppInput(
+                                controller: _addressCtrl,
+                                label: 'Grid Address (Dehradun)',
+                                hint: 'e.g. 42, Rajpur Road, Near Clock Tower',
+                                prefixIcon: Icons.map_rounded,
+                                maxLines: 2,
+                              ).animate().fadeIn(delay: 800.ms),
 
-                if (authProvider.error != null)
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.errorLight,
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.error_outline,
-                            color: AppColors.error, size: 20),
-                        const SizedBox(width: AppSpacing.sm),
-                        Expanded(
-                          child: Text(
-                            authProvider.error!,
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              color: AppColors.error,
-                            ),
+                              if (_selectedRole == UserRole.donor) ...[
+                                AppSpacing.verticalLg,
+                                _buildDonorTypeSelector().animate().fadeIn(),
+                              ],
+
+                              if (_selectedRole == UserRole.ngo || _selectedRole == UserRole.logisticsCompany) ...[
+                                AppSpacing.verticalLg,
+                                _buildSectionTitle('Organization Protocol'),
+                                AppInput(
+                                  controller: _orgNameCtrl,
+                                  label: 'Entity Name',
+                                  hint: _selectedRole == UserRole.ngo ? 'e.g. Doon Food Bank' : 'e.g. Dehradun Express',
+                                  prefixIcon: Icons.business_center_rounded,
+                                  validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                                ).animate().fadeIn(),
+                                if (_selectedRole == UserRole.ngo) ...[
+                                  AppSpacing.verticalMd,
+                                  AppInput(
+                                    controller: _orgDescCtrl,
+                                    label: 'Mission Profile',
+                                    hint: 'Briefly describe your NGO\'s work in Dehradun...',
+                                    prefixIcon: Icons.description_rounded,
+                                    maxLines: 3,
+                                  ).animate().fadeIn(),
+                                ],
+                              ],
+
+                              AppSpacing.verticalXl,
+                              ShaderMask(
+                                shaderCallback: (bounds) => AppColors.cyberGradient.createShader(bounds),
+                                child: AppButton(
+                                  label: 'AUTHORIZE REGISTRATION',
+                                  onPressed: _handleSignup,
+                                  isLoading: auth.isLoading,
+                                ),
+                              ).animate().fadeIn(delay: 900.ms).scale(begin: const Offset(0.95, 0.95), end: const Offset(1, 1)),
+                              
+                              AppSpacing.verticalMd,
+                              Center(
+                                child: TextButton(
+                                  onPressed: () => context.go('/login'),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: 'Existing Cyber ID? ',
+                                      style: AppTextStyles.bodySmall,
+                                      children: [
+                                        TextSpan(
+                                          text: 'LOGIN',
+                                          style: TextStyle(
+                                            color: AppColors.neonCyan,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ).animate().fadeIn(delay: 1.seconds),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 52,
-                  child: ElevatedButton(
-                    onPressed: authProvider.isLoading ? null : _handleSignup,
-                    child: authProvider.isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(
-                            'Create Account',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                  ),
-                ),
-
-                const SizedBox(height: AppSpacing.lg),
-
-                Center(
-                  child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Already have an account? ',
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.textSecondary,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Log In',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color:
-                                  Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacing.md),
-              ],
+              ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.5,
+          color: AppColors.neonCyan.withOpacity(0.8),
         ),
       ),
     );
   }
 
-
   Widget _buildRoleSelector() {
-    return Wrap(
-      spacing: AppSpacing.sm,
-      runSpacing: AppSpacing.sm,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _roleCard(UserRole.donor, Icons.volunteer_activism, 'Donor'),
-        _roleCard(UserRole.ngo, Icons.account_balance, 'NGO'),
-        _roleCard(
-            UserRole.logisticsCompany, Icons.local_shipping, 'Logistics Co.'),
+        _buildSectionTitle('Access Level'),
+        Row(
+          children: [
+            _roleBtn(UserRole.donor, 'DONOR'),
+            const SizedBox(width: 8),
+            _roleBtn(UserRole.ngo, 'NGO'),
+            const SizedBox(width: 8),
+            _roleBtn(UserRole.logisticsCompany, 'LOGISTICS'),
+          ],
+        ),
       ],
     );
   }
 
-  Widget _roleCard(UserRole role, IconData icon, String label) {
+  Widget _roleBtn(UserRole role, String label) {
     final isSelected = _selectedRole == role;
-    final primary = Theme.of(context).colorScheme.primary;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return GestureDetector(
-      onTap: () => setState(() => _selectedRole = role),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: (MediaQuery.of(context).size.width - 56) / 2,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.md,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? primary.withValues(alpha: 0.08)
-              : isDark
-                  ? AppColors.darkSurfaceVariant
-                  : AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(
-            color: isSelected
-                ? primary
-                : isDark
-                    ? AppColors.darkDivider
-                    : AppColors.divider,
-            width: isSelected ? 2 : 1,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedRole = role),
+        child: AnimatedContainer(
+          duration: 300.ms,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? AppColors.neonCyan.withOpacity(0.1) : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? AppColors.neonCyan : Colors.white24,
+              width: isSelected ? 2 : 1,
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 22, color: isSelected ? primary : null),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                label,
-                style: GoogleFonts.inter(
-                  fontSize: 13,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                  color: isSelected
-                      ? primary
-                      : Theme.of(context).colorScheme.onSurface,
-                ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? AppColors.neonCyan : Colors.white60,
               ),
             ),
-            if (isSelected)
-              Icon(Icons.check_circle, size: 18, color: primary),
-          ],
+          ),
         ),
       ),
     );
   }
-
 
   Widget _buildDonorTypeSelector() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Donor Type',
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.sm),
+        _buildSectionTitle('Donor Category'),
         Wrap(
-          spacing: AppSpacing.xs,
-          runSpacing: AppSpacing.xs,
+          spacing: 8,
+          runSpacing: 8,
           children: DonorType.values.map((type) {
             final isSelected = _selectedDonorType == type;
             return ChoiceChip(
               label: Text(_donorTypeLabel(type)),
               selected: isSelected,
-              onSelected: (_) =>
-                  setState(() => _selectedDonorType = type),
-              selectedColor:
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-              labelStyle: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onSurface,
+              onSelected: (_) => setState(() => _selectedDonorType = type),
+              selectedColor: AppColors.neonCyan.withOpacity(0.2),
+              backgroundColor: Colors.transparent,
+              side: BorderSide(color: isSelected ? AppColors.neonCyan : Colors.white24),
+              labelStyle: TextStyle(
+                fontSize: 11,
+                color: isSelected ? AppColors.neonCyan : Colors.white70,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             );
           }).toList(),
@@ -421,82 +397,30 @@ class _SignupScreenState extends State<SignupScreen> {
 
   String _donorTypeLabel(DonorType type) {
     switch (type) {
-      case DonorType.hotel:
-        return 'Hotel';
-      case DonorType.restaurant:
-        return 'Restaurant';
-      case DonorType.wedding:
-        return 'Wedding / Event';
-      case DonorType.home:
-        return 'Home';
-      case DonorType.resort:
-        return 'Resort';
-      case DonorType.catering:
-        return 'Catering';
-      case DonorType.other:
-        return 'Other';
+      case DonorType.hotel: return 'Hotel';
+      case DonorType.restaurant: return 'Restaurant';
+      case DonorType.wedding: return 'Event/Wedding';
+      case DonorType.home: return 'Home';
+      case DonorType.resort: return 'Resort';
+      case DonorType.catering: return 'Catering';
+      case DonorType.other: return 'Other';
     }
   }
 
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    String? hint,
-    int maxLines = 1,
-    bool obscure = false,
-    Widget? suffixIcon,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscure,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      validator: validator,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: Icon(icon, size: 20),
-        suffixIcon: suffixIcon,
+  Widget _buildGlow(Color color, double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.15),
+            blurRadius: 100,
+            spreadRadius: 50,
+          ),
+        ],
       ),
     );
-  }
-
-
-  Future<void> _handleSignup() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.signUp(
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-      role: _selectedRole,
-      phone: _phoneController.text.trim(),
-      donorType:
-          _selectedRole == UserRole.donor ? _selectedDonorType : null,
-      organizationName:
-          (_selectedRole == UserRole.ngo ||
-                  _selectedRole == UserRole.logisticsCompany)
-              ? _orgNameController.text.trim()
-              : null,
-      organizationDescription:
-          _selectedRole == UserRole.ngo
-              ? _orgDescController.text.trim()
-              : null,
-      companyId:
-          _selectedRole == UserRole.logisticsEmployee
-              ? _companyIdController.text.trim()
-              : null,
-      address: _addressController.text.trim().isNotEmpty
-          ? _addressController.text.trim()
-          : null,
-    );
-
-    if (success && mounted) {
-    }
   }
 }

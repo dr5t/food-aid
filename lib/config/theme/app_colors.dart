@@ -21,14 +21,14 @@ class AppColors {
   static const Color textHint = Color(0xFFBDBDBD);
 
 
-  static const Color darkBackground = Color(0xFF121212);
-  static const Color darkSurface = Color(0xFF1E1E1E);
-  static const Color darkSurfaceVariant = Color(0xFF2C2C2C);
-  static const Color darkTextPrimary = Color(0xFFEEEEEE);
-  static const Color darkTextSecondary = Color(0xFFB0B0B0);
-  static const Color darkTextHint = Color(0xFF6E6E6E);
-  static const Color darkDivider = Color(0xFF3A3A3A);
-  static const Color darkPrimary = Color(0xFF66BB6A);
+  static const Color darkBackground = Color(0xFF000000); // Deep Black
+  static const Color darkSurface = Color(0xFF0A0A0A);
+  static const Color darkSurfaceVariant = Color(0xFF151515);
+  static const Color darkTextPrimary = Color(0xFFFFFFFF);
+  static const Color darkTextSecondary = Color(0xFFAAAAAA);
+  static const Color darkTextHint = Color(0xFF555555);
+  static const Color darkDivider = Color(0xFF222222);
+  static const Color darkPrimary = Color(0xFF00E5FF); // Neon Cyan
 
 
   static const Color error = Color(0xFFE53935);
@@ -45,8 +45,8 @@ class AppColors {
 
   static const Color skeleton1 = Color(0xFFE0E0E0);
   static const Color skeleton2 = Color(0xFFF0F0F0);
-  static const Color darkSkeleton1 = Color(0xFF2C2C2C);
-  static const Color darkSkeleton2 = Color(0xFF3A3A3A);
+  static const Color darkSkeleton1 = Color(0xFF111111);
+  static const Color darkSkeleton2 = Color(0xFF1A1A1A);
 
 
   static const Color statusPending = Color(0xFFFFA726);
@@ -73,11 +73,11 @@ class AppColors {
 
   // Glassmorphism Colors
   static Color glassBackground(Brightness brightness) => brightness == Brightness.dark
-      ? Colors.white.withOpacity(0.05)
+      ? Colors.white.withOpacity(0.03)
       : Colors.black.withOpacity(0.05);
   
   static Color glassBorder(Brightness brightness) => brightness == Brightness.dark
-      ? Colors.white.withOpacity(0.1)
+      ? Colors.white.withOpacity(0.08)
       : Colors.black.withOpacity(0.1);
 
   // Neon Gradients
@@ -89,6 +89,18 @@ class AppColors {
 
   static const LinearGradient cyberGradient = LinearGradient(
     colors: [neonPurple, neonPink],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient dehradunMist = LinearGradient(
+    colors: [Color(0xFF00C9FF), Color(0xFF92FE9D)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient cyberSaffron = LinearGradient(
+    colors: [Color(0xFFFF9933), Color(0xFFFF00E5)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -116,4 +128,6 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+}
+
 }

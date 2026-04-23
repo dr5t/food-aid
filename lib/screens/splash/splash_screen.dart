@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
-import '../../config/theme/app_text_styles.dart';
 import '../../config/constants.dart';
+import '../../providers/auth_provider.dart';
+import '../../widgets/common/hitech_loader.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -36,11 +39,27 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    Future.delayed(AppConstants.splashDuration, () {
-      if (mounted) {
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    
+    // Wait for splash duration AND database health check
+    await Future.wait([
+      Future.delayed(AppConstants.splashDuration),
+      authProvider.checkDatabaseHealth(),
+    ]);
+
+    if (mounted) {
+      if (authProvider.isAuthenticated) {
+        // Redirection logic should be handled by the router, 
+        // but for now we follow the existing flow or trigger a refresh
+        context.go('/');
+      } else {
         context.go('/onboarding');
       }
-    });
+    }
   }
 
   @override
@@ -51,46 +70,101 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
+      backgroundColor: isDark ? const Color(0xFF0A0A0B) : Colors.white,
+      body: Stack(
+        children: [
+          // Background ambient glow
+          if (isDark)
+            Positioned(
+              top: -100,
+              right: -100,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.neonCyan.withOpacity(0.05),
+                ),
+              ).animate().fadeIn(duration: 2.seconds),
+            ),
+
+          Center(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-                  ),
-                  child: const Icon(
-                    Icons.volunteer_activism_rounded,
-                    color: Colors.white,
-                    size: 44,
-                  ),
+                const HitechLoader(
+                  size: 100,
+                  text: "System Initializing",
                 ),
-                AppSpacing.verticalLg,
+                const SizedBox(height: 60),
                 Text(
-                  AppConstants.appName,
-                  style: AppTextStyles.headingLarge.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
+                  AppConstants.appName.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.black,
+                    letterSpacing: 8,
+                    color: isDark ? Colors.white : AppColors.primary,
                   ),
-                ),
-                AppSpacing.verticalSm,
+                ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
+                const SizedBox(height: 8),
                 Text(
-                  AppConstants.appTagline,
-                  style: AppTextStyles.bodySmall,
-                ),
+                  "DEHRADUN • INDIA",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 4,
+                    color: isDark ? AppColors.neonCyan : AppColors.primary,
+                  ),
+                ).animate().fadeIn(delay: 800.ms),
               ],
             ),
           ),
-        ),
+
+          // Bottom Status Bar
+          Positioned(
+            bottom: 40,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: authProvider.dbOnline ? AppColors.neonGreen : AppColors.error,
+                        boxShadow: [
+                          if (authProvider.dbOnline)
+                            BoxShadow(
+                              color: AppColors.neonGreen.withOpacity(0.5),
+                              blurRadius: 8,
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      authProvider.dbOnline ? "DATABASE SECURE" : "DATABASE OFFLINE",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                        color: isDark ? Colors.white54 : Colors.black54,
+                      ),
+                    ),
+                  ],
+                ).animate(onPlay: (c) => c.repeat(reverse: true)).fadeIn(duration: 1.seconds),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

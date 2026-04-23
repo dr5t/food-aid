@@ -11,12 +11,14 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   bool _isInitialized = false;
+  bool _dbOnline = true;
 
   UserModel? get user => _user;
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isAuthenticated => _user != null;
   bool get isInitialized => _isInitialized;
+  bool get dbOnline => _dbOnline;
   UserRole? get role => _user?.role;
 
   VerificationStatus? get verificationStatus => _user?.verificationStatus;
@@ -29,6 +31,9 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> _init() async {
+    // Initial health check
+    await checkDatabaseHealth();
+    
     _authService.authStateChanges.listen((firebaseUser) async {
       if (firebaseUser != null) {
         _user = await _authService.getCurrentUserModel();
@@ -38,6 +43,24 @@ class AuthProvider extends ChangeNotifier {
       _isInitialized = true;
       notifyListeners();
     });
+  }
+
+  Future<bool> checkDatabaseHealth() async {
+    try {
+      // Attempt a simple query to check if Firestore is reachable
+      await FirebaseFirestore.instance
+          .collection('health_check')
+          .limit(1)
+          .get(const GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 5));
+      _dbOnline = true;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _dbOnline = false;
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<void> refreshUser() async {
@@ -78,6 +101,8 @@ class AuthProvider extends ChangeNotifier {
         address: address,
         location: location,
       );
+      _isInitialized = true;
+      _error = null;
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {
@@ -103,6 +128,8 @@ class AuthProvider extends ChangeNotifier {
         email: email,
         password: password,
       );
+      _isInitialized = true;
+      _error = null;
       _setLoading(false);
       return true;
     } on FirebaseAuthException catch (e) {

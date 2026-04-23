@@ -31,8 +31,16 @@ class AppRouter {
 
         if (!isInitialized) return null;
 
-        final publicRoutes = ['/', '/onboarding', '/login', '/signup'];
+        final publicRoutes = ['/onboarding', '/login', '/signup'];
         final isOnPublicRoute = publicRoutes.contains(currentPath);
+
+        // If at splash or unknown, and initialized
+        if (currentPath == '/') {
+          if (isAuthenticated) {
+             return _dashboardForRole(authProvider.role);
+          }
+          return '/onboarding';
+        }
 
         if (!isAuthenticated && !isOnPublicRoute) {
           return '/login';
@@ -43,12 +51,6 @@ class AppRouter {
               authProvider.isRejected) {
             return '/pending-verification';
           }
-          return _dashboardForRole(authProvider.role);
-        }
-
-        if (isAuthenticated &&
-            currentPath == '/pending-verification' &&
-            authProvider.isApproved) {
           return _dashboardForRole(authProvider.role);
         }
 
@@ -195,20 +197,19 @@ class AppRouter {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,
+      transitionDuration: const Duration(milliseconds: 500),
+      reverseTransitionDuration: const Duration(milliseconds: 400),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final curveAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOutExpo,
+          reverseCurve: Curves.easeInOutExpo,
+        );
+
         return FadeTransition(
-          opacity: CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOut,
-          ),
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 0.02),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOut,
-            )),
+          opacity: curveAnimation,
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 0.98, end: 1.0).animate(curveAnimation),
             child: child,
           ),
         );

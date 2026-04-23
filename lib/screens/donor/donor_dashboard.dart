@@ -14,7 +14,6 @@ import '../../widgets/common/cyber_bottom_nav_bar.dart';
 import '../../widgets/common/cyber_card.dart';
 import '../../widgets/common/cyber_background.dart';
 import '../../widgets/common/connection_status_indicator.dart';
-import '../../widgets/common/skeleton_widgets.dart';
 import '../../widgets/skeleton/skeleton_loader.dart';
 import '../../widgets/common/hitech_loader.dart';
 import '../../widgets/common/scanning_overlay.dart';

@@ -51,6 +51,7 @@ class AppTheme {
     final textHint = isDark ? AppColors.darkTextHint : AppColors.textHint;
     final dividerColor = isDark ? AppColors.darkDivider : AppColors.divider;
     final primary = isDark ? AppColors.darkPrimary : AppColors.primary;
+    final surfaceVariant = isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant;
 
     return ThemeData(
       useMaterial3: true,
@@ -72,7 +73,7 @@ class AppTheme {
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
-        backgroundColor: bg.withOpacity(0.8),
+        backgroundColor: bg.withValues(alpha: 0.8),
         foregroundColor: textPrimary,
         centerTitle: false,
         flexibleSpace: ClipRect(
@@ -93,11 +94,11 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(
-            color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
+            color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05),
             width: 1,
           ),
         ),
-        color: isDark ? Colors.white.withOpacity(0.03) : surface,
+        color: isDark ? Colors.white.withValues(alpha: 0.03) : surface,
         margin: EdgeInsets.zero,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -105,7 +106,7 @@ class AppTheme {
           backgroundColor: primary,
           foregroundColor: isDark ? Colors.black : Colors.white,
           elevation: isDark ? 8 : 0,
-          shadowColor: primary.withOpacity(0.8),
+          shadowColor: primary.withValues(alpha: 0.8),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
@@ -123,7 +124,7 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: primary,
-          side: BorderSide(color: primary.withOpacity(0.5), width: 1.5),
+          side: BorderSide(color: primary.withValues(alpha: 0.5), width: 1.5),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
@@ -140,7 +141,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.02),
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.03) : Colors.black.withValues(alpha: 0.02),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md + 4,
@@ -151,7 +152,7 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide(color: isDark ? Colors.white.withOpacity(0.08) : dividerColor),
+          borderSide: BorderSide(color: isDark ? Colors.white.withValues(alpha: 0.08) : dividerColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
@@ -166,7 +167,7 @@ class AppTheme {
           borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
         hintStyle: GoogleFonts.orbitron(
-          color: textHint.withOpacity(0.4),
+          color: textHint.withValues(alpha: 0.4),
           fontSize: 12,
           fontWeight: FontWeight.w500,
           letterSpacing: 1.0,
@@ -186,7 +187,7 @@ class AppTheme {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: bg,
         selectedItemColor: primary,
-        unselectedItemColor: textSecondary.withOpacity(0.5),
+        unselectedItemColor: textSecondary.withValues(alpha: 0.5),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
         selectedLabelStyle: GoogleFonts.orbitron(
@@ -201,8 +202,8 @@ class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: isDark ? Colors.white.withOpacity(0.05) : surfaceVariant,
-        selectedColor: primary.withOpacity(0.15),
+        backgroundColor: isDark ? Colors.white.withValues(alpha: 0.05) : surfaceVariant,
+        selectedColor: primary.withValues(alpha: 0.15),
         labelStyle: GoogleFonts.orbitron(
           fontSize: 10,
           fontWeight: FontWeight.w600,

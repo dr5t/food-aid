@@ -9,8 +9,8 @@ class SkeletonTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? const Color(0xFF0A0A0A) : AppColors.skeleton1;
-    final highlightColor = isDark ? AppColors.neonCyan.withOpacity(0.15) : AppColors.skeleton2;
+    final baseColor = isDark ? const Color(0xFF0F0F12) : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.neonCyan.withOpacity(0.1) : AppColors.skeleton2;
 
     return Stack(
       children: [
@@ -18,28 +18,28 @@ class SkeletonTile extends StatelessWidget {
           baseColor: baseColor,
           highlightColor: highlightColor,
           period: const Duration(milliseconds: 1500),
-          child: Card(
+          child: Container(
             margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-            color: isDark ? Colors.black : Colors.white,
-            shape: RoundedRectangleBorder(
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black : Colors.white,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              side: BorderSide(
+              border: Border.all(
                 color: isDark ? Colors.white10 : Colors.black12,
                 width: 1,
               ),
             ),
             child: ListTile(
               leading: Container(
-                width: 42,
-                height: 42,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               title: Container(
                 width: double.infinity,
-                height: 14,
+                height: 16,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(4),
@@ -48,7 +48,7 @@ class SkeletonTile extends StatelessWidget {
               subtitle: Container(
                 width: 150,
                 height: 12,
-                margin: const EdgeInsets.only(top: 6),
+                margin: const EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(4),
@@ -60,7 +60,7 @@ class SkeletonTile extends StatelessWidget {
         if (isDark)
           Positioned.fill(
             child: IgnorePointer(
-              child: _ScanlineOverlay(),
+              child: _ScanlineOverlay(color: AppColors.neonCyan.withOpacity(0.05)),
             ),
           ),
       ],
@@ -74,8 +74,8 @@ class SkeletonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final baseColor = isDark ? const Color(0xFF0A0A0A) : AppColors.skeleton1;
-    final highlightColor = isDark ? AppColors.neonPurple.withOpacity(0.15) : AppColors.skeleton2;
+    final baseColor = isDark ? const Color(0xFF0F0F12) : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.neonPurple.withOpacity(0.1) : AppColors.skeleton2;
 
     return Stack(
       children: [
@@ -83,55 +83,55 @@ class SkeletonCard extends StatelessWidget {
           baseColor: baseColor,
           highlightColor: highlightColor,
           period: const Duration(milliseconds: 2000),
-          child: Card(
-            color: isDark ? Colors.black : Colors.white,
-            shape: RoundedRectangleBorder(
+          child: Container(
+            width: 160,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black : Colors.white,
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              side: BorderSide(
+              border: Border.all(
                 color: isDark ? Colors.white10 : Colors.black12,
                 width: 1,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    ),
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Container(
-                    width: 50,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  width: 80,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: 70,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: 120,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
         if (isDark)
           Positioned.fill(
             child: IgnorePointer(
-              child: _ScanlineOverlay(),
+              child: _ScanlineOverlay(color: AppColors.neonPurple.withOpacity(0.05)),
             ),
           ),
       ],
@@ -140,6 +140,9 @@ class SkeletonCard extends StatelessWidget {
 }
 
 class _ScanlineOverlay extends StatefulWidget {
+  final Color color;
+  const _ScanlineOverlay({required this.color});
+
   @override
   State<_ScanlineOverlay> createState() => _ScanlineOverlayState();
 }
@@ -152,7 +155,7 @@ class _ScanlineOverlayState extends State<_ScanlineOverlay> with SingleTickerPro
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 4),
     )..repeat();
   }
 
@@ -168,7 +171,7 @@ class _ScanlineOverlayState extends State<_ScanlineOverlay> with SingleTickerPro
       animation: _controller,
       builder: (context, child) {
         return CustomPaint(
-          painter: _ScanlinePainter(_controller.value),
+          painter: _ScanlinePainter(_controller.value, widget.color),
         );
       },
     );
@@ -177,8 +180,9 @@ class _ScanlineOverlayState extends State<_ScanlineOverlay> with SingleTickerPro
 
 class _ScanlinePainter extends CustomPainter {
   final double progress;
+  final Color color;
 
-  _ScanlinePainter(this.progress);
+  _ScanlinePainter(this.progress, this.color);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -188,15 +192,29 @@ class _ScanlinePainter extends CustomPainter {
         end: Alignment.bottomCenter,
         colors: [
           Colors.transparent,
-          AppColors.neonCyan.withOpacity(0.05),
-          AppColors.neonCyan.withOpacity(0.2),
-          AppColors.neonCyan.withOpacity(0.05),
+          color.withOpacity(0.02),
+          color,
+          color.withOpacity(0.02),
           Colors.transparent,
         ],
-        stops: const [0.0, 0.45, 0.5, 0.55, 1.0],
-      ).createShader(Rect.fromLTWH(0, (progress * size.height * 2) - size.height, size.width, size.height));
+        stops: const [0.0, 0.48, 0.5, 0.52, 1.0],
+      ).createShader(Rect.fromLTWH(
+        0, 
+        (progress * size.height * 2) - size.height, 
+        size.width, 
+        size.height
+      ));
 
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+    
+    // Draw subtle horizontal grid lines
+    final gridPaint = Paint()
+      ..color = color.withOpacity(0.05)
+      ..strokeWidth = 0.5;
+      
+    for (double y = 0; y < size.height; y += 10) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
+    }
   }
 
   @override

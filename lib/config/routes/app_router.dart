@@ -29,7 +29,16 @@ class AppRouter {
         final isInitialized = authProvider.isInitialized;
         final currentPath = state.uri.path;
 
-        if (!isInitialized) return null;
+        debugPrint('--- Router Redirect Check ---');
+        debugPrint('Path: $currentPath');
+        debugPrint('Authenticated: $isAuthenticated');
+        debugPrint('Initialized: $isInitialized');
+        debugPrint('Role: ${authProvider.role}');
+
+        if (!isInitialized) {
+          debugPrint('Not initialized, staying at $currentPath');
+          return null;
+        }
 
         final publicRoutes = ['/onboarding', '/login', '/signup'];
         final isOnPublicRoute = publicRoutes.contains(currentPath);
@@ -37,23 +46,31 @@ class AppRouter {
         // If at splash or unknown, and initialized
         if (currentPath == '/') {
           if (isAuthenticated) {
-             return _dashboardForRole(authProvider.role);
+            final target = _dashboardForRole(authProvider.role);
+            debugPrint('Root path: Authenticated, redirecting to $target');
+            return target;
           }
+          debugPrint('Root path: Not authenticated, redirecting to /onboarding');
           return '/onboarding';
         }
 
         if (!isAuthenticated && !isOnPublicRoute) {
+          debugPrint('Protected route and not authenticated, redirecting to /login');
           return '/login';
         }
 
         if (isAuthenticated && isOnPublicRoute) {
           if (authProvider.isPendingVerification ||
               authProvider.isRejected) {
+            debugPrint('Authenticated but pending/rejected, redirecting to /pending-verification');
             return '/pending-verification';
           }
-          return _dashboardForRole(authProvider.role);
+          final target = _dashboardForRole(authProvider.role);
+          debugPrint('Authenticated on public route, redirecting to $target');
+          return target;
         }
 
+        debugPrint('No redirection needed for $currentPath');
         return null;
       },
       routes: [

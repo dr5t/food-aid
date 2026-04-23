@@ -224,7 +224,7 @@ class _OverviewTab extends StatelessWidget {
         const SizedBox(height: AppSpacing.md),
 
         if (isFetching && donations.isEmpty)
-          const SkeletonList(itemCount: 3).animate().fadeIn()
+          SkeletonList(itemCount: 3).animate().fadeIn()
         else if (donations.isEmpty)
           _EmptyHitechState(isDark: isDark)
         else
@@ -405,7 +405,7 @@ class _EmptyHitechState extends StatelessWidget {
               style: GoogleFonts.orbitron(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white24 : Colors.black24,
+                color: isDark ? Colors.white24 : Colors.black.withValues(alpha: 0.24),
               ),
             ),
             const SizedBox(height: 4),
@@ -440,7 +440,7 @@ class _MyDonationsTab extends StatelessWidget {
             style: GoogleFonts.orbitron(fontSize: 12),
             decoration: InputDecoration(
               hintText: 'SEARCH DATABASES...',
-              hintStyle: GoogleFonts.orbitron(fontSize: 10, color: isDark ? Colors.white24 : Colors.black24),
+              hintStyle: GoogleFonts.orbitron(fontSize: 10, color: isDark ? Colors.white24 : Colors.black.withValues(alpha: 0.24)),
               prefixIcon: Icon(Icons.search_rounded, size: 18, color: isDark ? AppColors.neonCyan : null),
               contentPadding: const EdgeInsets.symmetric(vertical: 0),
             ),
@@ -494,7 +494,7 @@ class _EmergencyAlertsTab extends StatelessWidget {
             ),
             Text(
               'No active emergency pings in Dehradun sector',
-              style: GoogleFonts.orbitron(fontSize: 8, color: isDark ? Colors.white24 : Colors.black24),
+              style: GoogleFonts.orbitron(fontSize: 8, color: isDark ? Colors.white24 : Colors.black.withValues(alpha: 0.24)),
             ),
           ],
         ),

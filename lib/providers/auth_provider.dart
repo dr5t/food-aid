@@ -13,6 +13,7 @@ class AuthProvider extends ChangeNotifier {
   String? _error;
   bool _dbOnline = true;
   bool _isProcessingAuth = false;
+  bool _isInitialized = false;
   StreamSubscription<UserModel?>? _userSubscription;
 
   UserModel? get user => _user;

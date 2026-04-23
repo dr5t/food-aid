@@ -315,6 +315,8 @@ class _OverviewTab extends StatelessWidget {
     final available = stats['available'] ?? 0;
     final inTransit = stats['inTransit'] ?? 0;
  
+    final authProvider = context.watch<AuthProvider>();
+    final user = authProvider.user;
     final donationProvider = context.watch<DonationProvider>();
     final emergencyProvider = context.watch<EmergencyProvider>();
     final isFetching = donationProvider.isLoading;

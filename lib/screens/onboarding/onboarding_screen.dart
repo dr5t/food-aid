@@ -67,7 +67,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.neonCyan.withOpacity(0.1),
+                      color: AppColors.neonCyan.withValues(alpha: 0.1),
                       blurRadius: 100,
                       spreadRadius: 50,
                     ),
@@ -198,7 +198,7 @@ class _OnboardingPage extends StatelessWidget {
               gradient: gradient.withOpacity(0.1),
               shape: BoxShape.circle,
               border: Border.all(
-                color: (gradient as LinearGradient).colors.first.withOpacity(0.2),
+                color: (gradient as LinearGradient).colors.first.withValues(alpha: 0.2),
                 width: 2,
               ),
             ),

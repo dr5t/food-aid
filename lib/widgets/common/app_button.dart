@@ -58,7 +58,10 @@ class AppButton extends StatelessWidget {
                 Icon(icon, size: 20),
                 AppSpacing.horizontalSm,
               ],
-              Text(label),
+              Text(
+                label,
+                style: const TextStyle(letterSpacing: 0.5),
+              ),
             ],
           );
 
@@ -66,20 +69,53 @@ class AppButton extends StatelessWidget {
       case AppButtonVariant.primary:
         return ScaleTap(
           onTap: isLoading ? null : onPressed,
-          child: ElevatedButton(
-            onPressed: isLoading ? null : onPressed,
-            child: buttonChild,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: AppColors.neonGradient,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.neonCyan.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ElevatedButton(
+              onPressed: isLoading ? null : onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                foregroundColor: Colors.black,
+              ),
+              child: buttonChild,
+            ),
           ),
         );
       case AppButtonVariant.secondary:
         return ScaleTap(
           onTap: isLoading ? null : onPressed,
-          child: ElevatedButton(
-            onPressed: isLoading ? null : onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accent,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: AppColors.cyberGradient,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.neonPurple.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            child: buttonChild,
+            child: ElevatedButton(
+              onPressed: isLoading ? null : onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                foregroundColor: Colors.white,
+              ),
+              child: buttonChild,
+            ),
           ),
         );
       case AppButtonVariant.outlined:
@@ -87,6 +123,12 @@ class AppButton extends StatelessWidget {
           onTap: isLoading ? null : onPressed,
           child: OutlinedButton(
             onPressed: isLoading ? null : onPressed,
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: AppColors.neonCyan.withOpacity(0.5), width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
             child: buttonChild,
           ),
         );

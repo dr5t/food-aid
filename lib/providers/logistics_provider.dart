@@ -16,6 +16,8 @@ class LogisticsProvider extends ChangeNotifier {
   List<DonationModel> _activeTasks = [];
   List<DonationModel> _completedTasks = [];
 
+  Map<String, int> _companyStats = {};
+  Map<String, int> _employeeStats = {};
   bool _isLoading = false;
   String? _error;
 
@@ -24,6 +26,8 @@ class LogisticsProvider extends ChangeNotifier {
   StreamSubscription? _unassignedSub;
   StreamSubscription? _activeTasksSub;
   StreamSubscription? _completedTasksSub;
+  StreamSubscription? _companyStatsSub;
+  StreamSubscription? _employeeStatsSub;
 
 
   List<DonationModel> get companyDonations => _companyDonations;
@@ -34,6 +38,8 @@ class LogisticsProvider extends ChangeNotifier {
   List<DonationModel> get employeeTasks => [..._activeTasks, ..._completedTasks];
   bool get isLoading => _isLoading;
   String? get error => _error;
+  Map<String, int> get companyStats => _companyStats;
+  Map<String, int> get employeeStats => _employeeStats;
 
 
   void listenCompanyData(String companyId) {
@@ -65,6 +71,16 @@ class LogisticsProvider extends ChangeNotifier {
       _unassignedDonations = list;
       notifyListeners();
     });
+ 
+    listenCompanyStats(companyId);
+  }
+ 
+  void listenCompanyStats(String companyId) {
+    _companyStatsSub?.cancel();
+    _companyStatsSub = _firestoreService.getCompanyStats(companyId).listen((stats) {
+      _companyStats = stats;
+      notifyListeners();
+    });
   }
 
 
@@ -89,6 +105,16 @@ class LogisticsProvider extends ChangeNotifier {
         _firestoreService.getCompletedEmployeeDonations(employeeId).listen(
             (list) {
       _completedTasks = list;
+      notifyListeners();
+    });
+ 
+    listenEmployeeStats(employeeId);
+  }
+ 
+  void listenEmployeeStats(String employeeId) {
+    _employeeStatsSub?.cancel();
+    _employeeStatsSub = _firestoreService.getEmployeeStats(employeeId).listen((stats) {
+      _employeeStats = stats;
       notifyListeners();
     });
   }
@@ -160,6 +186,8 @@ class LogisticsProvider extends ChangeNotifier {
     _unassignedSub?.cancel();
     _activeTasksSub?.cancel();
     _completedTasksSub?.cancel();
+    _companyStatsSub?.cancel();
+    _employeeStatsSub?.cancel();
     super.dispose();
   }
 }

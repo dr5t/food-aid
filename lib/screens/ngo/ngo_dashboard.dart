@@ -309,17 +309,12 @@ class _OverviewTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<AuthProvider>().user;
-    final donations = context.watch<DonationProvider>().donations;
-    final pending = context.watch<DonationProvider>().pendingDonations;
-    final emergencies = context.watch<EmergencyProvider>().activeNgoRequests;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final accepted =
-        donations.where((d) => d.status == DonationStatus.accepted).length;
-    final delivered =
-        donations.where((d) => d.status == DonationStatus.delivered).length;
-
+    final stats = context.watch<DonationProvider>().ngoStats;
+    final accepted = stats['active'] ?? 0;
+    final delivered = stats['completed'] ?? 0;
+    final available = stats['available'] ?? 0;
+    final inTransit = stats['inTransit'] ?? 0;
+ 
     final donationProvider = context.watch<DonationProvider>();
     final emergencyProvider = context.watch<EmergencyProvider>();
     final isFetching = donationProvider.isLoading;
@@ -372,7 +367,7 @@ class _OverviewTab extends StatelessWidget {
                   Expanded(
                     child: _StatCard(
                       label: 'Available',
-                      value: '${pending.length}',
+                      value: '$available',
                       icon: Icons.inventory_2_outlined,
                       color: AppColors.neonCyan,
                       gradient: AppColors.neonCyanGradient,
@@ -405,9 +400,9 @@ class _OverviewTab extends StatelessWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Emergencies',
-                      value: '${emergencies.length}',
-                      icon: Icons.warning_amber,
+                      label: 'Transit',
+                      value: '$inTransit',
+                      icon: Icons.local_shipping_outlined,
                       color: AppColors.neonAmber,
                       gradient: AppColors.neonAmberGradient,
                     ),

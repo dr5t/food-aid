@@ -81,7 +81,6 @@ class AdminProvider extends ChangeNotifier {
   Future<bool> approveUser(String uid) async {
     try {
       await _firestoreService.approveUser(uid);
-      await _loadStats();
       return true;
     } catch (e) {
       _error = 'Failed to approve user: $e';
@@ -93,7 +92,6 @@ class AdminProvider extends ChangeNotifier {
   Future<bool> rejectUser(String uid, String reason) async {
     try {
       await _firestoreService.rejectUser(uid, reason);
-      await _loadStats();
       return true;
     } catch (e) {
       _error = 'Failed to reject user: $e';

@@ -12,16 +12,22 @@ class DonationProvider extends ChangeNotifier {
   List<DonationModel> _pendingDonations = [];
   String _searchQuery = '';
   DonationStatus? _statusFilter;
+  Map<String, int> _donorStats = {};
+  Map<String, int> _ngoStats = {};
   bool _isLoading = false;
   bool _isFetching = false;
   String? _error;
 
   StreamSubscription? _donationsSub;
   StreamSubscription? _pendingSub;
+  StreamSubscription? _donorStatsSub;
+  StreamSubscription? _ngoStatsSub;
 
 
   List<DonationModel> get donations => _donations;
   List<DonationModel> get pendingDonations => _pendingDonations;
+  Map<String, int> get donorStats => _donorStats;
+  Map<String, int> get ngoStats => _ngoStats;
   bool get isLoading => _isLoading;
   bool get isFetching => _isFetching;
   String? get error => _error;
@@ -53,7 +59,8 @@ class DonationProvider extends ChangeNotifier {
   void listenDonorDonations(String donorId) {
     _isFetching = true;
     notifyListeners();
-    _firestoreService
+    _donationsSub?.cancel();
+    _donationsSub = _firestoreService
         .collectionStream<DonationModel>(
           path: FirestoreService.donationsPath,
           builder: (data, id) => DonationModel.fromMap(data, id),
@@ -64,6 +71,16 @@ class DonationProvider extends ChangeNotifier {
         .listen((d) {
       _donations = d;
       _isFetching = false;
+      notifyListeners();
+    });
+
+    listenDonorStats(donorId);
+  }
+
+  void listenDonorStats(String donorId) {
+    _donorStatsSub?.cancel();
+    _donorStatsSub = _firestoreService.getDonorStats(donorId).listen((stats) {
+      _donorStats = stats;
       notifyListeners();
     });
   }
@@ -82,6 +99,16 @@ class DonationProvider extends ChangeNotifier {
     }, onError: (e) {
       _error = e.toString();
       _isLoading = false;
+      notifyListeners();
+    });
+
+    listenNgoStats(ngoId);
+  }
+
+  void listenNgoStats(String ngoId) {
+    _ngoStatsSub?.cancel();
+    _ngoStatsSub = _firestoreService.getNgoStats(ngoId).listen((stats) {
+      _ngoStats = stats;
       notifyListeners();
     });
   }
@@ -199,6 +226,8 @@ class DonationProvider extends ChangeNotifier {
   void dispose() {
     _donationsSub?.cancel();
     _pendingSub?.cancel();
+    _donorStatsSub?.cancel();
+    _ngoStatsSub?.cancel();
     super.dispose();
   }
 }

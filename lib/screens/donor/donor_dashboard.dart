@@ -111,13 +111,14 @@ class _OverviewTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
-    final donations = context.watch<DonationProvider>().donations;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final active = donations.where((d) => d.isActive).length;
-    final delivered = donations.where((d) => d.status == DonationStatus.delivered).length;
+    final stats = context.watch<DonationProvider>().donorStats;
+    final active = stats['active'] ?? 0;
+    final delivered = stats['completed'] ?? 0;
+    final total = stats['total'] ?? 0;
     final provider = context.watch<DonationProvider>();
     final isFetching = provider.isFetching;
+    final donations = provider.donations;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -169,7 +170,7 @@ class _OverviewTab extends StatelessWidget {
             children: [
               _StatCard(
                 label: 'TOTAL UNITS',
-                value: '${donations.length}',
+                value: '$total',
                 icon: Icons.inventory_2_outlined,
                 color: AppColors.neonCyan,
                 gradient: AppColors.neonCyanGradient,

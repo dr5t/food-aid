@@ -13,7 +13,7 @@ class ScanningOverlay extends StatelessWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
       child: Container(
-        color: Colors.black.withOpacity(0.4),
+        color: Colors.black.withValues(alpha: 0.4),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -29,7 +29,7 @@ class ScanningOverlay extends StatelessWidget {
                   letterSpacing: 2,
                   shadows: [
                     Shadow(
-                      color: AppColors.neonCyan.withOpacity(0.8),
+                      color: AppColors.neonCyan.withValues(alpha: 0.8),
                       blurRadius: 10,
                     ),
                   ],
@@ -78,7 +78,7 @@ class _CyberScannerState extends State<_CyberScanner> with SingleTickerProviderS
           width: 200,
           height: 100,
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.neonCyan.withOpacity(0.3)),
+            border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Stack(
@@ -105,7 +105,7 @@ class _CyberScannerState extends State<_CyberScanner> with SingleTickerProviderS
               // Grid Pattern
               CustomPaint(
                 size: const Size(200, 100),
-                painter: _GridPainter(AppColors.neonCyan.withOpacity(0.1)),
+                painter: _GridPainter(AppColors.neonCyan.withValues(alpha: 0.1)),
               ),
             ],
           ),

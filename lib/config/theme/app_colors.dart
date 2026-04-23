@@ -62,4 +62,30 @@ class AppColors {
   static const Color emergency = Color(0xFFFF1744);
   static const Color emergencyLight = Color(0xFFFF8A80);
   static const Color emergencyBg = Color(0xFFFFEBEE);
+
+  // Neon Colors
+  static const Color neonCyan = Color(0xFF00E5FF);
+  static const Color neonPurple = Color(0xFFD500F9);
+  static const Color neonPink = Color(0xFFFF00E5);
+  static const Color neonGreen = Color(0xFF00FF41);
+  static const Color neonBlue = Color(0xFF2979FF);
+
+  // Neon Gradients
+  static const LinearGradient neonGradient = LinearGradient(
+    colors: [neonCyan, neonPurple],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient fireGradient = LinearGradient(
+    colors: [Color(0xFFFF512F), Color(0xFFDD2476)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient oceanGradient = LinearGradient(
+    colors: [Color(0xFF2193B0), Color(0xFF6DD5ED)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }

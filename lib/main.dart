@@ -9,6 +9,7 @@ import 'providers/donation_provider.dart';
 import 'providers/emergency_provider.dart';
 import 'providers/logistics_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/connection_provider.dart';
 import 'services/firestore_service.dart';
 
 void main() async {
@@ -22,6 +23,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ConnectionProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(

@@ -175,7 +175,76 @@ class _OverviewTab extends StatelessWidget {
               letterSpacing: 1.5,
             ),
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: AppSpacing.md),
+          if (authProvider.user?.role == UserRole.superAdmin)
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: AppSpacing.md),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary,
+                    AppColors.primary.withOpacity(0.7),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.security_rounded, color: Colors.white, size: 28),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'SUPER ADMIN CONSOLE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.1,
+                            fontSize: 11,
+                          ),
+                        ),
+                        Text(
+                          'Root access active for ${authProvider.user?.name}',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.9),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.25),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'ROOT',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: AppSpacing.md),
 
           GridView.count(
             crossAxisCount: 2,
@@ -248,6 +317,14 @@ class _OverviewTab extends StatelessWidget {
               label: 'Delivery Partners',
               count: stats['employees'] ?? 0,
               icon: Icons.delivery_dining_rounded,
+              color: Colors.purple,
+              isDark: isDark),
+          _RoleRow(
+              label: 'Administrators',
+              count: stats['admins'] ?? 0,
+              icon: Icons.admin_panel_settings_rounded,
+              color: Colors.indigo,
+              isDark: isDark),
               color: Colors.purple,
               isDark: isDark),
           _RoleRow(

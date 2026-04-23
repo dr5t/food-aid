@@ -49,7 +49,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonCyan.withOpacity(0.05),
+                color: AppColors.neonCyan.withValues(alpha: 0.05),
               ),
             ).animate().fadeIn(duration: 1000.ms),
           ),
@@ -77,19 +77,19 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
+          CyberBottomNavItem(
+            icon: Icons.dashboard_outlined,
+            activeIcon: Icons.dashboard,
             label: 'HUB',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_outlined),
-            activeIcon: Icon(Icons.assignment),
+          CyberBottomNavItem(
+            icon: Icons.assignment_outlined,
+            activeIcon: Icons.assignment,
             label: 'TASKS',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.group_outlined),
-            activeIcon: Icon(Icons.group),
+          CyberBottomNavItem(
+            icon: Icons.group_outlined,
+            activeIcon: Icons.group,
             label: 'UNIT',
           ),
         ],
@@ -461,7 +461,7 @@ class _DeliveryTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(2),
                   ),
                   child: Text(
-                    donation.status.toUpperCase(),
+                    donation.status.name.toUpperCase(),
                     style: GoogleFonts.orbitron(
                       fontSize: 8,
                       color: statusColor,
@@ -557,15 +557,15 @@ class _DeliveryTile extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'pending':
+  Color _getStatusColor(DonationStatus status) {
+    switch (status) {
+      case DonationStatus.pending:
         return AppColors.neonAmber;
-      case 'assigned':
+      case DonationStatus.assigned:
         return AppColors.neonCyan;
-      case 'picked up':
+      case DonationStatus.pickedUp:
         return AppColors.neonPurple;
-      case 'delivered':
+      case DonationStatus.delivered:
         return AppColors.neonGreen;
       default:
         return Colors.white54;
@@ -685,9 +685,18 @@ void _showAssignDialog(BuildContext context, DonationModel donation) {
                           return Container(
                             margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                             child: ListTile(
-                              onTap: () {
-                                provider.assignEmployee(donation.id, employee);
-                                Navigator.pop(context);
+                                onTap: () {
+                                  final user = context.read<AuthProvider>().user;
+                                  if (user != null) {
+                                    provider.assignEmployee(
+                                      donation.id,
+                                      user.uid,
+                                      user.organizationName ?? 'Company',
+                                      employee.uid,
+                                      employee.name,
+                                    );
+                                  }
+                                  Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     backgroundColor: AppColors.neonCyan,
@@ -759,6 +768,26 @@ void _showAssignDialog(BuildContext context, DonationModel donation) {
 void _showCreateEmployeeDialog(BuildContext context) {
   showDialog(
     context: context,
-    builder: (context) => const CreateEmployeeDialog(),
+    builder: (context) {
+      final user = context.read<AuthProvider>().user;
+      return CreateEmployeeDialog(
+        targetRole: UserRole.logistics_employee,
+        onCreateEmployee: ({
+          required String name,
+          required String email,
+          required String password,
+          String? phone,
+        }) async {
+          return await context.read<AuthProvider>().createLogisticsEmployee(
+                name: name,
+                email: email,
+                password: password,
+                phone: phone,
+                companyId: user?.uid ?? '',
+                companyName: user?.organizationName ?? 'Logistics Company',
+              );
+        },
+      );
+    },
   );
 }

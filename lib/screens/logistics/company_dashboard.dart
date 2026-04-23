@@ -563,7 +563,7 @@ class _DeliveryTile extends StatelessWidget {
         return AppColors.neonAmber;
       case DonationStatus.assigned:
         return AppColors.neonCyan;
-      case DonationStatus.pickedUp:
+      case DonationStatus.picked:
         return AppColors.neonPurple;
       case DonationStatus.delivered:
         return AppColors.neonGreen;

@@ -128,4 +128,34 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  static const LinearGradient neonCyanGradient = LinearGradient(
+    colors: [Color(0xFF00E5FF), Color(0xFF00B8D4)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient neonPurpleGradient = LinearGradient(
+    colors: [Color(0xFFD500F9), Color(0xFFAA00FF)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient neonGreenGradient = LinearGradient(
+    colors: [Color(0xFF00FF41), Color(0xFF00C853)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient neonPinkGradient = LinearGradient(
+    colors: [Color(0xFFFF00E5), Color(0xFFC51162)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient neonBlueGradient = LinearGradient(
+    colors: [Color(0xFF2979FF), Color(0xFF1565C0)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }

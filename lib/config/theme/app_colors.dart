@@ -69,10 +69,38 @@ class AppColors {
   static const Color neonPink = Color(0xFFFF00E5);
   static const Color neonGreen = Color(0xFF00FF41);
   static const Color neonBlue = Color(0xFF2979FF);
+  static const Color neonOrange = Color(0xFFFF9100);
+
+  // Glassmorphism Colors
+  static Color glassBackground(Brightness brightness) => brightness == Brightness.dark
+      ? Colors.white.withOpacity(0.05)
+      : Colors.black.withOpacity(0.05);
+  
+  static Color glassBorder(Brightness brightness) => brightness == Brightness.dark
+      ? Colors.white.withOpacity(0.1)
+      : Colors.black.withOpacity(0.1);
 
   // Neon Gradients
   static const LinearGradient neonGradient = LinearGradient(
     colors: [neonCyan, neonPurple],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient cyberGradient = LinearGradient(
+    colors: [neonPurple, neonPink],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient sunsetGradient = LinearGradient(
+    colors: [neonOrange, neonPink],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient emeraldGradient = LinearGradient(
+    colors: [Color(0xFF10B981), Color(0xFF3B82F6)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

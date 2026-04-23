@@ -118,26 +118,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                child: Container(
-                                  width: 80,
-                                  height: 80,
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: AppColors.neonCyan.withOpacity(0.3),
-                                        blurRadius: 20,
-                                        spreadRadius: 5,
+                                Center(
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors.neonCyan.withOpacity(0.5),
+                                          blurRadius: 30,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    child: ClipOval(
+                                      child: Image.asset(
+                                        'assets/images/app_logo.png',
+                                        fit: BoxFit.cover,
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                  child: Image.asset('assets/icons/app_icon.png'),
-                                ),
-                              ).animate().scale(duration: 600.ms, curve: Curves.backOut),
-                              AppSpacing.verticalLg,
+                                ).animate().scale(duration: 600.ms, curve: Curves.backOut),
+                                AppSpacing.verticalLg,
                               Center(
                                 child: Text(
                                   'FOOD AID',

@@ -18,22 +18,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final _pages = const [
     _OnboardingPage(
-      icon: Icons.restaurant_rounded,
-      title: 'Reduce Food Waste',
+      icon: Icons.auto_awesome_rounded,
+      title: 'Hitech Surplus Shield',
       subtitle:
-          'Don\'t throw away surplus food. Donate it to those who need it most and make a real difference.',
+          'Join Dehradun\'s smartest network. Protect surplus food from going to waste using advanced logistics tracking.',
+      gradient: AppColors.neonCyanGradient,
     ),
     _OnboardingPage(
-      icon: Icons.people_rounded,
-      title: 'Connect With Community',
+      icon: Icons.hub_rounded,
+      title: 'The Dehradun Node',
       subtitle:
-          'Bridge the gap between food donors, collection agents, and those in need — all in one platform.',
+          'Connect instantly with local NGOs and volunteers. Our decentralized grid ensures food reaches the right families fast.',
+      gradient: AppColors.neonPurpleGradient,
     ),
     _OnboardingPage(
-      icon: Icons.track_changes_rounded,
-      title: 'Track Every Step',
+      icon: Icons.radar_rounded,
+      title: 'Precision Tracking',
       subtitle:
-          'Monitor your donations in real-time from pickup to delivery, ensuring transparency at every stage.',
+          'Monitor every grain in real-time. Secure, transparent, and efficient delivery across the Doon Valley.',
+      gradient: AppColors.neonPinkGradient,
     ),
   ];
 
@@ -45,77 +48,116 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDark ? AppColors.neonCyan : AppColors.primary;
+
     return Scaffold(
-      backgroundColor: AppColors.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: AppSpacing.paddingMd,
-                child: TextButton(
-                  onPressed: () => context.go('/login'),
-                  child: const Text('Skip'),
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
+      body: Stack(
+        children: [
+          // Background Glow
+          if (isDark)
+            Positioned(
+              top: -100,
+              right: -100,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.neonCyan.withOpacity(0.1),
+                      blurRadius: 100,
+                      spreadRadius: 50,
+                    ),
+                  ],
                 ),
               ),
             ),
 
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _pages.length,
-                onPageChanged: (index) =>
-                    setState(() => _currentPage = index),
-                itemBuilder: (context, index) => _pages[index],
-              ),
-            ),
-
-            Padding(
-              padding: AppSpacing.screenPadding,
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      _pages.length,
-                      (index) => AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: _currentPage == index ? 24 : 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: _currentPage == index
-                              ? AppColors.primary
-                              : AppColors.divider,
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.radiusFull),
+          SafeArea(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: AppSpacing.paddingMd,
+                    child: TextButton(
+                      onPressed: () => context.go('/login'),
+                      child: Text(
+                        'SKIP PROTOCOL',
+                        style: TextStyle(
+                          color: primaryColor.withOpacity(0.6),
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                          fontSize: 12,
                         ),
                       ),
                     ),
                   ),
-                  AppSpacing.verticalXl,
-                  AppButton(
-                    label: _currentPage == _pages.length - 1
-                        ? 'Get Started'
-                        : 'Next',
-                    onPressed: () {
-                      if (_currentPage < _pages.length - 1) {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 350),
-                          curve: Curves.easeInOut,
-                        );
-                      } else {
-                        context.go('/login');
-                      }
-                    },
+                ),
+
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: _pages.length,
+                    onPageChanged: (index) =>
+                        setState(() => _currentPage = index),
+                    itemBuilder: (context, index) => _pages[index],
                   ),
-                  AppSpacing.verticalMd,
-                ],
-              ),
+                ),
+
+                Padding(
+                  padding: AppSpacing.screenPadding,
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          _pages.length,
+                          (index) => AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: _currentPage == index ? 24 : 8,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: _currentPage == index
+                                  ? primaryColor
+                                  : (isDark ? Colors.white12 : Colors.black12),
+                              borderRadius:
+                                  BorderRadius.circular(AppSpacing.radiusFull),
+                            ),
+                          ),
+                        ),
+                      ),
+                      AppSpacing.verticalXl,
+                      SizedBox(
+                        width: double.infinity,
+                        child: AppButton(
+                          label: _currentPage == _pages.length - 1
+                              ? 'INITIALIZE'
+                              : 'NEXT PHASE',
+                          onPressed: () {
+                            if (_currentPage < _pages.length - 1) {
+                              _pageController.nextPage(
+                                duration: const Duration(milliseconds: 350),
+                                curve: Curves.easeInOut,
+                              );
+                            } else {
+                              context.go('/login');
+                            }
+                          },
+                        ),
+                      ),
+                      AppSpacing.verticalMd,
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -125,49 +167,77 @@ class _OnboardingPage extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final Gradient gradient;
 
   const _OnboardingPage({
     required this.icon,
     required this.title,
     required this.subtitle,
+    required this.gradient,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: AppSpacing.screenPadding,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 120,
-            height: 120,
+            width: 140,
+            height: 140,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
+              gradient: gradient.withOpacity(0.1),
               shape: BoxShape.circle,
+              border: Border.all(
+                color: (gradient as LinearGradient).colors.first.withOpacity(0.2),
+                width: 2,
+              ),
             ),
-            child: Icon(
-              icon,
-              size: 56,
-              color: AppColors.primary,
+            child: Center(
+              child: Icon(
+                icon,
+                size: 64,
+                color: (gradient as LinearGradient).colors.first,
+              ),
             ),
-          ),
+          ).animate(onPlay: (c) => c.repeat()).shimmer(duration: 2.seconds),
           AppSpacing.verticalXl,
           Text(
-            title,
-            style: AppTextStyles.heading,
+            title.toUpperCase(),
+            style: AppTextStyles.heading.copyWith(
+              letterSpacing: 2,
+              fontWeight: FontWeight.w900,
+            ),
             textAlign: TextAlign.center,
           ),
           AppSpacing.verticalMd,
           Text(
             subtitle,
             style: AppTextStyles.body.copyWith(
-              color: AppColors.textSecondary,
+              color: isDark ? Colors.white70 : AppColors.textSecondary,
+              height: 1.5,
             ),
             textAlign: TextAlign.center,
           ),
         ],
       ),
     );
+  }
+}
+
+extension on Gradient {
+  Gradient withOpacity(double opacity) {
+    if (this is LinearGradient) {
+      final g = this as LinearGradient;
+      return LinearGradient(
+        colors: g.colors.map((c) => c.withOpacity(opacity)).toList(),
+        begin: g.begin,
+        end: g.end,
+      );
+    }
+    return this;
   }
 }

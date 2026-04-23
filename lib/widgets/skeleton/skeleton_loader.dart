@@ -17,16 +17,21 @@ class SkeletonLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkSkeleton1 : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.darkSkeleton2 : AppColors.skeleton2;
+
     return Shimmer.fromColors(
-      baseColor: AppColors.skeleton1,
-      highlightColor: AppColors.skeleton2,
-      period: const Duration(milliseconds: 1500),
+      baseColor: baseColor,
+      highlightColor: highlightColor,
+      period: const Duration(milliseconds: 1000),
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: AppColors.skeleton1,
+          color: baseColor,
           borderRadius: BorderRadius.circular(borderRadius),
+          border: isDark ? Border.all(color: Colors.white.withOpacity(0.05)) : null,
         ),
       ),
     );
@@ -38,13 +43,25 @@ class SkeletonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: AppSpacing.cardPadding,
-        child: Shimmer.fromColors(
-          baseColor: AppColors.skeleton1,
-          highlightColor: AppColors.skeleton2,
-          period: const Duration(milliseconds: 1500),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkSkeleton1 : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.darkSkeleton2 : AppColors.skeleton2;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurface : AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(
+          color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+        ),
+      ),
+      child: Shimmer.fromColors(
+        baseColor: baseColor,
+        highlightColor: highlightColor,
+        period: const Duration(milliseconds: 1000),
+        child: Padding(
+          padding: AppSpacing.cardPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -52,7 +69,7 @@ class SkeletonCard extends StatelessWidget {
                 width: 140,
                 height: 14,
                 decoration: BoxDecoration(
-                  color: AppColors.skeleton1,
+                  color: baseColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -61,7 +78,7 @@ class SkeletonCard extends StatelessWidget {
                 width: double.infinity,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: AppColors.skeleton1,
+                  color: baseColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -70,7 +87,7 @@ class SkeletonCard extends StatelessWidget {
                 width: 200,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: AppColors.skeleton1,
+                  color: baseColor,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
@@ -81,9 +98,8 @@ class SkeletonCard extends StatelessWidget {
                     width: 80,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: AppColors.skeleton1,
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.radiusFull),
+                      color: baseColor,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                     ),
                   ),
                   const Spacer(),
@@ -91,7 +107,7 @@ class SkeletonCard extends StatelessWidget {
                     width: 60,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: AppColors.skeleton1,
+                      color: baseColor,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -99,6 +115,70 @@ class SkeletonCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SkeletonTile extends StatelessWidget {
+  const SkeletonTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkSkeleton1 : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.darkSkeleton2 : AppColors.skeleton2;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Shimmer.fromColors(
+        baseColor: baseColor,
+        highlightColor: highlightColor,
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: baseColor,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 120,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: baseColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 80,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: baseColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 60,
+              height: 24,
+              decoration: BoxDecoration(
+                color: baseColor,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -115,10 +195,7 @@ class SkeletonList extends StatelessWidget {
     return Column(
       children: List.generate(
         itemCount,
-        (index) => Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-          child: const SkeletonCard(),
-        ),
+        (index) => const SkeletonTile(),
       ),
     );
   }
@@ -129,10 +206,13 @@ class SkeletonSummaryCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkSkeleton1 : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.darkSkeleton2 : AppColors.skeleton2;
+
     return Shimmer.fromColors(
-      baseColor: AppColors.skeleton1,
-      highlightColor: AppColors.skeleton2,
-      period: const Duration(milliseconds: 1500),
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: Row(
         children: List.generate(
           3,
@@ -143,7 +223,7 @@ class SkeletonSummaryCards extends StatelessWidget {
               ),
               height: 100,
               decoration: BoxDecoration(
-                color: AppColors.skeleton1,
+                color: baseColor,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
             ),
@@ -159,10 +239,13 @@ class SkeletonStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDark ? AppColors.darkSkeleton1 : AppColors.skeleton1;
+    final highlightColor = isDark ? AppColors.darkSkeleton2 : AppColors.skeleton2;
+
     return Shimmer.fromColors(
-      baseColor: AppColors.skeleton1,
-      highlightColor: AppColors.skeleton2,
-      period: const Duration(milliseconds: 1500),
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: GridView.count(
         crossAxisCount: 2,
         shrinkWrap: true,
@@ -174,7 +257,7 @@ class SkeletonStats extends StatelessWidget {
           4,
           (_) => Container(
             decoration: BoxDecoration(
-              color: AppColors.skeleton1,
+              color: baseColor,
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
           ),
@@ -183,4 +266,5 @@ class SkeletonStats extends StatelessWidget {
     );
   }
 }
+
 

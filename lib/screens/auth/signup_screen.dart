@@ -64,22 +64,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
 
     if (success && mounted) {
-      if (auth.isPendingVerification) {
-        context.go('/pending-verification');
-      } else {
-        final role = auth.role;
-        if (role != null) {
-          String location = '/donor';
-          switch (role) {
-            case UserRole.admin: location = '/admin'; break;
-            case UserRole.ngo: location = '/ngo'; break;
-            case UserRole.logisticsCompany: location = '/company'; break;
-            case UserRole.logisticsEmployee: location = '/employee'; break;
-            default: location = '/donor';
-          }
-          context.go(location);
-        }
-      }
+      // Navigation is now handled by AppRouter via refreshListenable
     } else if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

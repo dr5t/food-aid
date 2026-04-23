@@ -56,6 +56,15 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: cs,
       brightness: brightness,
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.windows: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.linux: CupertinoPageTransitionsBuilder(),
+        },
+      ),
       scaffoldBackgroundColor: bg,
       textTheme: GoogleFonts.plusJakartaSansTextTheme(
         isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
@@ -95,8 +104,8 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: isDark ? Colors.black : Colors.white,
-          elevation: isDark ? 4 : 0,
-          shadowColor: primary.withOpacity(0.5),
+          elevation: isDark ? 8 : 0,
+          shadowColor: primary.withOpacity(0.8),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,

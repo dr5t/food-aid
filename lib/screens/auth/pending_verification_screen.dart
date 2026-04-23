@@ -193,17 +193,6 @@ class PendingVerificationScreen extends StatelessWidget {
   Widget _buildActionButtons(AuthProvider auth, bool isDark, bool isRejected) {
     return Column(
       children: [
-        if (!isRejected)
-          AppButton(
-            label: 'REFRESH UPLINK',
-            onPressed: () => auth.refreshUser(),
-            isLoading: auth.isLoading,
-            textStyle: AppTextStyles.hitech.copyWith(
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
-              fontSize: 12,
-            ),
-          ),
         AppSpacing.verticalMd,
         SizedBox(
           width: double.infinity,

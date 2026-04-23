@@ -46,7 +46,9 @@ class _AdminDashboardState extends State<AdminDashboard>
 
     return Scaffold(
       appBar: CyberAppBar(
-        title: 'Network Control',
+        title: authProvider.user?.role == UserRole.superAdmin 
+            ? 'Root Control' 
+            : 'Network Control',
         actions: [
           IconButton(
             onPressed: () => context.read<AdminProvider>().refreshStats(),
@@ -150,7 +152,9 @@ class _OverviewTab extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Text(
-            'SYSTEM STATUS',
+            authProvider.user?.role == UserRole.superAdmin 
+                ? 'SUPER ADMIN CONSOLE' 
+                : 'SYSTEM STATUS',
             style: GoogleFonts.orbitron(
               fontSize: 22,
               fontWeight: FontWeight.w900,

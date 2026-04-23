@@ -7,12 +7,51 @@ import '../models/emergency_request_model.dart';
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  CollectionReference get _donations => _firestore.collection('donations');
-  CollectionReference get _users => _firestore.collection('users');
+  static const String usersPath = 'users';
+  static const String donationsPath = 'donations';
+  static const String notificationsPath = 'notifications';
+  static const String emergencyRequestsPath = 'emergencyRequests';
+
+  CollectionReference get _donations => _firestore.collection(donationsPath);
+  CollectionReference get _users => _firestore.collection(usersPath);
   CollectionReference get _notifications =>
-      _firestore.collection('notifications');
+      _firestore.collection(notificationsPath);
   CollectionReference get _emergencyRequests =>
-      _firestore.collection('emergencyRequests');
+      _firestore.collection(emergencyRequestsPath);
+
+  Stream<List<T>> collectionStream<T>({
+    required String path,
+    required T Function(Map<String, dynamic> data, String documentId) builder,
+    Query Function(Query query)? queryBuilder,
+    int Function(T lhs, T rhs)? sort,
+  }) {
+    Query query = _firestore.collection(path);
+    if (queryBuilder != null) {
+      query = queryBuilder(query);
+    }
+    final Stream<QuerySnapshot> snapshots = query.snapshots();
+    return snapshots.map((snapshot) {
+      final result = snapshot.docs
+          .map((snapshot) =>
+              builder(snapshot.data() as Map<String, dynamic>, snapshot.id))
+          .where((value) => value != null)
+          .toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
+      return result;
+    });
+  }
+
+  Stream<T> documentStream<T>({
+    required String path,
+    required T Function(Map<String, dynamic> data, String documentId) builder,
+  }) {
+    final DocumentReference reference = _firestore.doc(path);
+    final Stream<DocumentSnapshot> snapshots = reference.snapshots();
+    return snapshots.map((snapshot) =>
+        builder(snapshot.data() as Map<String, dynamic>, snapshot.id));
+  }
 
 
   Future<String> createDonation(DonationModel donation) async {

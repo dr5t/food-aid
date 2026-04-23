@@ -9,6 +9,10 @@ import '../../providers/auth_provider.dart';
 import '../../providers/donation_provider.dart';
 import '../../providers/emergency_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../widgets/common/cyber_app_bar.dart';
+import '../../widgets/common/cyber_bottom_nav_bar.dart';
+import '../../widgets/common/cyber_card.dart';
+import '../../widgets/common/cyber_background.dart';
 import '../../widgets/common/connection_status_indicator.dart';
 import '../../widgets/common/skeleton_widgets.dart';
 import '../../widgets/common/hitech_loader.dart';
@@ -39,16 +43,9 @@ class _DonorDashboardState extends State<DonorDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'FOOD AID',
-          style: GoogleFonts.orbitron(
-            fontWeight: FontWeight.w700,
-            letterSpacing: 2,
-            fontSize: 18,
-            color: isDark ? AppColors.neonCyan : null,
-          ),
-        ),
+      extendBodyBehindAppBar: true,
+      appBar: CyberAppBar(
+        title: 'FOOD AID',
         actions: [
           const ConnectionStatusIndicator(),
           IconButton(
@@ -60,30 +57,25 @@ class _DonorDashboardState extends State<DonorDashboard> {
             onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            height: 1,
-            decoration: BoxDecoration(
-              gradient: isDark ? AppColors.neonCyanGradient : null,
-              color: isDark ? null : Colors.black12,
-            ),
-          ),
-        ),
       ),
-      body: Stack(
-        children: [
-          IndexedStack(
-            index: _currentIndex,
-            children: const [
-              _OverviewTab(),
-              _MyDonationsTab(),
-              _EmergencyAlertsTab(),
-            ],
-          ).animate(target: _currentIndex.toDouble()).fadeIn(duration: 400.ms),
-          if (context.watch<DonationProvider>().isFetching)
-            const ScanningOverlay(label: 'SYNCING TELEMETRY...'),
-        ],
+      body: CyberBackground(
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + kToolbarHeight),
+              child: IndexedStack(
+                index: _currentIndex,
+                children: const [
+                  _OverviewTab(),
+                  _MyDonationsTab(),
+                  _EmergencyAlertsTab(),
+                ],
+              ),
+            ).animate(target: _currentIndex.toDouble()).fadeIn(duration: 400.ms),
+            if (context.watch<DonationProvider>().isFetching)
+              const ScanningOverlay(label: 'SYNCING TELEMETRY...'),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {},
@@ -91,42 +83,23 @@ class _DonorDashboardState extends State<DonorDashboard> {
         label: Text('DONATE', style: GoogleFonts.orbitron(fontWeight: FontWeight.w700, color: Colors.black)),
         backgroundColor: AppColors.neonCyan,
       ).animate().scale(delay: 400.ms, duration: 400.ms, curve: Curves.backOut),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black12,
-            ),
+      bottomNavigationBar: CyberBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (i) => setState(() => _currentIndex = i),
+        items: const [
+          CyberBottomNavItem(
+            icon: Icons.grid_view_outlined,
+            label: 'STATUS',
           ),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (i) => setState(() => _currentIndex = i),
-          selectedItemColor: AppColors.neonCyan,
-          unselectedItemColor: isDark ? Colors.white38 : Colors.black38,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view_outlined),
-              activeIcon: Icon(Icons.grid_view_rounded),
-              label: 'STATUS',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history_outlined),
-              activeIcon: Icon(Icons.history_rounded),
-              label: 'HISTORY',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bolt_outlined),
-              activeIcon: Icon(Icons.bolt_rounded),
-              label: 'ALERTS',
-            ),
-          ],
-        ),
+          CyberBottomNavItem(
+            icon: Icons.history_outlined,
+            label: 'HISTORY',
+          ),
+          CyberBottomNavItem(
+            icon: Icons.bolt_outlined,
+            label: 'ALERTS',
+          ),
+        ],
       ),
     );
   }
@@ -282,49 +255,32 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(
-          color: isDark ? color.withOpacity(0.2) : Colors.black12,
-          width: 1,
-        ),
-        gradient: isDark ? LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            color.withOpacity(0.05),
-            Colors.transparent,
-          ],
-        ) : null,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 18, color: color),
-            const Spacer(),
-            Text(
-              value,
-              style: GoogleFonts.orbitron(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: isDark ? color : null,
-              ),
+    return CyberCard(
+      borderColor: color.withOpacity(0.3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 18, color: color),
+          const Spacer(),
+          Text(
+            value,
+            style: GoogleFonts.orbitron(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: isDark ? color : null,
             ),
-            Text(
-              label,
-              style: GoogleFonts.orbitron(
-                fontSize: 8,
-                fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white38 : Colors.black38,
-                letterSpacing: 0.5,
-              ),
+          ),
+          Text(
+            label,
+            style: GoogleFonts.orbitron(
+              fontSize: 8,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white38 : Colors.black38,
+              letterSpacing: 0.5,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -340,17 +296,11 @@ class _DonationTile extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final statusColor = _statusColor(donation.status);
 
-    return Container(
+    return CyberCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.02) : Colors.white,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(
-          color: isDark ? statusColor.withOpacity(0.1) : Colors.black.withOpacity(0.05),
-        ),
-      ),
+      borderColor: statusColor.withOpacity(0.2),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 4),
+        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 0),
         leading: Container(
           width: 40,
           height: 40,

@@ -47,7 +47,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonCyan.withOpacity(0.05),
+                color: AppColors.neonCyan.withValues(alpha: 0.05),
               ),
             ),
           ),
@@ -183,7 +183,7 @@ class _CompletedTasksTab extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: AppColors.neonGreen.withOpacity(0.1),
+                  color: AppColors.neonGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: const Icon(Icons.check_circle,
@@ -231,7 +231,7 @@ class _ActiveTaskCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: _currentColor.withOpacity(0.1),
+                    color: _currentColor.withValues(alpha: 0.1),
                     borderRadius:
                         BorderRadius.circular(AppSpacing.radiusSm),
                   ),
@@ -280,7 +280,7 @@ class _ActiveTaskCard extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => _advanceStatus(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _currentColor.withOpacity(0.1),
+                  backgroundColor: _currentColor.withValues(alpha: 0.1),
                   foregroundColor: _currentColor,
                   side: BorderSide(color: _currentColor),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -434,7 +434,7 @@ class _StatusStepper extends StatelessWidget {
                       ? Border.all(color: AppColors.neonCyan, width: 2)
                       : null,
                   boxShadow: isComplete ? [
-                    BoxShadow(color: AppColors.neonCyan.withOpacity(0.3), blurRadius: 4)
+                    BoxShadow(color: AppColors.neonCyan.withValues(alpha: 0.3), blurRadius: 4)
                   ] : null,
                 ),
               ),
@@ -458,7 +458,7 @@ class _StatusStepper extends StatelessWidget {
           child: Container(
             height: 1,
             margin: const EdgeInsets.only(bottom: 12),
-            color: isComplete ? AppColors.neonCyan.withOpacity(0.5) : Colors.white10,
+            color: isComplete ? AppColors.neonCyan.withValues(alpha: 0.5) : Colors.white10,
           ),
         );
       }),

@@ -49,7 +49,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonCyan.withOpacity(0.05),
+                color: AppColors.neonCyan.withValues(alpha: 0.05),
               ),
             ).animate().fadeIn(duration: 1000.ms),
           ),
@@ -261,8 +261,8 @@ class _UnassignedTab extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.neonAmber.withOpacity(0.1),
-                  border: Border.all(color: AppColors.neonAmber.withOpacity(0.5)),
+                  color: AppColors.neonAmber.withValues(alpha: 0.1),
+                  border: Border.all(color: AppColors.neonAmber.withValues(alpha: 0.5)),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -342,7 +342,7 @@ class _EmployeesTab extends StatelessWidget {
                   style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.neonCyan.withOpacity(0.1),
+                  backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
                   foregroundColor: AppColors.neonCyan,
                   side: const BorderSide(color: AppColors.neonCyan),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -421,7 +421,7 @@ class _StatCard extends StatelessWidget {
             label,
             style: GoogleFonts.orbitron(
               fontSize: 8,
-              color: color.withOpacity(0.7),
+              color: color.withValues(alpha: 0.7),
               fontWeight: FontWeight.bold,
               letterSpacing: 1,
             ),
@@ -456,8 +456,8 @@ class _DeliveryTile extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    border: Border.all(color: statusColor.withOpacity(0.5)),
+                    color: statusColor.withValues(alpha: 0.1),
+                    border: Border.all(color: statusColor.withValues(alpha: 0.5)),
                     borderRadius: BorderRadius.circular(2),
                   ),
                   child: Text(
@@ -494,7 +494,7 @@ class _DeliveryTile extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => _showAssignDialog(context, donation),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.neonCyan.withOpacity(0.1),
+                    backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
                     foregroundColor: AppColors.neonCyan,
                     side: const BorderSide(color: AppColors.neonCyan),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -509,7 +509,7 @@ class _DeliveryTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: Colors.white.withValues(alpha: 0.03),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
@@ -589,8 +589,8 @@ class _EmployeeTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.neonCyan.withOpacity(0.1),
-                border: Border.all(color: AppColors.neonCyan.withOpacity(0.3)),
+                color: AppColors.neonCyan.withValues(alpha: 0.1),
+                border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.person, color: AppColors.neonCyan),
@@ -621,8 +621,8 @@ class _EmployeeTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.neonGreen.withOpacity(0.1),
-                border: Border.all(color: AppColors.neonGreen.withOpacity(0.5)),
+                color: AppColors.neonGreen.withValues(alpha: 0.1),
+                border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.5)),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -712,7 +712,7 @@ void _showAssignDialog(BuildContext context, DonationModel donation) {
                                 );
                               },
                               leading: CircleAvatar(
-                                backgroundColor: AppColors.neonCyan.withOpacity(0.1),
+                                backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
                                 child: const Icon(Icons.person, size: 16, color: AppColors.neonCyan),
                               ),
                               title: Text(

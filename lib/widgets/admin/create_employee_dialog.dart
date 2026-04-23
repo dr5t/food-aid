@@ -135,7 +135,7 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
@@ -234,7 +234,7 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
                   tooltip: 'Generate new password',
                   icon: const Icon(Icons.autorenew_rounded, size: 22),
                   style: IconButton.styleFrom(
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                     foregroundColor: AppColors.primary,
                   ),
                 ),
@@ -297,7 +297,7 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: const Icon(
@@ -333,12 +333,12 @@ class _CreateEmployeeDialogState extends State<CreateEmployeeDialog> {
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: isDark
-                ? Colors.white.withOpacity(0.05)
+                ? Colors.white.withValues(alpha: 0.05)
                 : Colors.grey.shade50,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isDark
-                  ? Colors.white.withOpacity(0.1)
+                  ? Colors.white.withValues(alpha: 0.1)
                   : Colors.grey.shade200,
             ),
           ),

@@ -140,7 +140,7 @@ class _OverviewTab extends StatelessWidget {
                   'DEHRADUN OPERATIONAL NODE',
                   style: GoogleFonts.orbitron(
                     fontSize: 10,
-                    color: isDark ? AppColors.neonCyan.withOpacity(0.5) : Colors.black54,
+                    color: isDark ? AppColors.neonCyan.withValues(alpha: 0.5) : Colors.black54,
                     letterSpacing: 1,
                     fontWeight: FontWeight.w600,
                   ),
@@ -335,7 +335,7 @@ class _DonationTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                border: Border.all(color: statusColor.withOpacity(0.5)),
+                border: Border.all(color: statusColor.withValues(alpha: 0.5)),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
@@ -488,7 +488,7 @@ class _EmergencyAlertsTab extends StatelessWidget {
               style: GoogleFonts.orbitron(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.success.withOpacity(0.5),
+                color: AppColors.success.withValues(alpha: 0.5),
               ),
             ),
             Text(

@@ -276,7 +276,7 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CyberCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      borderColor: color.withOpacity(0.4),
+      borderColor: color.withValues(alpha: 0.4),
       showGlow: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,7 +385,7 @@ class _VerificationsTab extends StatelessWidget {
             Icon(
               Icons.verified_rounded,
               size: 64,
-              color: AppColors.neonCyan.withOpacity(0.3),
+              color: AppColors.neonCyan.withValues(alpha: 0.3),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
@@ -493,7 +493,7 @@ class _VerificationCard extends StatelessWidget {
 
     return CyberCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      borderColor: accentColor.withOpacity(0.3),
+      borderColor: accentColor.withValues(alpha: 0.3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -542,7 +542,7 @@ class _VerificationCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.neonOrange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: AppColors.neonOrange.withOpacity(0.3)),
+                  border: Border.all(color: AppColors.neonOrange.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   'PENDING',
@@ -646,7 +646,7 @@ class _TeamTab extends StatelessWidget {
                   Icon(
                     Icons.group_add_rounded,
                     size: 64,
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
@@ -686,7 +686,7 @@ class _TeamTab extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: isDark
-                          ? Colors.white.withOpacity(0.08)
+                          ? Colors.white.withValues(alpha: 0.08)
                           : Colors.grey.shade200,
                     ),
                   ),

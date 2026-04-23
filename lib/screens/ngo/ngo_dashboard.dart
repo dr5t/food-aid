@@ -132,7 +132,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
           builder: (ctx, setDialogState) {
             return Theme(
               data: Theme.of(context).copyWith(
-                dialogBackgroundColor: AppColors.darkBg.withOpacity(0.9),
+                dialogBackgroundColor: AppColors.darkBg.withValues(alpha: 0.9),
               ),
               child: AlertDialog(
                 backgroundColor: Colors.transparent,
@@ -738,9 +738,9 @@ class _StatCard extends StatelessWidget {
 }
 
 extension on LinearGradient {
-  LinearGradient withOpacity(double opacity) {
+  LinearGradient withAlphaValue(double alpha) {
     return LinearGradient(
-      colors: colors.map((c) => c.withOpacity(opacity)).toList(),
+      colors: colors.map((c) => c.withValues(alpha: alpha)).toList(),
       begin: begin,
       end: end,
       stops: stops,
@@ -772,7 +772,7 @@ class _MealTypeOption extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.1) : Colors.white.withOpacity(0.02),
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.02),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
             color: isSelected ? color : Colors.white12,

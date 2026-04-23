@@ -7,6 +7,8 @@ import '../../models/donation_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/logistics_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../widgets/common/cyber_card.dart';
+import '../../widgets/common/cyber_bottom_nav_bar.dart';
 
 class EmployeeDashboard extends StatefulWidget {
   const EmployeeDashboard({super.key});
@@ -32,42 +34,79 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'My Deliveries',
-          style: GoogleFonts.inter(fontWeight: FontWeight.w700),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 22),
-            onPressed: () => context.read<ThemeProvider>().toggleTheme(),
+      backgroundColor: AppColors.darkBg,
+      body: Stack(
+        children: [
+          // Background Glow
+          Positioned(
+            top: -100,
+            right: -100,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.neonCyan.withValues(alpha: 0.05),
+              ),
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.logout, size: 22),
-            onPressed: () => context.read<AuthProvider>().signOut(),
+          SafeArea(
+            child: Column(
+              children: [
+                _buildHeader(context),
+                Expanded(
+                  child: IndexedStack(
+                    index: _currentIndex,
+                    children: const [
+                      _ActiveTasksTab(),
+                      _CompletedTasksTab(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: const [
-          _ActiveTasksTab(),
-          _CompletedTasksTab(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CyberBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_shipping_outlined),
-            activeIcon: Icon(Icons.local_shipping),
-            label: 'Active',
+          CyberBottomNavItem(
+            icon: Icons.local_shipping_outlined,
+            label: 'ACTIVE',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            activeIcon: Icon(Icons.history),
-            label: 'History',
+          CyberBottomNavItem(
+            icon: Icons.history_outlined,
+            label: 'HISTORY',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'UNIT DASHBOARD',
+                style: AppTextStyles.hitechHeading,
+              ),
+              Text(
+                'FIELD OPERATIVE TERMINAL',
+                style: AppTextStyles.hitechSubtitle.copyWith(fontSize: 10, color: AppColors.neonCyan),
+              ),
+            ],
+          ),
+          const Spacer(),
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white70),
+            onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],
       ),
@@ -90,30 +129,12 @@ class _ActiveTasksTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.assignment_turned_in_outlined, size: 56,
-                color: isDark
-                    ? AppColors.darkTextHint
-                    : AppColors.textHint),
+            const Icon(Icons.assignment_turned_in_outlined, size: 56,
+                color: Colors.white10),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'No active deliveries',
-              style: GoogleFonts.inter(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Assigned deliveries will appear here',
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: isDark
-                    ? AppColors.darkTextHint
-                    : AppColors.textHint,
-              ),
+              'NO ACTIVE TASKS',
+              style: AppTextStyles.hitechSubtitle.copyWith(color: Colors.white24),
             ),
           ],
         ),
@@ -142,12 +163,8 @@ class _CompletedTasksTab extends StatelessWidget {
     if (completed.isEmpty) {
       return Center(
         child: Text(
-          'No completed deliveries',
-          style: GoogleFonts.inter(
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary,
-          ),
+          'NO HISTORY RECORDS',
+          style: AppTextStyles.hitechSubtitle.copyWith(color: Colors.white24),
         ),
       );
     }
@@ -157,35 +174,32 @@ class _CompletedTasksTab extends StatelessWidget {
       itemCount: completed.length,
       itemBuilder: (_, i) {
         final d = completed[i];
-        return Card(
-          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-          child: ListTile(
-            leading: Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: AppColors.success.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        return Container(
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          child: CyberCard(
+            child: ListTile(
+              leading: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: AppColors.neonGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: const Icon(Icons.check_circle,
+                    color: AppColors.neonGreen, size: 20),
               ),
-              child: const Icon(Icons.check_circle,
-                  color: AppColors.success, size: 20),
-            ),
-            title: Text(
-              d.title,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+              title: Text(
+                d.mealType.toUpperCase(),
+                style: AppTextStyles.hitechHeading.copyWith(fontSize: 14),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Text(
-              d.statusLabel,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
+              subtitle: Text(
+                'COMPLETED #${d.id.substring(0, 8).toUpperCase()}',
+                style: GoogleFonts.orbitron(
+                  fontSize: 10,
+                  color: Colors.white38,
+                ),
               ),
             ),
           ),
@@ -205,10 +219,9 @@ class _ActiveTaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+      child: CyberCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -230,19 +243,16 @@ class _ActiveTaskCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        donation.title,
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        donation.mealType.toUpperCase(),
+                        style: AppTextStyles.hitechHeading.copyWith(fontSize: 16),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        donation.statusLabel,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                        donation.status.name.toUpperCase(),
+                        style: GoogleFonts.orbitron(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
                           color: _currentColor,
                         ),
                       ),
@@ -254,46 +264,9 @@ class _ActiveTaskCard extends StatelessWidget {
 
             const SizedBox(height: AppSpacing.md),
 
-            Row(
-              children: [
-                const Icon(Icons.circle, size: 8,
-                    color: AppColors.success),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    donation.pickupAddress,
-                    style: GoogleFonts.inter(fontSize: 12),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 3),
-              child: Container(
-                width: 2,
-                height: 16,
-                color: isDark
-                    ? AppColors.darkDivider
-                    : AppColors.divider,
-              ),
-            ),
-            Row(
-              children: [
-                const Icon(Icons.circle, size: 8,
-                    color: AppColors.emergency),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    donation.deliveryAddress ?? 'Delivery address',
-                    style: GoogleFonts.inter(fontSize: 12),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+            _buildInfoRow(Icons.business, donation.ngoName ?? 'NGO Unknown'),
+            _buildInfoRow(Icons.location_on_outlined, donation.pickupAddress),
+            _buildInfoRow(Icons.flag_outlined, donation.deliveryAddress ?? 'Target Location'),
 
             const SizedBox(height: AppSpacing.md),
 
@@ -306,10 +279,15 @@ class _ActiveTaskCard extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => _advanceStatus(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _currentColor,
-                  foregroundColor: Colors.white,
+                  backgroundColor: _currentColor.withValues(alpha: 0.1),
+                  foregroundColor: _currentColor,
+                  side: BorderSide(color: _currentColor),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                 ),
-                child: Text(_nextActionLabel),
+                child: Text(
+                  _nextActionLabel.toUpperCase(),
+                  style: GoogleFonts.orbitron(fontWeight: FontWeight.bold, fontSize: 10),
+                ),
               ),
             ),
           ],
@@ -318,18 +296,42 @@ class _ActiveTaskCard extends StatelessWidget {
     );
   }
 
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 14, color: Colors.white38),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                color: Colors.white70,
+                letterSpacing: 0.5,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Color get _currentColor {
     switch (donation.status) {
       case DonationStatus.assigned:
-        return AppColors.statusAssigned;
+        return AppColors.neonAmber;
       case DonationStatus.picked:
-        return AppColors.statusPicked;
+        return AppColors.neonPurple;
       case DonationStatus.inTransit:
-        return AppColors.statusInTransit;
+        return AppColors.neonCyan;
       case DonationStatus.nearLocation:
-        return AppColors.statusNearLocation;
+        return AppColors.neonGreen;
       default:
-        return AppColors.primary;
+        return AppColors.neonCyan;
     }
   }
 
@@ -409,7 +411,6 @@ class _StatusStepper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final currentIdx = _steps.indexOf(currentStatus);
 
     return Row(
@@ -418,41 +419,31 @@ class _StatusStepper extends StatelessWidget {
           final stepIdx = i ~/ 2;
           final isComplete = stepIdx <= currentIdx;
           final isCurrent = stepIdx == currentIdx;
+          final stepColor = isComplete ? AppColors.neonCyan : Colors.white10;
 
           return Column(
             children: [
               Container(
-                width: 20,
-                height: 20,
+                width: 12,
+                height: 12,
                 decoration: BoxDecoration(
-                  color: isComplete
-                      ? AppColors.primary
-                      : isDark
-                          ? AppColors.darkSurfaceVariant
-                          : AppColors.surfaceVariant,
+                  color: isCurrent ? Colors.transparent : stepColor,
                   shape: BoxShape.circle,
                   border: isCurrent
-                      ? Border.all(
-                          color: AppColors.primary, width: 2)
+                      ? Border.all(color: AppColors.neonCyan, width: 2)
                       : null,
+                  boxShadow: isComplete ? [
+                    BoxShadow(color: AppColors.neonCyan.withValues(alpha: 0.3), blurRadius: 4)
+                  ] : null,
                 ),
-                child: isComplete
-                    ? const Icon(Icons.check, size: 12,
-                        color: Colors.white)
-                    : null,
               ),
               const SizedBox(height: 4),
               Text(
-                _stepLabels[stepIdx],
-                style: GoogleFonts.inter(
-                  fontSize: 9,
-                  fontWeight:
-                      isCurrent ? FontWeight.w600 : FontWeight.w400,
-                  color: isComplete
-                      ? AppColors.primary
-                      : isDark
-                          ? AppColors.darkTextHint
-                          : AppColors.textHint,
+                _stepLabels[stepIdx].toUpperCase(),
+                style: GoogleFonts.orbitron(
+                  fontSize: 7,
+                  fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                  color: isComplete ? AppColors.neonCyan : Colors.white24,
                 ),
               ),
             ],
@@ -464,13 +455,9 @@ class _StatusStepper extends StatelessWidget {
 
         return Expanded(
           child: Container(
-            height: 2,
-            margin: const EdgeInsets.only(bottom: 16),
-            color: isComplete
-                ? AppColors.primary
-                : isDark
-                    ? AppColors.darkDivider
-                    : AppColors.divider,
+            height: 1,
+            margin: const EdgeInsets.only(bottom: 12),
+            color: isComplete ? AppColors.neonCyan.withValues(alpha: 0.5) : Colors.white10,
           ),
         );
       }),

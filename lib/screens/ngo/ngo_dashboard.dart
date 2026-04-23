@@ -404,105 +404,123 @@ class _AvailableDonationsTab extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 100),
       itemCount: pending.length,
       itemBuilder: (_, i) {
         final d = pending[i];
-        return Card(
+        return CyberCard(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        d.title,
-                        style: GoogleFonts.inter(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      d.title.toUpperCase(),
+                      style: AppTextStyles.hitechSubtitle.copyWith(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.neonCyan,
                       ),
                     ),
-                    if (d.isExpired)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: AppColors.error.withValues(alpha: 0.1),
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.radiusFull),
-                        ),
-                        child: Text(
-                          'Expired',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.error,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  'by ${d.donorName}',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.textSecondary,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  children: [
-                    _InfoChip(Icons.restaurant, d.foodTypeLabel),
-                    _InfoChip(Icons.eco, d.mealTypeLabel),
-                    _InfoChip(Icons.scale, d.quantityDisplay),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _InfoChip(Icons.location_on, d.pickupAddress),
-                const SizedBox(height: AppSpacing.md),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {},
-                        child: const Text('View Details'),
+                  if (d.isExpired)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.error.withOpacity(0.1),
+                        border: Border.all(color: AppColors.error),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusXs),
+                      ),
+                      child: Text(
+                        'EXPIRED',
+                        style: GoogleFonts.orbitron(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.error,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: d.isExpired
-                            ? null
-                            : () async {
-                                final user =
-                                    context.read<AuthProvider>().user;
-                                if (user != null) {
-                                  await context
-                                      .read<DonationProvider>()
-                                      .acceptDonation(
-                                        d.id,
-                                        user.uid,
-                                        user.organizationName ??
-                                            user.name,
-                                        deliveryAddress: user.address,
-                                      );
-                                }
-                              },
-                        child: const Text('Accept'),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'SOURCE: ${d.donorName.toUpperCase()}',
+                style: GoogleFonts.orbitron(
+                  fontSize: 10,
+                  color: Colors.white70,
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  _InfoChip(Icons.restaurant, d.foodTypeLabel.toUpperCase(), AppColors.neonPurple),
+                  _InfoChip(Icons.eco, d.mealTypeLabel.toUpperCase(), AppColors.neonGreen),
+                  _InfoChip(Icons.scale, d.quantityDisplay.toUpperCase(), AppColors.neonAmber),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              _InfoChip(Icons.location_on, d.pickupAddress.toUpperCase(), AppColors.neonCyan),
+              const SizedBox(height: AppSpacing.lg),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.white24),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: Text(
+                        'DETAILS',
+                        style: GoogleFonts.orbitron(fontSize: 12, color: Colors.white),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: d.isExpired
+                          ? null
+                          : () async {
+                              final user =
+                                  context.read<AuthProvider>().user;
+                              if (user != null) {
+                                await context
+                                    .read<DonationProvider>()
+                                    .acceptDonation(
+                                      d.id,
+                                      user.uid,
+                                      user.organizationName ??
+                                          user.name,
+                                      deliveryAddress: user.address,
+                                    );
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.neonCyan.withOpacity(0.2),
+                        foregroundColor: AppColors.neonCyan,
+                        side: const BorderSide(color: AppColors.neonCyan),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: Text(
+                        'ACCEPT',
+                        style: GoogleFonts.orbitron(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       },
@@ -533,50 +551,58 @@ class _MyEmergenciesTab extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 100),
       itemCount: requests.length,
       itemBuilder: (_, i) {
         final req = requests[i];
-        return Card(
+        final color = req.isActive ? AppColors.neonAmber : AppColors.neonGreen;
+        return CyberCard(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          borderColor: color.withOpacity(0.5),
           child: ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: Container(
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: req.isActive
-                    ? AppColors.emergency.withValues(alpha: 0.1)
-                    : AppColors.success.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
+                border: Border.all(color: color.withOpacity(0.3)),
               ),
               child: Icon(
-                req.isActive ? Icons.warning : Icons.check_circle,
-                color: req.isActive ? AppColors.emergency : AppColors.success,
+                req.isActive ? Icons.warning_amber : Icons.check_circle_outline,
+                color: color,
                 size: 20,
               ),
             ),
             title: Text(
-              '${req.quantity} ${req.mealTypeLabel} meals',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+              '${req.quantity} ${req.mealTypeLabel.toUpperCase()} MEALS',
+              style: GoogleFonts.orbitron(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
             subtitle: Text(
-              req.statusLabel,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
+              'STATUS: ${req.statusLabel.toUpperCase()}',
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                color: color,
+                letterSpacing: 1,
               ),
             ),
             trailing: req.isActive
                 ? TextButton(
                     onPressed: () =>
                         context.read<EmergencyProvider>().cancelRequest(req.id),
-                    child: const Text('Cancel',
-                        style: TextStyle(color: AppColors.error)),
+                    child: Text(
+                      'ABORT',
+                      style: GoogleFonts.orbitron(
+                        fontSize: 11,
+                        color: AppColors.error,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   )
                 : null,
           ),
@@ -724,28 +750,25 @@ class _MealTypeOption extends StatelessWidget {
 class _InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
+  final Color? color;
 
-  const _InfoChip(this.icon, this.label);
+  const _InfoChip(this.icon, this.label, [this.color]);
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final displayColor = color ?? Colors.white70;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary),
-        const SizedBox(width: 4),
+        Icon(icon, size: 14, color: displayColor),
+        const SizedBox(width: 6),
         Flexible(
           child: Text(
             label,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.textSecondary,
+            style: GoogleFonts.orbitron(
+              fontSize: 10,
+              color: displayColor,
+              letterSpacing: 0.5,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

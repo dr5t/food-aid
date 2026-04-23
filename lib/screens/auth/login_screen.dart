@@ -93,6 +93,16 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
           SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: const DatabaseStatusIndicator(),
+              ),
+            ),
+          ),
+
+          SafeArea(
             child: Center(
               child: SingleChildScrollView(
                 padding: AppSpacing.screenPadding,

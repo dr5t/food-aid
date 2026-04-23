@@ -10,6 +10,7 @@ import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_input.dart';
+import '../../widgets/common/database_status_indicator.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

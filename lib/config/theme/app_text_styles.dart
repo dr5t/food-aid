@@ -36,6 +36,30 @@ class AppTextStyles {
         ],
       );
 
+  static TextStyle get hitech => GoogleFonts.orbitron(
+        fontSize: 28,
+        fontWeight: FontWeight.w900,
+        color: AppColors.neonCyan,
+        letterSpacing: 4,
+        shadows: [
+          Shadow(
+            color: AppColors.neonCyan.withOpacity(0.8),
+            blurRadius: 10,
+          ),
+          Shadow(
+            color: AppColors.neonPurple.withOpacity(0.5),
+            blurRadius: 20,
+          ),
+        ],
+      );
+  
+  static TextStyle get hitechSmall => GoogleFonts.orbitron(
+        fontSize: 12,
+        fontWeight: FontWeight.w700,
+        color: AppColors.neonCyan,
+        letterSpacing: 2,
+      );
+
   static TextStyle get subheading => GoogleFonts.outfit(
         fontSize: 18,
         fontWeight: FontWeight.w600,

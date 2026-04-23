@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
+import '../../config/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/common/cyber_background.dart';
+import '../../widgets/common/cyber_card.dart';
+import '../../widgets/common/app_button.dart';
 
 class PendingVerificationScreen extends StatelessWidget {
   const PendingVerificationScreen({super.key});
@@ -16,203 +20,224 @@ class PendingVerificationScreen extends StatelessWidget {
     final isRejected = user?.isRejected ?? false;
 
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            children: [
-              const Spacer(),
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: isRejected
-                      ? Colors.red.withOpacity(0.1)
-                      : AppColors.primary.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  isRejected
-                      ? Icons.cancel_outlined
-                      : Icons.hourglass_top_rounded,
-                  size: 56,
-                  color: isRejected ? Colors.red : AppColors.primary,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-
-              Text(
-                isRejected
-                    ? 'Registration Rejected'
-                    : 'Verification Pending',
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacing.md),
-
-              Text(
-                isRejected
-                    ? 'Unfortunately, your registration has been rejected by our team.'
-                    : 'Your ${user?.roleLabel ?? 'organization'} registration is under review. You will be notified once approved.',
-                style: GoogleFonts.inter(
-                  fontSize: 15,
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.textSecondary,
-                  height: 1.5,
-                ),
-                textAlign: TextAlign.center,
+      backgroundColor: isDark ? const Color(0xFF050505) : Colors.white,
+      body: CyberBackground(
+        children: [
+          // Ambient Glow
+          Positioned(
+            top: -100,
+            left: -100,
+            child: _buildGlow(isRejected ? AppColors.error : AppColors.neonCyan, 400),
+          ).animate(onPlay: (c) => c.repeat()).move(
+                begin: const Offset(-20, -20),
+                end: const Offset(20, 20),
+                duration: 6.seconds,
+                curve: Curves.easeInOut,
               ),
 
-              if (isRejected && user?.rejectionReason != null) ...[
-                const SizedBox(height: AppSpacing.lg),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.06),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.red.withOpacity(0.2),
-                    ),
-                  ),
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: AppSpacing.screenPadding,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 450),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Reason',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.red.shade700,
+                      // Status Icon with Glitchy Animation
+                      _buildStatusIcon(isRejected).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+                      
+                      AppSpacing.verticalXl,
+
+                      CyberCard(
+                        borderRadius: 24,
+                        showGlow: true,
+                        borderColor: isRejected ? AppColors.error.withValues(alpha: 0.5) : AppColors.neonCyan.withValues(alpha: 0.3),
+                        padding: const EdgeInsets.all(32),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildHeader(isRejected),
+                            AppSpacing.verticalLg,
+                            
+                            _buildTerminalInfo(user, isRejected, isDark),
+                            
+                            AppSpacing.verticalXl,
+                            
+                            _buildActionButtons(authProvider, isDark, isRejected),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        user!.rejectionReason!,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.textSecondary,
-                          height: 1.4,
-                        ),
-                      ),
+                      ).animate().fadeIn(duration: 800.ms).moveY(begin: 30, end: 0),
                     ],
                   ),
                 ),
-              ],
-
-              const SizedBox(height: AppSpacing.xl),
-
-              if (!isRejected) ...[
-                _buildInfoRow(
-                  context,
-                  icon: Icons.access_time_rounded,
-                  text: 'Usually takes 24-48 hours',
-                  isDark: isDark,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _buildInfoRow(
-                  context,
-                  icon: Icons.notifications_active_outlined,
-                  text: 'You\'ll receive a notification on approval',
-                  isDark: isDark,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                _buildInfoRow(
-                  context,
-                  icon: Icons.support_agent_outlined,
-                  text: 'Contact support for any queries',
-                  isDark: isDark,
-                ),
-              ],
-
-              const Spacer(),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: OutlinedButton.icon(
-                  onPressed: () => authProvider.refreshUser(),
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: Text(
-                    'Check Status',
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                    side: const BorderSide(color: AppColors.primary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
               ),
-              const SizedBox(height: AppSpacing.md),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: TextButton.icon(
-                  onPressed: () => authProvider.signOut(),
-                  icon: Icon(
-                    Icons.logout_rounded,
-                    color: isDark
-                        ? AppColors.darkTextSecondary
-                        : AppColors.textSecondary,
-                  ),
-                  label: Text(
-                    'Sign Out',
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500,
-                      color: isDark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.textSecondary,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildInfoRow(
-    BuildContext context, {
-    required IconData icon,
-    required String text,
-    required bool isDark,
-  }) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: AppColors.primary,
+  Widget _buildStatusIcon(bool isRejected) {
+    return Container(
+      width: 100,
+      height: 100,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.black,
+        border: Border.all(
+          color: isRejected ? AppColors.error : AppColors.neonCyan,
+          width: 2,
         ),
-        const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: Text(
-            text,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.textSecondary,
+        boxShadow: [
+          BoxShadow(
+            color: (isRejected ? AppColors.error : AppColors.neonCyan).withValues(alpha: 0.3),
+            blurRadius: 20,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Icon(
+        isRejected ? Icons.gpp_bad_rounded : Icons.radar_rounded,
+        size: 50,
+        color: isRejected ? AppColors.error : AppColors.neonCyan,
+      ).animate(onPlay: (c) => c.repeat()).shimmer(duration: 2.seconds, color: Colors.white24),
+    );
+  }
+
+  Widget _buildHeader(bool isRejected) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'DIAGNOSTIC: VERIFICATION',
+          style: AppTextStyles.hitech.copyWith(
+            fontSize: 10,
+            letterSpacing: 2,
+            color: isRejected ? AppColors.error : AppColors.neonCyan,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        AppSpacing.verticalXs,
+        Text(
+          isRejected ? 'ACCESS DENIED' : 'IDENTITY PENDING',
+          style: AppTextStyles.hitech.copyWith(
+            fontSize: 24,
+            letterSpacing: 1,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTerminalInfo(dynamic user, bool isRejected, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _terminalRow('ENTITY', user?.name?.toUpperCase() ?? 'UNKNOWN'),
+        _terminalRow('ROLE', user?.roleLabel?.toUpperCase() ?? 'UNASSIGNED'),
+        _terminalRow('NODE', 'DEHRADUN_CENTRAL'),
+        const Divider(color: Colors.white10, height: 32),
+        Text(
+          isRejected
+              ? 'PROTOCOL TERMINATED: MANUAL REVIEW REQUIRED'
+              : 'ENCRYPTION ACTIVE: AWAITING CLEARANCE FROM SYSTEM ADMINS',
+          style: AppTextStyles.hitech.copyWith(
+            fontSize: 11,
+            color: isRejected ? AppColors.error.withValues(alpha: 0.8) : AppColors.neonCyan.withValues(alpha: 0.7),
+            height: 1.6,
+          ),
+        ),
+        if (isRejected && user?.rejectionReason != null) ...[
+          AppSpacing.verticalMd,
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.error.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+            ),
+            child: Text(
+              'REASON: ${user!.rejectionReason!.toUpperCase()}',
+              style: AppTextStyles.hitech.copyWith(
+                fontSize: 10,
+                color: AppColors.error,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _terminalRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text(
+            '$label: ',
+            style: AppTextStyles.hitech.copyWith(fontSize: 10, color: Colors.white38),
+          ),
+          Text(
+            value,
+            style: AppTextStyles.hitech.copyWith(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButtons(AuthProvider auth, bool isDark, bool isRejected) {
+    return Column(
+      children: [
+        if (!isRejected)
+          AppButton(
+            label: 'REFRESH UPLINK',
+            onPressed: () => auth.refreshUser(),
+            isLoading: auth.isLoading,
+            textStyle: AppTextStyles.hitech.copyWith(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+              fontSize: 12,
+            ),
+          ),
+        AppSpacing.verticalMd,
+        SizedBox(
+          width: double.infinity,
+          child: TextButton.icon(
+            onPressed: () => auth.signOut(),
+            icon: const Icon(Icons.power_settings_new_rounded, size: 18, color: Colors.white38),
+            label: Text(
+              'TERMINATE SESSION',
+              style: AppTextStyles.hitech.copyWith(
+                color: Colors.white38,
+                fontSize: 10,
+                letterSpacing: 1.5,
+              ),
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildGlow(Color color, double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.1),
+            blurRadius: 100,
+            spreadRadius: 40,
+          ),
+        ],
+      ),
     );
   }
 }

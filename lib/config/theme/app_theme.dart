@@ -66,7 +66,7 @@ class AppTheme {
         },
       ),
       scaffoldBackgroundColor: bg,
-      textTheme: GoogleFonts.plusJakartaSansTextTheme(
+      textTheme: GoogleFonts.orbitronTextTheme(
         isDark ? ThemeData.dark().textTheme : ThemeData.light().textTheme,
       ),
       appBarTheme: AppBarTheme(
@@ -81,11 +81,11 @@ class AppTheme {
             child: Container(color: Colors.transparent),
           ),
         ),
-        titleTextStyle: GoogleFonts.plusJakartaSans(
+        titleTextStyle: GoogleFonts.orbitron(
           fontSize: 20,
           fontWeight: FontWeight.w800,
           color: textPrimary,
-          letterSpacing: -0.5,
+          letterSpacing: 1.5,
         ),
       ),
       cardTheme: CardThemeData(
@@ -113,10 +113,10 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          textStyle: GoogleFonts.plusJakartaSans(
-            fontSize: 16,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.2,
+          textStyle: GoogleFonts.orbitron(
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2.0,
           ),
         ),
       ),
@@ -131,10 +131,10 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          textStyle: GoogleFonts.plusJakartaSans(
-            fontSize: 16,
+          textStyle: GoogleFonts.orbitron(
+            fontSize: 14,
             fontWeight: FontWeight.w700,
-            letterSpacing: 1.0,
+            letterSpacing: 1.5,
           ),
         ),
       ),
@@ -165,15 +165,17 @@ class AppTheme {
           borderRadius: BorderRadius.circular(18),
           borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
-        hintStyle: GoogleFonts.plusJakartaSans(
+        hintStyle: GoogleFonts.orbitron(
           color: textHint.withOpacity(0.4),
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: FontWeight.w500,
+          letterSpacing: 1.0,
         ),
-        labelStyle: GoogleFonts.plusJakartaSans(
+        labelStyle: GoogleFonts.orbitron(
           color: textSecondary,
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: FontWeight.w600,
+          letterSpacing: 1.0,
         ),
       ),
       dividerTheme: DividerThemeData(
@@ -187,22 +189,25 @@ class AppTheme {
         unselectedItemColor: textSecondary.withOpacity(0.5),
         type: BottomNavigationBarType.fixed,
         elevation: 0,
-        selectedLabelStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 11,
+        selectedLabelStyle: GoogleFonts.orbitron(
+          fontSize: 10,
           fontWeight: FontWeight.w700,
+          letterSpacing: 1.0,
         ),
-        unselectedLabelStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 11,
+        unselectedLabelStyle: GoogleFonts.orbitron(
+          fontSize: 10,
           fontWeight: FontWeight.w500,
+          letterSpacing: 1.0,
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: isDark ? Colors.white.withOpacity(0.05) : surfaceVariant,
         selectedColor: primary.withOpacity(0.15),
-        labelStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
+        labelStyle: GoogleFonts.orbitron(
+          fontSize: 10,
           fontWeight: FontWeight.w600,
           color: textPrimary,
+          letterSpacing: 1.0,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         shape: RoundedRectangleBorder(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/connection_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../config/theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,8 +9,8 @@ class DatabaseStatusIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isOnline = context.watch<ConnectionProvider>().isOnline;
-    final color = isOnline ? AppColors.neonCyan : AppColors.error;
+    final dbOnline = context.watch<AuthProvider>().dbOnline;
+    final color = dbOnline ? AppColors.neonCyan : AppColors.error;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -18,19 +18,27 @@ class DatabaseStatusIndicator extends StatelessWidget {
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withOpacity(0.3), width: 1),
+        boxShadow: [
+          if (dbOnline)
+            BoxShadow(
+              color: color.withOpacity(0.2),
+              blurRadius: 4,
+              spreadRadius: 1,
+            ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _PulseIndicator(color: color),
-          const SizedBox(width: 6),
+          _PulseIndicator(color: color, isLive: dbOnline),
+          const SizedBox(width: 8),
           Text(
-            isOnline ? 'DATABASE: LIVE' : 'DATABASE: OFFLINE',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 10,
+            dbOnline ? 'DATABASE: LIVE' : 'DATABASE: OFFLINE',
+            style: GoogleFonts.orbitron(
+              fontSize: 9,
               fontWeight: FontWeight.w800,
               color: color,
-              letterSpacing: 0.5,
+              letterSpacing: 1,
             ),
           ),
         ],
@@ -41,7 +49,8 @@ class DatabaseStatusIndicator extends StatelessWidget {
 
 class _PulseIndicator extends StatefulWidget {
   final Color color;
-  const _PulseIndicator({required this.color});
+  final bool isLive;
+  const _PulseIndicator({required this.color, required this.isLive});
 
   @override
   State<_PulseIndicator> createState() => _PulseIndicatorState();
@@ -55,8 +64,16 @@ class _PulseIndicatorState extends State<_PulseIndicator> with SingleTickerProvi
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: Duration(milliseconds: widget.isLive ? 1500 : 400),
     )..repeat(reverse: true);
+  }
+
+  @override
+  void didUpdateWidget(_PulseIndicator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isLive != widget.isLive) {
+      _controller.duration = Duration(milliseconds: widget.isLive ? 1500 : 400);
+    }
   }
 
   @override
@@ -70,17 +87,23 @@ class _PulseIndicatorState extends State<_PulseIndicator> with SingleTickerProvi
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+        double opacity = _controller.value;
+        // Add flicker effect when offline
+        if (!widget.isLive) {
+          opacity = (opacity > 0.5) ? 1.0 : 0.2;
+        }
+
         return Container(
           width: 8,
           height: 8,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: widget.color,
+            color: widget.color.withOpacity(opacity),
             boxShadow: [
               BoxShadow(
-                color: widget.color.withOpacity(0.6 * _controller.value),
-                blurRadius: 8 * _controller.value,
-                spreadRadius: 4 * _controller.value,
+                color: widget.color.withOpacity(0.8 * opacity),
+                blurRadius: 8 * opacity,
+                spreadRadius: 2 * opacity,
               ),
             ],
           ),
@@ -89,3 +112,4 @@ class _PulseIndicatorState extends State<_PulseIndicator> with SingleTickerProvi
     );
   }
 }
+

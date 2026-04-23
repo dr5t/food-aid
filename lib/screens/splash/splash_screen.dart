@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme/app_colors.dart';
-import '../../config/theme/app_spacing.dart';
 import '../../config/constants.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/hitech_loader.dart';
@@ -103,11 +102,18 @@ class _SplashScreenState extends State<SplashScreen>
                 const SizedBox(height: 60),
                 Text(
                   AppConstants.appName.toUpperCase(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 32,
-                    fontWeight: FontWeight.black,
-                    letterSpacing: 8,
-                    color: isDark ? Colors.white : AppColors.primary,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 10,
+                    color: Colors.white,
+                    fontFamily: 'Orbitron',
+                    shadows: [
+                      Shadow(
+                        color: AppColors.neonCyan,
+                        blurRadius: 15,
+                      ),
+                    ],
                   ),
                 ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
                 const SizedBox(height: 8),
@@ -116,8 +122,9 @@ class _SplashScreenState extends State<SplashScreen>
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 4,
-                    color: isDark ? AppColors.neonCyan : AppColors.primary,
+                    letterSpacing: 6,
+                    color: AppColors.neonCyan,
+                    fontFamily: 'Orbitron',
                   ),
                 ).animate().fadeIn(delay: 800.ms),
               ],
@@ -152,11 +159,12 @@ class _SplashScreenState extends State<SplashScreen>
                     const SizedBox(width: 12),
                     Text(
                       authProvider.dbOnline ? "DATABASE SECURE" : "DATABASE OFFLINE",
-                      style: TextStyle(
-                        fontSize: 10,
+                      style: const TextStyle(
+                        fontSize: 9,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                        color: isDark ? Colors.white54 : Colors.black54,
+                        letterSpacing: 3,
+                        color: Colors.white38,
+                        fontFamily: 'Orbitron',
                       ),
                     ),
                   ],

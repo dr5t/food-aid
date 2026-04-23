@@ -43,34 +43,31 @@ class AppRouter {
         final publicRoutes = ['/onboarding', '/login', '/signup'];
         final isOnPublicRoute = publicRoutes.contains(currentPath);
 
-        // If at splash or unknown, and initialized
-        if (currentPath == '/') {
-          if (isAuthenticated) {
-            final target = _dashboardForRole(authProvider.role);
-            debugPrint('Root path: Authenticated, redirecting to $target');
-            return target;
-          }
-          debugPrint('Root path: Not authenticated, redirecting to /onboarding');
-          return '/onboarding';
-        }
-
         if (!isAuthenticated && !isOnPublicRoute) {
-          debugPrint('Protected route and not authenticated, redirecting to /login');
+          debugPrint('AppRouter: Protected route and not authenticated, redirecting to /login');
           return '/login';
         }
 
         if (isAuthenticated && isOnPublicRoute) {
           if (authProvider.isPendingVerification ||
               authProvider.isRejected) {
-            debugPrint('Authenticated but pending/rejected, redirecting to /pending-verification');
+            debugPrint('AppRouter: Authenticated but pending/rejected, redirecting to /pending-verification');
             return '/pending-verification';
           }
+
           final target = _dashboardForRole(authProvider.role);
-          debugPrint('Authenticated on public route, redirecting to $target');
+          debugPrint('AppRouter: Authenticated on public route, redirecting to $target');
           return target;
         }
 
-        debugPrint('No redirection needed for $currentPath');
+        if (isAuthenticated && !isOnPublicRoute) {
+           if ((authProvider.isPendingVerification || authProvider.isRejected) && currentPath != '/pending-verification') {
+             debugPrint('AppRouter: Authenticated but pending/rejected on private route, redirecting to /pending-verification');
+             return '/pending-verification';
+           }
+        }
+
+        debugPrint('AppRouter: No redirection needed for $currentPath');
         return null;
       },
       routes: [
@@ -214,8 +211,8 @@ class AppRouter {
     return CustomTransitionPage(
       key: state.pageKey,
       child: child,
-      transitionDuration: const Duration(milliseconds: 500),
-      reverseTransitionDuration: const Duration(milliseconds: 400),
+      transitionDuration: const Duration(milliseconds: 600),
+      reverseTransitionDuration: const Duration(milliseconds: 500),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         final curveAnimation = CurvedAnimation(
           parent: animation,
@@ -225,9 +222,15 @@ class AppRouter {
 
         return FadeTransition(
           opacity: curveAnimation,
-          child: ScaleTransition(
-            scale: Tween<double>(begin: 0.98, end: 1.0).animate(curveAnimation),
-            child: child,
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0.05, 0),
+              end: Offset.zero,
+            ).animate(curveAnimation),
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.96, end: 1.0).animate(curveAnimation),
+              child: child,
+            ),
           ),
         );
       },

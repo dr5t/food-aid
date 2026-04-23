@@ -7,6 +7,10 @@ import '../../models/user_model.dart';
 import '../../providers/admin_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/admin/create_employee_dialog.dart';
+import '../../widgets/common/cyber_app_bar.dart';
+import '../../widgets/common/cyber_card.dart';
+import '../../widgets/common/neon_indicator.dart';
+import '../../widgets/common/hitech_loader.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -41,29 +45,8 @@ class _AdminDashboardState extends State<AdminDashboard>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Admin Panel',
-              style: GoogleFonts.inter(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text(
-              authProvider.user?.name ?? 'Administrator',
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
+      appBar: CyberAppBar(
+        title: 'Network Control',
         actions: [
           IconButton(
             onPressed: () => context.read<AdminProvider>().refreshStats(),
@@ -81,57 +64,66 @@ class _AdminDashboardState extends State<AdminDashboard>
                   children: [
                     const Icon(Icons.logout_rounded, size: 20),
                     const SizedBox(width: 8),
-                    Text('Sign Out', style: GoogleFonts.inter()),
+                    Text('DISCONNECT', style: GoogleFonts.orbitron(fontSize: 12, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
             ],
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          labelStyle: GoogleFonts.inter(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-          unselectedLabelStyle: GoogleFonts.inter(
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
-          ),
-          indicatorColor: AppColors.primary,
-          labelColor: AppColors.primary,
-          tabs: [
-            const Tab(
-              icon: Icon(Icons.dashboard_rounded, size: 20),
-              text: 'Overview',
-            ),
-            Tab(
-              icon: Consumer<AdminProvider>(
-                builder: (_, admin, __) {
-                  final count = admin.pendingCount;
-                  return Badge(
-                    isLabelVisible: count > 0,
-                    label: Text('$count'),
-                    child: const Icon(
-                        Icons.verified_user_outlined, size: 20),
-                  );
-                },
-              ),
-              text: 'Verifications',
-            ),
-            const Tab(
-              icon: Icon(Icons.group_rounded, size: 20),
-              text: 'Team',
-            ),
-          ],
-        ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _OverviewTab(isDark: isDark),
-          _VerificationsTab(isDark: isDark),
-          _TeamTab(isDark: isDark, adminUid: authProvider.user?.uid ?? ''),
+          Container(
+            color: isDark ? Colors.black : Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              labelStyle: GoogleFonts.orbitron(
+                fontWeight: FontWeight.w900,
+                fontSize: 12,
+                letterSpacing: 1.0,
+              ),
+              unselectedLabelStyle: GoogleFonts.orbitron(
+                fontWeight: FontWeight.w500,
+                fontSize: 10,
+                letterSpacing: 1.0,
+              ),
+              indicatorColor: AppColors.neonCyan,
+              labelColor: AppColors.neonCyan,
+              indicatorSize: TabBarIndicatorSize.tab,
+              tabs: [
+                const Tab(text: 'SYSTEM'),
+                Tab(
+                  child: Consumer<AdminProvider>(
+                    builder: (_, admin, _) {
+                      final count = admin.pendingCount;
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('VERIFY'),
+                          if (count > 0) ...[
+                            const SizedBox(width: 4),
+                            NeonIndicator(size: 6, color: AppColors.neonOrange),
+                          ],
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                const Tab(text: 'UNIT'),
+              ],
+            ),
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _OverviewTab(isDark: isDark),
+                _VerificationsTab(isDark: isDark),
+                _TeamTab(isDark: isDark, adminUid: authProvider.user?.uid ?? ''),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -149,7 +141,7 @@ class _OverviewTab extends StatelessWidget {
     final stats = admin.platformStats;
 
     if (admin.isLoading && stats.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: HitechLoader(text: 'Syncing Stats...'));
     }
 
     return RefreshIndicator(
@@ -158,21 +150,24 @@ class _OverviewTab extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Text(
-            'Platform Overview',
-            style: GoogleFonts.inter(
+            'SYSTEM STATUS',
+            style: GoogleFonts.orbitron(
               fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.w900,
+              color: isDark ? AppColors.neonCyan : AppColors.primary,
+              letterSpacing: 2.0,
             ),
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Monitor and manage the Food Aid platform',
-            style: GoogleFonts.inter(
-              fontSize: 14,
+            'MONITORING DEHRADUN NODE-01',
+            style: GoogleFonts.orbitron(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
               color: isDark
                   ? AppColors.darkTextSecondary
                   : AppColors.textSecondary,
+              letterSpacing: 1.5,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -279,17 +274,10 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return CyberCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withOpacity(0.08)
-              : Colors.grey.shade200,
-        ),
-      ),
+      borderColor: color.withOpacity(0.4),
+      showGlow: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -298,19 +286,22 @@ class _StatCard extends StatelessWidget {
           const Spacer(),
           Text(
             value,
-            style: GoogleFonts.inter(
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
+            style: GoogleFonts.orbitron(
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
               color: Theme.of(context).colorScheme.onSurface,
+              letterSpacing: 1.0,
             ),
           ),
           Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 13,
+            label.toUpperCase(),
+            style: GoogleFonts.orbitron(
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
               color: isDark
                   ? AppColors.darkTextSecondary
                   : AppColors.textSecondary,
+              letterSpacing: 1.0,
             ),
           ),
         ],
@@ -336,35 +327,33 @@ class _RoleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+    return CyberCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.03) : Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(10),
-      ),
+      borderRadius: 10,
+      showCorners: false,
       child: Row(
         children: [
           Icon(icon, color: color, size: 20),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+              label.toUpperCase(),
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
                 color: Theme.of(context).colorScheme.onSurface,
+                letterSpacing: 1.0,
               ),
             ),
           ),
           Text(
             '$count',
-            style: GoogleFonts.inter(
+            style: GoogleFonts.jetbrainsMono(
               fontSize: 16,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w900,
               color: color,
             ),
           ),
@@ -385,7 +374,7 @@ class _VerificationsTab extends StatelessWidget {
     final pending = admin.pendingVerifications;
 
     if (admin.isLoading && pending.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: HitechLoader(text: 'Accessing Secure Data...'));
     }
 
     if (pending.isEmpty) {
@@ -396,25 +385,27 @@ class _VerificationsTab extends StatelessWidget {
             Icon(
               Icons.verified_rounded,
               size: 64,
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColors.neonCyan.withOpacity(0.3),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'All Clear!',
-              style: GoogleFonts.inter(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
+              'NO THREATS DETECTED',
+              style: GoogleFonts.orbitron(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
                 color: Theme.of(context).colorScheme.onSurface,
+                letterSpacing: 2.0,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'No pending verifications',
-              style: GoogleFonts.inter(
-                fontSize: 14,
+              'ALL UNITS VERIFIED',
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
                 color: isDark
                     ? AppColors.darkTextSecondary
                     : AppColors.textSecondary,
+                letterSpacing: 1.5,
               ),
             ),
           ],
@@ -425,7 +416,7 @@ class _VerificationsTab extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.md),
       itemCount: pending.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
         final user = pending[index];
         return _VerificationCard(
@@ -498,18 +489,11 @@ class _VerificationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isNgo = user.role == UserRole.ngo;
+    final accentColor = isNgo ? AppColors.neonCyan : AppColors.neonOrange;
 
-    return Container(
+    return CyberCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withOpacity(0.08)
-              : Colors.grey.shade200,
-        ),
-      ),
+      borderColor: accentColor.withOpacity(0.3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -517,12 +501,10 @@ class _VerificationCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 22,
-                backgroundColor: isNgo
-                    ? Colors.blue.withOpacity(0.1)
-                    : Colors.orange.withOpacity(0.1),
+                backgroundColor: accentColor.withOpacity(0.1),
                 child: Icon(
                   isNgo ? Icons.business_rounded : Icons.local_shipping_rounded,
-                  color: isNgo ? Colors.blue : Colors.orange,
+                  color: accentColor,
                   size: 22,
                 ),
               ),
@@ -532,20 +514,23 @@ class _VerificationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user.organizationName ?? user.name,
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                      (user.organizationName ?? user.name).toUpperCase(),
+                      style: GoogleFonts.orbitron(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
                         color: Theme.of(context).colorScheme.onSurface,
+                        letterSpacing: 1.0,
                       ),
                     ),
                     Text(
-                      user.roleLabel,
-                      style: GoogleFonts.inter(
-                        fontSize: 13,
+                      user.roleLabel.toUpperCase(),
+                      style: GoogleFonts.orbitron(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
                         color: isDark
                             ? AppColors.darkTextSecondary
                             : AppColors.textSecondary,
+                        letterSpacing: 1.0,
                       ),
                     ),
                   ],
@@ -555,69 +540,62 @@ class _VerificationCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.neonOrange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: AppColors.neonOrange.withOpacity(0.3)),
                 ),
                 child: Text(
-                  'Pending',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.orange.shade700,
+                  'PENDING',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.neonOrange,
+                    letterSpacing: 1.0,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.md),
 
           _detailRow(Icons.person_outline, user.name),
           _detailRow(Icons.email_outlined, user.email),
           if (user.phone.isNotEmpty)
             _detailRow(Icons.phone_outlined, user.phone),
-          if (user.address != null && user.address!.isNotEmpty)
-            _detailRow(Icons.location_on_outlined, user.address!),
-          if (user.organizationDescription != null &&
-              user.organizationDescription!.isNotEmpty)
-            _detailRow(Icons.description_outlined,
-                user.organizationDescription!),
-
+          
           const SizedBox(height: AppSpacing.md),
 
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
+                child: OutlinedButton(
                   onPressed: onReject,
-                  icon: const Icon(Icons.close_rounded, size: 18),
-                  label: Text('Reject', style: GoogleFonts.inter()),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    side: const BorderSide(color: Colors.red),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    foregroundColor: Colors.redAccent,
+                    side: const BorderSide(color: Colors.redAccent),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
+                  child: Text('TERMINATE', style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: FilledButton.icon(
+                child: ElevatedButton(
                   onPressed: onApprove,
-                  icon: const Icon(Icons.check_rounded,
-                      size: 18, color: Colors.white),
-                  label: Text(
-                    'Approve',
-                    style: GoogleFonts.inter(color: Colors.white),
-                  ),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.neonCyan,
+                    foregroundColor: Colors.black,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    elevation: 5,
+                    shadowColor: AppColors.neonCyan.withOpacity(0.5),
                   ),
+                  child: Text('AUTHORIZE', style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
                 ),
               ),
             ],
@@ -695,7 +673,7 @@ class _TeamTab extends StatelessWidget {
           : ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: employees.length,
-              separatorBuilder: (_, __) =>
+              separatorBuilder: (_, _) =>
                   const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final emp = employees[index];

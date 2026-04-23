@@ -3,6 +3,7 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 
 import '../animations/scale_tap.dart';
+import 'hitech_loader.dart';
 
 enum AppButtonVariant { primary, secondary, outlined, text }
 
@@ -14,6 +15,7 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final bool isFullWidth;
   final double? height;
+  final TextStyle? textStyle;
 
   const AppButton({
     super.key,
@@ -24,6 +26,7 @@ class AppButton extends StatelessWidget {
     this.isLoading = false,
     this.isFullWidth = true,
     this.height,
+    this.textStyle,
   });
 
   @override
@@ -43,14 +46,7 @@ class AppButton extends StatelessWidget {
 
   Widget _buildButton() {
     final buttonChild = isLoading
-        ? const SizedBox(
-            width: 22,
-            height: 22,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.5,
-              valueColor: AlwaysStoppedAnimation(Colors.white),
-            ),
-          )
+        ? const HitechLoader(size: 24, color: Colors.white)
         : Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -60,7 +56,7 @@ class AppButton extends StatelessWidget {
               ],
               Text(
                 label,
-                style: const TextStyle(letterSpacing: 0.5),
+                style: const TextStyle(letterSpacing: 0.5).merge(textStyle),
               ),
             ],
           );
@@ -87,6 +83,12 @@ class AppButton extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
                 foregroundColor: Colors.black,
+                elevation: 0,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                  fontSize: 13,
+                ),
               ),
               child: buttonChild,
             ),
@@ -113,6 +115,12 @@ class AppButton extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
                 foregroundColor: Colors.white,
+                elevation: 0,
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                  fontSize: 13,
+                ),
               ),
               child: buttonChild,
             ),

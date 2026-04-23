@@ -12,6 +12,7 @@ import '../../providers/theme_provider.dart';
 import '../../widgets/common/connection_status_indicator.dart';
 import '../../widgets/common/skeleton_widgets.dart';
 import '../../widgets/common/hitech_loader.dart';
+import '../../widgets/common/scanning_overlay.dart';
 
 class DonorDashboard extends StatefulWidget {
   const DonorDashboard({super.key});
@@ -70,12 +71,18 @@ class _DonorDashboardState extends State<DonorDashboard> {
           ),
         ),
       ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: const [
-          _OverviewTab(),
-          _MyDonationsTab(),
-          _EmergencyAlertsTab(),
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: _currentIndex,
+            children: const [
+              _OverviewTab(),
+              _MyDonationsTab(),
+              _EmergencyAlertsTab(),
+            ],
+          ).animate(target: _currentIndex.toDouble()).fadeIn(duration: 400.ms),
+          if (context.watch<DonationProvider>().isFetching)
+            const ScanningOverlay(label: 'SYNCING TELEMETRY...'),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -157,17 +164,18 @@ class _OverviewTab extends StatelessWidget {
                   ),
                 ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
                 Text(
-                  'Dehradun Operational Node',
+                  'DEHRADUN OPERATIONAL NODE',
                   style: GoogleFonts.orbitron(
                     fontSize: 10,
-                    color: isDark ? Colors.white54 : Colors.black54,
+                    color: isDark ? AppColors.neonCyan.withOpacity(0.5) : Colors.black54,
                     letterSpacing: 1,
+                    fontWeight: FontWeight.w600,
                   ),
                 ).animate().fadeIn(delay: 100.ms),
               ],
             ),
             if (isFetching) 
-              const HitechCircularLoader(size: 24)
+              const HitechLoader(size: 24)
             else
               const Icon(Icons.verified_user_outlined, color: AppColors.success, size: 24)
                   .animate().scale(duration: 400.ms),
@@ -492,7 +500,7 @@ class _MyDonationsTab extends StatelessWidget {
               ? ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   itemCount: 5,
-                  itemBuilder: (_, __) => const SkeletonTile(),
+                  itemBuilder: (_, _) => const SkeletonTile(),
                 )
               : provider.filteredDonations.isEmpty
                   ? Center(child: Text('NO RESULTS', style: GoogleFonts.orbitron(fontSize: 12, color: Colors.white24)))

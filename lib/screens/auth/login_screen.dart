@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +9,8 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_input.dart';
 import '../../widgets/common/database_status_indicator.dart';
+import '../../widgets/common/cyber_background.dart';
+import '../../widgets/common/cyber_card.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _obscure = true;
+  bool _isAuthenticating = false;
 
   @override
   void dispose() {
@@ -32,19 +34,32 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
+    
+    setState(() => _isAuthenticating = true);
+    
     final auth = context.read<AuthProvider>();
     final ok = await auth.signIn(
       email: _emailCtrl.text.trim(),
       password: _passCtrl.text,
     );
+    
+    if (mounted) setState(() => _isAuthenticating = false);
+
     if (ok && mounted) {
-      // Navigation is now handled by AppRouter via refreshListenable
+      // Navigation handled by AppRouter
     } else if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Login failed'),
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(child: Text(auth.error ?? 'Access Denied: Invalid Credentials')),
+            ],
+          ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       );
     }
@@ -56,39 +71,30 @@ class _LoginScreenState extends State<LoginScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Stack(
+      backgroundColor: isDark ? const Color(0xFF050505) : Colors.white,
+      body: CyberBackground(
         children: [
-          // Animated Background Glows
+          // Ambient Glows
           Positioned(
-            top: -100,
-            right: -100,
-            child: _buildGlow(AppColors.neonCyan, 300),
+            top: -150,
+            right: -150,
+            child: _buildGlow(AppColors.neonCyan, 400),
           ).animate(onPlay: (c) => c.repeat()).move(
-                begin: const Offset(-20, -20),
-                end: const Offset(20, 20),
-                duration: 5.seconds,
+                begin: const Offset(-30, -30),
+                end: const Offset(30, 30),
+                duration: 8.seconds,
                 curve: Curves.easeInOut,
               ),
           Positioned(
-            bottom: -50,
-            left: -50,
-            child: _buildGlow(AppColors.neonPurple, 250),
+            bottom: -100,
+            left: -100,
+            child: _buildGlow(AppColors.neonPurple, 350),
           ).animate(onPlay: (c) => c.repeat()).move(
-                begin: const Offset(20, 20),
-                end: const Offset(-20, -20),
-                duration: 4.seconds,
+                begin: const Offset(30, 30),
+                end: const Offset(-30, -30),
+                duration: 7.seconds,
                 curve: Curves.easeInOut,
               ),
-
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: const DatabaseStatusIndicator(),
-              ),
-            ),
-          ),
 
           SafeArea(
             child: Center(
@@ -96,144 +102,226 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: AppSpacing.screenPadding,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 450),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                      child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Logo Section with Scanning Effect
+                      _buildLogoSection().animate().scale(duration: 800.ms, curve: Curves.easeOutBack),
+                      
+                      AppSpacing.verticalLg,
+                      
+                      // Auth Card
+                      CyberCard(
+                        borderRadius: 28,
+                        showGlow: true,
                         padding: const EdgeInsets.all(32),
-                        decoration: BoxDecoration(
-                          color: isDark 
-                              ? Colors.white.withOpacity(0.05) 
-                              : Colors.black.withOpacity(0.02),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: isDark 
-                                ? Colors.white.withOpacity(0.1) 
-                                : Colors.black.withOpacity(0.05),
-                          ),
-                        ),
                         child: Form(
                           key: _formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                                Center(
-                                  child: Container(
-                                    width: 100,
-                                    height: 100,
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppColors.neonCyan.withOpacity(0.5),
-                                          blurRadius: 30,
-                                          spreadRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                                    child: ClipOval(
-                                      child: Image.asset(
-                                        'assets/images/app_logo.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ).animate().scale(duration: 600.ms, curve: Curves.backOut),
-                                AppSpacing.verticalLg,
-                              Center(
-                                child: Text(
-                                  'FOOD AID',
-                                  style: AppTextStyles.heading.copyWith(
-                                    letterSpacing: 4,
-                                    fontWeight: FontWeight.w900,
-                                    foreground: Paint()
-                                      ..shader = AppColors.neonGradient.createShader(
-                                        const Rect.fromLTWH(0, 0, 200, 70),
-                                      ),
-                                  ),
-                                ),
-                              ).animate().fadeIn(delay: 200.ms).moveY(begin: 10, end: 0),
-                              AppSpacing.verticalXs,
-                              Center(
-                                child: Text(
-                                  'Dehradun\'s High-Tech Food Sharing Network',
-                                  style: AppTextStyles.bodySmall.copyWith(
-                                    color: isDark ? AppColors.neonCyan : AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ).animate().fadeIn(delay: 400.ms),
+                              _buildHeader(isDark),
                               AppSpacing.verticalXl,
+                              
                               AppInput(
                                 controller: _emailCtrl,
-                                label: 'Cyber ID / Email',
+                                label: 'NEURAL LINK ID (EMAIL)',
                                 hint: 'name@dehradun.aid',
                                 prefixIcon: Icons.alternate_email_rounded,
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (v) {
-                                  if (v == null || v.isEmpty) return 'Email is required';
-                                  if (!v.contains('@')) return 'Enter a valid email';
+                                  if (v == null || v.isEmpty) return 'Neural Link ID required';
+                                  if (!v.contains('@')) return 'Invalid ID format';
                                   return null;
                                 },
-                              ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.1, end: 0),
+                              ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.1, end: 0),
+                              
                               AppSpacing.verticalMd,
+                              
                               AppInput(
                                 controller: _passCtrl,
-                                label: 'Security Key',
+                                label: 'ENCRYPTION KEY (PASSWORD)',
                                 hint: '••••••••',
-                                prefixIcon: Icons.lock_open_rounded,
+                                prefixIcon: Icons.security_rounded,
                                 obscureText: _obscure,
                                 suffix: IconButton(
                                   icon: Icon(
-                                    _obscure 
-                                        ? Icons.visibility_off_rounded 
-                                        : Icons.visibility_rounded,
-                                    size: 20,
+                                    _obscure ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                                    size: 18,
+                                    color: isDark ? AppColors.neonCyan.withValues(alpha: 0.7) : null,
                                   ),
                                   onPressed: () => setState(() => _obscure = !_obscure),
                                 ),
-                                validator: (v) {
-                                  if (v == null || v.isEmpty) return 'Password is required';
-                                  return null;
-                                },
-                              ).animate().fadeIn(delay: 600.ms).slideX(begin: 0.1, end: 0),
-                              AppSpacing.verticalXl,
-                              ShaderMask(
-                                shaderCallback: (bounds) => AppColors.neonGradient.createShader(bounds),
-                                child: AppButton(
-                                  label: 'INITIALIZE SESSION',
-                                  onPressed: _login,
-                                  isLoading: auth.isLoading,
-                                ),
-                              ).animate().fadeIn(delay: 700.ms).scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1)),
-                              AppSpacing.verticalMd,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("New to the network? ", style: AppTextStyles.bodySmall),
-                                  TextButton(
-                                    onPressed: () => context.go('/signup'),
-                                    child: Text(
-                                      'JOIN NOW',
-                                      style: TextStyle(
-                                        color: AppColors.neonCyan,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ).animate().fadeIn(delay: 800.ms),
+                                validator: (v) => (v == null || v.isEmpty) ? 'Encryption Key required' : null,
+                              ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.1, end: 0),
+                              
+                              AppSpacing.verticalLg,
+                              
+                              _buildSubmitButton(auth, isDark),
+                              
+                              AppSpacing.verticalLg,
+                              
+                              _buildFooter(context),
                             ],
                           ),
                         ),
-                      ),
-                    ),
+                      ).animate().fadeIn(duration: 800.ms).moveY(begin: 30, end: 0),
+                    ],
                   ),
                 ),
               ),
+            ),
+          ),
+
+          // Database Status
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: const Align(
+                alignment: Alignment.topRight,
+                child: DatabaseStatusIndicator(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogoSection() {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Pulsing Ring
+        Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.2), width: 2),
+          ),
+        ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(
+              begin: const Offset(1, 1),
+              end: const Offset(1.2, 1.2),
+              duration: 2.seconds,
+            ),
+            
+        Container(
+          width: 100,
+          height: 100,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.black,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.neonCyan.withValues(alpha: 0.4),
+                blurRadius: 30,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Image.asset(
+            'assets/images/app_logo.png',
+            fit: BoxFit.contain,
+          ),
+        ),
+        
+        if (_isAuthenticating)
+          const Positioned.fill(
+            child: _ScanningEffect(),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildHeader(bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'PROTOCOL: INITIALIZE',
+          style: AppTextStyles.hitech.copyWith(
+            fontSize: 12,
+            letterSpacing: 2,
+            color: AppColors.neonCyan,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        AppSpacing.verticalXs,
+        Text(
+          'DEHRADUN NODE',
+          style: AppTextStyles.hitech.copyWith(
+            fontSize: 28,
+            letterSpacing: 1,
+            fontWeight: FontWeight.w900,
+            foreground: Paint()
+              ..shader = AppColors.cyberGradient.createShader(
+                const Rect.fromLTWH(0, 0, 200, 70),
+              ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubmitButton(AuthProvider auth, bool isDark) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.neonCyan.withValues(alpha: 0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          )
+        ],
+      ),
+      child: AppButton(
+        label: _isAuthenticating ? 'VERIFYING...' : 'AUTHORIZE SESSION',
+        onPressed: _login,
+        isLoading: auth.isLoading,
+        textStyle: AppTextStyles.hitech.copyWith(
+          fontWeight: FontWeight.bold,
+          letterSpacing: 2,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFooter(BuildContext context) {
+    return Center(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "UNREGISTERED AGENT? ",
+                style: AppTextStyles.hitech.copyWith(fontSize: 10, color: Colors.white38),
+              ),
+              TextButton(
+                onPressed: () => context.go('/signup'),
+                child: Text(
+                  'ENROLL NOW',
+                  style: AppTextStyles.hitech.copyWith(
+                    color: AppColors.neonCyan,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'SECURE LINE: 256-BIT ENCRYPTION ACTIVE',
+            style: AppTextStyles.hitech.copyWith(
+              fontSize: 8,
+              color: Colors.white12,
+              letterSpacing: 1,
             ),
           ),
         ],
@@ -249,12 +337,68 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.15),
+            color: color.withValues(alpha: 0.12),
             blurRadius: 100,
-            spreadRadius: 50,
+            spreadRadius: 40,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ScanningEffect extends StatefulWidget {
+  const _ScanningEffect();
+
+  @override
+  State<_ScanningEffect> createState() => _ScanningEffectState();
+}
+
+class _ScanningEffectState extends State<_ScanningEffect> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Stack(
+          children: [
+            Positioned(
+              top: _controller.value * 100,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 2,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.neonCyan,
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

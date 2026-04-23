@@ -13,6 +13,7 @@ class AuthProvider extends ChangeNotifier {
   String? _error;
   bool _isInitialized = false;
   bool _dbOnline = true;
+  bool _isProcessingAuth = false;
 
   UserModel? get user => _user;
   bool get isLoading => _isLoading;
@@ -38,20 +39,40 @@ class AuthProvider extends ChangeNotifier {
     await checkDatabaseHealth();
     
     _authService.authStateChanges.listen((firebaseUser) async {
-      debugPrint('AuthProvider: Auth state changed. User: ${firebaseUser?.uid}');
+      debugPrint('AuthProvider: authStateChanges emitted. User: ${firebaseUser?.uid}');
+      
+      if (_isProcessingAuth) {
+        debugPrint('AuthProvider: Skipping internal listener update - auth is being processed manually.');
+        return;
+      }
+      
       if (firebaseUser != null) {
         // If we already have a user and it matches, don't re-fetch unless it's null
         if (_user == null || _user!.uid != firebaseUser.uid) {
+          debugPrint('AuthProvider: Fetching user profile for ${firebaseUser.uid}');
           final userModel = await _authService.getCurrentUserModel();
-          _user = userModel;
-          debugPrint('AuthProvider: Profile loaded: ${_user?.name}');
+          if (userModel != null) {
+            _user = userModel;
+            debugPrint('AuthProvider: Profile loaded: ${_user?.name} (${_user?.role})');
+          } else {
+            debugPrint('AuthProvider: Profile not found in Firestore for ${firebaseUser.uid}');
+            _user = null;
+          }
         }
       } else {
+        debugPrint('AuthProvider: No user authenticated.');
         _user = null;
       }
       _isInitialized = true;
+      _isProcessingAuth = false;
+      debugPrint('AuthProvider: notifyListeners called from authStateChanges. isInitialized: $_isInitialized, isAuthenticated: $isAuthenticated, User: ${_user?.email}');
       notifyListeners();
     });
+  }
+
+  void forceRefresh() {
+    debugPrint('AuthProvider: forceRefresh triggered');
+    notifyListeners();
   }
 
   Future<bool> checkDatabaseHealth() async {
@@ -97,6 +118,7 @@ class AuthProvider extends ChangeNotifier {
     _clearError();
 
     try {
+      _isProcessingAuth = true;
       _user = await _authService.signUp(
         name: name,
         email: email,
@@ -112,14 +134,20 @@ class AuthProvider extends ChangeNotifier {
       );
       _isInitialized = true;
       _error = null;
-      _setLoading(false);
+      _isProcessingAuth = false;
+      debugPrint('AuthProvider: signUp success. User: ${_user?.name}, Role: ${_user?.role}');
+      _setLoading(false); // This calls notifyListeners()
       return true;
     } on FirebaseAuthException catch (e) {
+      _isProcessingAuth = false;
       _setError(_mapAuthError(e.code));
+      debugPrint('AuthProvider: signUp FirebaseAuthException: ${e.code}');
       _setLoading(false);
       return false;
     } catch (e) {
-      _setError('An unexpected error occurred. Please try again.');
+      _isProcessingAuth = false;
+      _setError(e.toString());
+      debugPrint('AuthProvider: signUp generic error: $e');
       _setLoading(false);
       return false;
     }
@@ -130,23 +158,30 @@ class AuthProvider extends ChangeNotifier {
     required String password,
   }) async {
     _setLoading(true);
-    _clearError();
-
+    _error = null;
     try {
+      debugPrint('AuthProvider: Initiating signIn for $email');
+      _isProcessingAuth = true;
       _user = await _authService.signIn(
         email: email,
         password: password,
       );
       _isInitialized = true;
       _error = null;
-      _setLoading(false);
+      _isProcessingAuth = false;
+      debugPrint('AuthProvider: signIn success. User: ${_user?.name}, Role: ${_user?.role}');
+      _setLoading(false); 
       return true;
     } on FirebaseAuthException catch (e) {
+      _isProcessingAuth = false;
       _setError(_mapAuthError(e.code));
+      debugPrint('AuthProvider: signIn FirebaseAuthException: ${e.code}');
       _setLoading(false);
       return false;
     } catch (e) {
-      _setError('An unexpected error occurred. Please try again.');
+      _isProcessingAuth = false;
+      _setError(e.toString());
+      debugPrint('AuthProvider: signIn generic error: $e');
       _setLoading(false);
       return false;
     }

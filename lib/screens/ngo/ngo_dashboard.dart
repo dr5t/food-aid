@@ -590,7 +590,7 @@ class _MyEmergenciesTab extends StatelessWidget {
   final Color color;
   final LinearGradient? gradient;
 
-  const _StatCard({
+  _StatCard({
     required this.label,
     required this.value,
     required this.icon,

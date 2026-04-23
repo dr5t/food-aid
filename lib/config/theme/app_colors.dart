@@ -71,6 +71,7 @@ class AppColors {
   static const Color neonGreen = Color(0xFF00FF41);
   static const Color neonBlue = Color(0xFF2979FF);
   static const Color neonOrange = Color(0xFFFF9100);
+  static const Color neonAmber = Color(0xFFFFC400);
 
   // Glassmorphism Colors
   static Color glassBackground(Brightness brightness) => brightness == Brightness.dark
@@ -156,6 +157,12 @@ class AppColors {
 
   static const LinearGradient neonBlueGradient = LinearGradient(
     colors: [Color(0xFF2979FF), Color(0xFF1565C0)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient neonAmberGradient = LinearGradient(
+    colors: [Color(0xFFFFC400), Color(0xFFFFAB00)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

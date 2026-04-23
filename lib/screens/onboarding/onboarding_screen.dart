@@ -87,11 +87,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onPressed: () => context.go('/login'),
                       child: Text(
                         'SKIP PROTOCOL',
-                        style: TextStyle(
-                          color: primaryColor.withOpacity(0.6),
+                        style: const TextStyle(
+                          color: Colors.white38,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
-                          fontSize: 12,
+                          letterSpacing: 1.5,
+                          fontSize: 10,
+                          fontFamily: 'Orbitron',
                         ),
                       ),
                     ),
@@ -138,6 +139,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           label: _currentPage == _pages.length - 1
                               ? 'INITIALIZE'
                               : 'NEXT PHASE',
+                          textStyle: const TextStyle(
+                            fontFamily: 'Orbitron',
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold,
+                          ),
                           onPressed: () {
                             if (_currentPage < _pages.length - 1) {
                               _pageController.nextPage(
@@ -207,7 +213,8 @@ class _OnboardingPage extends StatelessWidget {
           AppSpacing.verticalXl,
           Text(
             title.toUpperCase(),
-            style: AppTextStyles.heading.copyWith(
+            style: AppTextStyles.hitech.copyWith(
+              fontSize: 20,
               letterSpacing: 2,
               fontWeight: FontWeight.w900,
             ),

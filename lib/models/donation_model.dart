@@ -95,10 +95,9 @@ class DonationModel {
     this.rejectionReason,
   });
 
-  factory DonationModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+  factory DonationModel.fromMap(Map<String, dynamic> data, String id) {
     return DonationModel(
-      id: doc.id,
+      id: id,
       donorId: data['donorId'] ?? '',
       donorName: data['donorName'] ?? '',
       donorType: data['donorType'],
@@ -140,6 +139,10 @@ class DonationModel {
       emergencyRequestId: data['emergencyRequestId'],
       rejectionReason: data['rejectionReason'],
     );
+  }
+
+  factory DonationModel.fromFirestore(DocumentSnapshot doc) {
+    return DonationModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
   }
 
   Map<String, dynamic> toMap() {

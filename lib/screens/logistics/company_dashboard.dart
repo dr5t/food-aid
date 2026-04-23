@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
+import '../../config/theme/app_text_styles.dart';
 import '../../models/donation_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
@@ -10,6 +12,8 @@ import '../../providers/logistics_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/admin/create_employee_dialog.dart';
+import '../../widgets/common/cyber_card.dart';
+import '../../widgets/common/cyber_bottom_nav_bar.dart';
 
 class CompanyDashboard extends StatefulWidget {
   const CompanyDashboard({super.key});
@@ -32,51 +36,89 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Logistics Hub',
-          style: GoogleFonts.inter(fontWeight: FontWeight.w700),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 22),
-            onPressed: () => context.read<ThemeProvider>().toggleTheme(),
+      backgroundColor: AppColors.darkBg,
+      body: Stack(
+        children: [
+          // Background Glow
+          Positioned(
+            top: -100,
+            right: -100,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.neonCyan.withOpacity(0.05),
+              ),
+            ).animate().fadeIn(duration: 1000.ms),
           ),
-          IconButton(
-            icon: const Icon(Icons.logout, size: 22),
-            onPressed: () => context.read<AuthProvider>().signOut(),
+          
+          SafeArea(
+            child: Column(
+              children: [
+                _buildHeader(context),
+                Expanded(
+                  child: IndexedStack(
+                    index: _currentIndex,
+                    children: const [
+                      _OverviewTab(),
+                      _UnassignedTab(),
+                      _EmployeesTab(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: const [
-          _OverviewTab(),
-          _UnassignedTab(),
-          _EmployeesTab(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CyberBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard_outlined),
             activeIcon: Icon(Icons.dashboard),
-            label: 'Overview',
+            label: 'HUB',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.assignment_outlined),
             activeIcon: Icon(Icons.assignment),
-            label: 'Unassigned',
+            label: 'TASKS',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.group_outlined),
             activeIcon: Icon(Icons.group),
-            label: 'Employees',
+            label: 'UNIT',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'LOGISTICS HUB',
+                style: AppTextStyles.hitechHeading.copyWith(fontSize: 20),
+              ),
+              Text(
+                'FLEET CONTROL CENTER',
+                style: AppTextStyles.hitechSubtitle.copyWith(fontSize: 10, color: AppColors.neonCyan),
+              ),
+            ],
+          ),
+          const Spacer(),
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white70),
+            onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],
       ),
@@ -102,78 +144,74 @@ class _OverviewTab extends StatelessWidget {
         .length;
 
     return ListView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 100),
       children: [
-        Text(
-          '${user?.organizationName ?? 'Company'} 🚚',
-          style: GoogleFonts.inter(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Manage deliveries and employees',
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            color: isDark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary,
+        CyberCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'SYSTEM USER: ${user?.organizationName?.toUpperCase() ?? 'COMPANY'}',
+                style: GoogleFonts.orbitron(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.neonCyan,
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'LOGISTICS AUTHENTICATED // STATUS: ONLINE',
+                style: GoogleFonts.orbitron(
+                  fontSize: 10,
+                  color: Colors.white54,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: AppSpacing.xl),
 
-        Row(
+        GridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: AppSpacing.md,
+          crossAxisSpacing: AppSpacing.md,
+          childAspectRatio: 1.4,
           children: [
-            Expanded(
-              child: _StatCard(
-                label: 'Unassigned',
-                value: '${provider.unassignedDonations.length}',
-                icon: Icons.assignment_outlined,
-                color: AppColors.warning,
-              ),
+            _StatCard(
+              label: 'UNASSIGNED',
+              value: '${provider.unassignedDonations.length}',
+              icon: Icons.assignment_outlined,
+              color: AppColors.neonAmber,
             ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: _StatCard(
-                label: 'Active',
-                value: '$active',
-                icon: Icons.local_shipping_outlined,
-                color: AppColors.info,
-              ),
+            _StatCard(
+              label: 'ACTIVE',
+              value: '$active',
+              icon: Icons.local_shipping_outlined,
+              color: AppColors.neonCyan,
             ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Row(
-          children: [
-            Expanded(
-              child: _StatCard(
-                label: 'Delivered',
-                value: '$delivered',
-                icon: Icons.check_circle_outline,
-                color: AppColors.success,
-              ),
+            _StatCard(
+              label: 'DELIVERED',
+              value: '$delivered',
+              icon: Icons.check_circle_outline,
+              color: AppColors.neonGreen,
             ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: _StatCard(
-                label: 'Employees',
-                value: '${provider.employees.length}',
-                icon: Icons.group_outlined,
-                color: AppColors.statusAssigned,
-              ),
+            _StatCard(
+              label: 'EMPLOYEES',
+              value: '${provider.employees.length}',
+              icon: Icons.group_outlined,
+              color: AppColors.neonPurple,
             ),
           ],
         ),
 
         const SizedBox(height: AppSpacing.xl),
         Text(
-          'Active Deliveries',
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          'ACTIVE DELIVERIES',
+          style: AppTextStyles.hitechSubtitle.copyWith(color: Colors.white),
         ),
         const SizedBox(height: AppSpacing.md),
 
@@ -183,15 +221,15 @@ class _OverviewTab extends StatelessWidget {
             .map((d) => _DeliveryTile(donation: d)),
 
         if (provider.companyDonations.where((d) => d.isActive).isEmpty)
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Center(
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.xl),
               child: Text(
-                'No active deliveries',
-                style: GoogleFonts.inter(
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.textSecondary,
+                'NO ACTIVE OPERATIONS',
+                style: GoogleFonts.orbitron(
+                  fontSize: 12,
+                  color: Colors.white24,
+                  letterSpacing: 1,
                 ),
               ),
             ),

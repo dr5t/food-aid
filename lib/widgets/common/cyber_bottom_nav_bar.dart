@@ -63,7 +63,7 @@ class CyberBottomNavigationBar extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          item.icon,
+                          isSelected ? (item.activeIcon ?? item.icon) : item.icon,
                           color: isSelected ? AppColors.neonCyan : AppColors.darkTextSecondary,
                           size: 24,
                         ),
@@ -115,10 +115,12 @@ class CyberBottomNavigationBar extends StatelessWidget {
 
 class CyberBottomNavItem {
   final IconData icon;
+  final IconData? activeIcon;
   final String label;
 
   const CyberBottomNavItem({
     required this.icon,
+    this.activeIcon,
     required this.label,
   });
 }

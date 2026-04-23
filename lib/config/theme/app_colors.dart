@@ -22,7 +22,7 @@ class AppColors {
 
 
   static const Color darkBackground = Color(0xFF000000); // True Black
-  static const Color darkBg = darkBackground;
+  static const Color darkBg = Color(0xFF000000);
   static const Color darkSurface = Color(0xFF050505);
   static const Color darkSurfaceVariant = Color(0xFF0A0A0A);
   static const Color darkTextPrimary = Color(0xFFFFFFFF);

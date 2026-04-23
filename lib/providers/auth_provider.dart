@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,6 +29,8 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider() {
     _init();
+    // Periodic health check every 30 seconds
+    Timer.periodic(const Duration(seconds: 30), (_) => checkDatabaseHealth());
   }
 
   Future<void> _init() async {
@@ -35,8 +38,10 @@ class AuthProvider extends ChangeNotifier {
     await checkDatabaseHealth();
     
     _authService.authStateChanges.listen((firebaseUser) async {
+      debugPrint('Auth state changed: ${firebaseUser?.uid}');
       if (firebaseUser != null) {
-        _user = await _authService.getCurrentUserModel();
+        final userModel = await _authService.getCurrentUserModel();
+        _user = userModel;
       } else {
         _user = null;
       }

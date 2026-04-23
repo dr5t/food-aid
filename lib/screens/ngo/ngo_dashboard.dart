@@ -93,12 +93,28 @@ class _NgoDashboardState extends State<NgoDashboard> {
 
 
   Widget _buildEmergencyFAB() {
-    return FloatingActionButton.extended(
-      onPressed: () => _showEmergencyDialog(),
-      backgroundColor: AppColors.emergency,
-      foregroundColor: Colors.white,
-      icon: const Icon(Icons.warning),
-      label: const Text('Emergency'),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 80), // Avoid overlap with bottom nav
+      child: FloatingActionButton.extended(
+        onPressed: () => _showEmergencyDialog(),
+        backgroundColor: AppColors.neonAmber.withOpacity(0.2),
+        foregroundColor: AppColors.neonAmber,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          side: const BorderSide(color: AppColors.neonAmber, width: 2),
+        ),
+        icon: const Icon(Icons.warning_amber, size: 20),
+        label: Text(
+          'EMERGENCY',
+          style: GoogleFonts.orbitron(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
+          ),
+        ),
+      ).animate(onPlay: (controller) => controller.repeat())
+        .shimmer(duration: 2000.ms, color: AppColors.neonAmber.withOpacity(0.3)),
     );
   }
 
@@ -111,138 +127,170 @@ class _NgoDashboardState extends State<NgoDashboard> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (ctx, setDialogState) {
-            return AlertDialog(
-              title: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.emergency.withValues(alpha: 0.1),
-                      borderRadius:
-                          BorderRadius.circular(AppSpacing.radiusSm),
-                    ),
-                    child: const Icon(Icons.warning,
-                        color: AppColors.emergency, size: 20),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    'Emergency Request',
-                    style: GoogleFonts.inter(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+            return Theme(
+              data: Theme.of(context).copyWith(
+                dialogBackgroundColor: AppColors.darkBg.withOpacity(0.9),
               ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'This will alert all donors within 10km of your location.',
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? AppColors.darkTextSecondary
-                          : AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  Text(
-                    'Meal Type',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Row(
+              child: AlertDialog(
+                backgroundColor: Colors.transparent,
+                contentPadding: EdgeInsets.zero,
+                insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+                content: CyberCard(
+                  borderColor: AppColors.neonAmber,
+                  glowColor: AppColors.neonAmber.withOpacity(0.2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: _MealTypeOption(
-                          label: 'Vegetarian',
-                          icon: Icons.eco,
-                          color: AppColors.success,
-                          isSelected: selectedMealType == 'veg',
-                          onTap: () => setDialogState(
-                              () => selectedMealType = 'veg'),
+                      Row(
+                        children: [
+                          const Icon(Icons.warning_amber,
+                              color: AppColors.neonAmber, size: 24),
+                          const SizedBox(width: AppSpacing.sm),
+                          Text(
+                            'EMERGENCY REQUEST',
+                            style: AppTextStyles.hitechHeading.copyWith(
+                              fontSize: 18,
+                              color: AppColors.neonAmber,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'BROADCASTING TO ALL UNITS WITHIN 10KM RADIUS',
+                        style: AppTextStyles.hitechSubtitle.copyWith(
+                          fontSize: 10,
+                          color: Colors.white70,
                         ),
                       ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: _MealTypeOption(
-                          label: 'Non-Veg',
-                          icon: Icons.restaurant,
-                          color: AppColors.accentDark,
-                          isSelected: selectedMealType == 'nonVeg',
-                          onTap: () => setDialogState(
-                              () => selectedMealType = 'nonVeg'),
+                      const SizedBox(height: AppSpacing.xl),
+                      Text(
+                        'MEAL TYPE',
+                        style: GoogleFonts.orbitron(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _MealTypeOption(
+                              label: 'VEG',
+                              icon: Icons.eco,
+                              color: AppColors.neonGreen,
+                              isSelected: selectedMealType == 'veg',
+                              onTap: () => setDialogState(
+                                  () => selectedMealType = 'veg'),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: _MealTypeOption(
+                              label: 'NON-VEG',
+                              icon: Icons.restaurant,
+                              color: AppColors.neonPurple,
+                              isSelected: selectedMealType == 'nonVeg',
+                              onTap: () => setDialogState(
+                                  () => selectedMealType = 'nonVeg'),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      TextFormField(
+                        controller: qtyController,
+                        keyboardType: TextInputType.number,
+                        style: GoogleFonts.orbitron(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'QUANTITY REQUIRED',
+                          labelStyle: GoogleFonts.orbitron(fontSize: 10),
+                          prefixIcon: const Icon(Icons.people, size: 20, color: AppColors.neonAmber),
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white24),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: AppColors.neonAmber),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xl),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: Text(
+                              'CANCEL',
+                              style: GoogleFonts.orbitron(color: Colors.white54, fontSize: 12),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          ElevatedButton(
+                            onPressed: () async {
+                              final qty =
+                                  int.tryParse(qtyController.text.trim()) ?? 0;
+                              if (qty <= 0) return;
+
+                              final user = context.read<AuthProvider>().user;
+                              if (user == null) return;
+
+                              final request = EmergencyRequestModel(
+                                id: '',
+                                ngoId: user.uid,
+                                ngoName: user.organizationName ?? user.name,
+                                mealType: selectedMealType,
+                                quantity: qty,
+                                ngoLocation: user.location ??
+                                    const GeoPoint(28.6139, 77.2090),
+                                ngoAddress: user.address ?? 'Not specified',
+                                status: EmergencyStatus.open,
+                                createdAt: DateTime.now(),
+                                updatedAt: DateTime.now(),
+                              );
+
+                              await context
+                                  .read<EmergencyProvider>()
+                                  .createEmergencyRequest(request);
+
+                              if (ctx.mounted) Navigator.pop(ctx);
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: AppColors.neonAmber,
+                                    content: Text(
+                                      'SIGNAL BROADCASTED TO NEARBY DONORS',
+                                      style: GoogleFonts.orbitron(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.neonAmber,
+                              foregroundColor: Colors.black,
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            ),
+                            child: Text(
+                              'SEND ALERT',
+                              style: GoogleFonts.orbitron(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: AppSpacing.lg),
-                  TextFormField(
-                    controller: qtyController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Number of Meals Needed',
-                      prefixIcon: Icon(Icons.people, size: 20),
-                    ),
-                  ),
-                ],
+                ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final qty =
-                        int.tryParse(qtyController.text.trim()) ?? 0;
-                    if (qty <= 0) return;
-
-                    final user = context.read<AuthProvider>().user;
-                    if (user == null) return;
-
-                    final request = EmergencyRequestModel(
-                      id: '',
-                      ngoId: user.uid,
-                      ngoName: user.organizationName ?? user.name,
-                      mealType: selectedMealType,
-                      quantity: qty,
-                      ngoLocation: user.location ??
-                          const GeoPoint(28.6139, 77.2090),
-                      ngoAddress: user.address ?? 'Not specified',
-                      status: EmergencyStatus.open,
-                      createdAt: DateTime.now(),
-                      updatedAt: DateTime.now(),
-                    );
-
-                    await context
-                        .read<EmergencyProvider>()
-                        .createEmergencyRequest(request);
-
-                    if (ctx.mounted) Navigator.pop(ctx);
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              '🚨 Emergency request sent to nearby donors'),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.emergency,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Send Alert'),
-                ),
-              ],
             );
           },
         );
@@ -721,23 +769,31 @@ class _MealTypeOption extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.08) : null,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          color: isSelected ? color.withOpacity(0.1) : Colors.white.withOpacity(0.02),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
-            color: isSelected ? color : AppColors.divider,
+            color: isSelected ? color : Colors.white12,
             width: isSelected ? 2 : 1,
           ),
+          boxShadow: isSelected ? [
+            BoxShadow(
+              color: color.withOpacity(0.2),
+              blurRadius: 8,
+              spreadRadius: 1,
+            )
+          ] : null,
         ),
         child: Column(
           children: [
-            Icon(icon, color: isSelected ? color : null),
-            const SizedBox(height: 4),
+            Icon(icon, color: isSelected ? color : Colors.white38),
+            const SizedBox(height: 8),
             Text(
               label,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? color : null,
+              style: GoogleFonts.orbitron(
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? color : Colors.white38,
+                letterSpacing: 1,
               ),
             ),
           ],

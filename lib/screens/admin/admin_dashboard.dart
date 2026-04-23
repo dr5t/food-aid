@@ -861,7 +861,7 @@ class _TeamTab extends StatelessWidget {
           email: email,
           password: password,
           createdByUid: adminUid,
-          phone: phone,
+          phone: phone ?? '',
         ),
       ),
     );

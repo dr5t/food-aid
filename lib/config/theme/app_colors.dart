@@ -21,14 +21,15 @@ class AppColors {
   static const Color textHint = Color(0xFFBDBDBD);
 
 
-  static const Color darkBackground = Color(0xFF000000); // Deep Black
-  static const Color darkSurface = Color(0xFF0A0A0A);
-  static const Color darkSurfaceVariant = Color(0xFF151515);
+  static const Color darkBackground = Color(0xFF000000); // True Black
+  static const Color darkSurface = Color(0xFF050505);
+  static const Color darkSurfaceVariant = Color(0xFF0A0A0A);
   static const Color darkTextPrimary = Color(0xFFFFFFFF);
-  static const Color darkTextSecondary = Color(0xFFAAAAAA);
-  static const Color darkTextHint = Color(0xFF555555);
-  static const Color darkDivider = Color(0xFF222222);
+  static const Color darkTextSecondary = Color(0xFF888888);
+  static const Color darkTextHint = Color(0xFF444444);
+  static const Color darkDivider = Color(0xFF111111);
   static const Color darkPrimary = Color(0xFF00E5FF); // Neon Cyan
+  static const Color darkAccent = Color(0xFFD500F9); // Neon Purple
 
 
   static const Color error = Color(0xFFE53935);
@@ -158,4 +159,20 @@ class AppColors {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
+
+  static const List<BoxShadow> neonGlow = [
+    BoxShadow(
+      color: neonCyan,
+      blurRadius: 10,
+      spreadRadius: 1,
+    ),
+  ];
+
+  static List<BoxShadow> customGlow(Color color) => [
+    BoxShadow(
+      color: color.withOpacity(0.3),
+      blurRadius: 12,
+      spreadRadius: 2,
+    ),
+  ];
 }

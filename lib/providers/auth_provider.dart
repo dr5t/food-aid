@@ -38,10 +38,14 @@ class AuthProvider extends ChangeNotifier {
     await checkDatabaseHealth();
     
     _authService.authStateChanges.listen((firebaseUser) async {
-      debugPrint('Auth state changed: ${firebaseUser?.uid}');
+      debugPrint('AuthProvider: Auth state changed. User: ${firebaseUser?.uid}');
       if (firebaseUser != null) {
-        final userModel = await _authService.getCurrentUserModel();
-        _user = userModel;
+        // If we already have a user and it matches, don't re-fetch unless it's null
+        if (_user == null || _user!.uid != firebaseUser.uid) {
+          final userModel = await _authService.getCurrentUserModel();
+          _user = userModel;
+          debugPrint('AuthProvider: Profile loaded: ${_user?.name}');
+        }
       } else {
         _user = null;
       }

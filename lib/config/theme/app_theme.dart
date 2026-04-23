@@ -44,13 +44,13 @@ class AppTheme {
 
   static ThemeData _buildTheme(ColorScheme cs, Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final bg = isDark ? const Color(0xFF000000) : AppColors.background;
-    final surface = isDark ? const Color(0xFF0A0A0B) : AppColors.surface;
+    final bg = isDark ? AppColors.darkBackground : AppColors.background;
+    final surface = isDark ? AppColors.darkSurface : AppColors.surface;
     final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
     final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
     final textHint = isDark ? AppColors.darkTextHint : AppColors.textHint;
-    final dividerColor = isDark ? const Color(0xFF1A1A1C) : AppColors.divider;
-    final primary = isDark ? AppColors.neonCyan : AppColors.primary;
+    final dividerColor = isDark ? AppColors.darkDivider : AppColors.divider;
+    final primary = isDark ? AppColors.darkPrimary : AppColors.primary;
 
     return ThemeData(
       useMaterial3: true,
@@ -95,7 +95,26 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: isDark ? Colors.black : Colors.white,
-          elevation: 0,
+          elevation: isDark ? 4 : 0,
+          shadowColor: primary.withOpacity(0.5),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          textStyle: GoogleFonts.plusJakartaSans(
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primary,
+          side: BorderSide(color: primary.withOpacity(0.5), width: 1.5),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
@@ -106,7 +125,7 @@ class AppTheme {
           textStyle: GoogleFonts.plusJakartaSans(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            letterSpacing: 0.5,
+            letterSpacing: 1.0,
           ),
         ),
       ),
@@ -183,11 +202,11 @@ class AppTheme {
         side: BorderSide.none,
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: isDark ? const Color(0xFF0F0F11) : surface,
+        backgroundColor: isDark ? const Color(0xFF0A0A0C) : surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(28),
-          side: isDark ? BorderSide(color: Colors.white10) : BorderSide.none,
+          side: isDark ? const BorderSide(color: Colors.white10) : BorderSide.none,
         ),
       ),
     );

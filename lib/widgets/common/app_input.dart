@@ -36,30 +36,62 @@ class AppInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (label != null) ...[
-          Text(label!, style: AppTextStyles.label),
-          AppSpacing.verticalXs,
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 6),
+            child: Text(
+              label!.toUpperCase(),
+              style: AppTextStyles.label.copyWith(
+                fontSize: 10,
+                letterSpacing: 1.5,
+                fontWeight: FontWeight.w800,
+                color: isDark ? AppColors.neonCyan.withOpacity(0.7) : AppColors.primary.withOpacity(0.7),
+              ),
+            ),
+          ),
         ],
-        TextFormField(
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          validator: validator,
-          onChanged: onChanged,
-          enabled: enabled,
-          textInputAction: textInputAction,
-          decoration: InputDecoration(
-            hintText: hint,
-            errorText: errorText,
-            prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, size: 20)
-                : null,
-            suffixIcon: suffix,
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: isDark ? [
+              BoxShadow(
+                color: AppColors.neonCyan.withOpacity(0.03),
+                blurRadius: 15,
+                spreadRadius: -5,
+              ),
+            ] : null,
+          ),
+          child: TextFormField(
+            controller: controller,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            maxLines: maxLines,
+            validator: validator,
+            onChanged: onChanged,
+            enabled: enabled,
+            textInputAction: textInputAction,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.2,
+            ),
+            decoration: InputDecoration(
+              hintText: hint,
+              errorText: errorText,
+              prefixIcon: prefixIcon != null
+                  ? Icon(
+                      prefixIcon, 
+                      size: 20, 
+                      color: isDark ? AppColors.neonCyan.withOpacity(0.8) : AppColors.primary.withOpacity(0.8),
+                    )
+                  : null,
+              suffixIcon: suffix,
+            ),
           ),
         ),
       ],

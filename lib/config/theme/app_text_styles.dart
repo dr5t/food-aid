@@ -23,56 +23,37 @@ class AppTextStyles {
   static TextStyle get neonGlow => GoogleFonts.outfit(
         fontSize: 28,
         fontWeight: FontWeight.w900,
-        color: AppColors.neonCyan,
-        shadows: [
-          Shadow(
-            color: AppColors.neonCyan.withValues(alpha: 0.5),
-            blurRadius: 10,
-          ),
-          Shadow(
-            color: AppColors.neonPurple.withValues(alpha: 0.3),
-            blurRadius: 20,
-          ),
-        ],
+        color: AppColors.primary,
       );
 
-  static TextStyle get hitech => GoogleFonts.orbitron(
+  static TextStyle get hitech => GoogleFonts.outfit(
         fontSize: 28,
         fontWeight: FontWeight.w900,
-        color: AppColors.neonCyan,
-        letterSpacing: 4,
-        shadows: [
-          Shadow(
-            color: AppColors.neonCyan.withValues(alpha: 0.8),
-            blurRadius: 10,
-          ),
-          Shadow(
-            color: AppColors.neonPurple.withValues(alpha: 0.5),
-            blurRadius: 20,
-          ),
-        ],
+        color: AppColors.primary,
+        letterSpacing: 1,
       );
   
-  static TextStyle get hitechSmall => GoogleFonts.orbitron(
+  static TextStyle get hitechSmall => GoogleFonts.outfit(
         fontSize: 12,
         fontWeight: FontWeight.w700,
-        color: AppColors.neonCyan,
-        letterSpacing: 2,
+        color: AppColors.primary,
+        letterSpacing: 1,
       );
 
-  static TextStyle get hitechHeading => GoogleFonts.orbitron(
+  static TextStyle get hitechHeading => GoogleFonts.outfit(
         fontSize: 20,
         fontWeight: FontWeight.w700,
-        color: AppColors.neonCyan,
-        letterSpacing: 2,
+        color: AppColors.primary,
+        letterSpacing: 1,
       );
 
-  static TextStyle get hitechSubtitle => GoogleFonts.orbitron(
+  static TextStyle get hitechSubtitle => GoogleFonts.outfit(
         fontSize: 14,
         fontWeight: FontWeight.w600,
-        color: AppColors.neonCyan,
-        letterSpacing: 1.5,
+        color: AppColors.primary,
+        letterSpacing: 1,
       );
+
 
   static TextStyle get subheading => GoogleFonts.outfit(
         fontSize: 18,

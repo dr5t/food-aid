@@ -49,7 +49,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonCyan.withValues(alpha: 0.05),
+                color: AppColors.neonCyan.withOpacity(0.05),
               ),
             ).animate().fadeIn(duration: 1000.ms),
           ),
@@ -481,7 +481,7 @@ class _DeliveryTile extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              donation.mealType.toUpperCase(),
+              donation.mealType.name.toUpperCase(),
               style: AppTextStyles.hitechHeading.copyWith(fontSize: 14),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -771,6 +771,7 @@ void _showCreateEmployeeDialog(BuildContext context) {
     builder: (context) {
       final user = context.read<AuthProvider>().user;
       return CreateEmployeeDialog(
+        title: 'RECRUIT OPERATIVE',
         targetRole: UserRole.logistics_employee,
         onCreateEmployee: ({
           required String name,

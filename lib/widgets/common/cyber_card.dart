@@ -86,7 +86,8 @@ class CyberCard extends StatelessWidget {
               ),
             ),
           ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -772,7 +772,7 @@ void _showCreateEmployeeDialog(BuildContext context) {
       final user = context.read<AuthProvider>().user;
       return CreateEmployeeDialog(
         title: 'RECRUIT OPERATIVE',
-        targetRole: UserRole.logistics_employee,
+        targetRole: UserRole.logisticsEmployee,
         onCreateEmployee: ({
           required String name,
           required String email,

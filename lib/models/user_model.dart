@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum UserRole { donor, ngo, logisticsCompany, logisticsEmployee, admin }
+enum UserRole { donor, ngo, logisticsCompany, logisticsEmployee, admin, superAdmin }
 
 enum DonorType { hotel, restaurant, wedding, home, resort, catering, other }
 
@@ -174,6 +174,8 @@ class UserModel {
         return 'Delivery Partner';
       case UserRole.admin:
         return 'Admin';
+      case UserRole.superAdmin:
+        return 'Super Admin';
     }
   }
 

@@ -11,9 +11,9 @@ class AuthProvider extends ChangeNotifier {
   UserModel? _user;
   bool _isLoading = false;
   String? _error;
-  bool _isInitialized = false;
   bool _dbOnline = true;
   bool _isProcessingAuth = false;
+  StreamSubscription<UserModel?>? _userSubscription;
 
   UserModel? get user => _user;
   bool get isLoading => _isLoading;
@@ -41,32 +41,25 @@ class AuthProvider extends ChangeNotifier {
     _authService.authStateChanges.listen((firebaseUser) async {
       debugPrint('AuthProvider: authStateChanges emitted. User: ${firebaseUser?.uid}');
       
-      if (_isProcessingAuth) {
-        debugPrint('AuthProvider: Skipping internal listener update - auth is being processed manually.');
-        return;
-      }
+      if (_isProcessingAuth) return;
+      
+      // Cancel previous profile subscription
+      await _userSubscription?.cancel();
       
       if (firebaseUser != null) {
-        // If we already have a user and it matches, don't re-fetch unless it's null
-        if (_user == null || _user!.uid != firebaseUser.uid) {
-          debugPrint('AuthProvider: Fetching user profile for ${firebaseUser.uid}');
-          final userModel = await _authService.getCurrentUserModel();
-          if (userModel != null) {
-            _user = userModel;
-            debugPrint('AuthProvider: Profile loaded: ${_user?.name} (${_user?.role})');
-          } else {
-            debugPrint('AuthProvider: Profile not found in Firestore for ${firebaseUser.uid}');
-            _user = null;
-          }
-        }
+        // Start listening to the user document for real-time updates
+        _userSubscription = _authService.userStream(firebaseUser.uid).listen((userModel) {
+          debugPrint('AuthProvider: Received real-time user update for ${firebaseUser.uid}');
+          _user = userModel;
+          _isInitialized = true;
+          notifyListeners();
+        });
       } else {
         debugPrint('AuthProvider: No user authenticated.');
         _user = null;
+        _isInitialized = true;
+        notifyListeners();
       }
-      _isInitialized = true;
-      _isProcessingAuth = false;
-      debugPrint('AuthProvider: notifyListeners called from authStateChanges. isInitialized: $_isInitialized, isAuthenticated: $isAuthenticated, User: ${_user?.email}');
-      notifyListeners();
     });
   }
 
@@ -288,5 +281,11 @@ class AuthProvider extends ChangeNotifier {
       default:
         return 'Authentication failed. Please try again.';
     }
+  }
+
+  @override
+  void dispose() {
+    _userSubscription?.cancel();
+    super.dispose();
   }
 }

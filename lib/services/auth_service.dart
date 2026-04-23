@@ -94,6 +94,13 @@ class AuthService {
     return UserModel.fromFirestore(doc);
   }
 
+  Stream<UserModel?> userStream(String uid) {
+    return _firestore.collection('users').doc(uid).snapshots().map((doc) {
+      if (!doc.exists) return null;
+      return UserModel.fromFirestore(doc);
+    });
+  }
+
   Future<void> updateProfile({
     required String uid,
     String? name,
@@ -183,22 +190,22 @@ class AuthService {
   }
 
   Future<void> seedSuperAdmin() async {
-    const adminEmail = 'tiwarishaurya395@gmail.com';
-    const adminPassword = '123456';
+    const email = 'tiwarishaurya395@gmail.com';
+    const password = '123456';
     const adminName = 'Super Admin';
 
     try {
       final snapshot = await _firestore
           .collection('users')
-          .where('email', isEqualTo: adminEmail)
+          .where('email', isEqualTo: email)
           .limit(1)
           .get();
 
       if (snapshot.docs.isEmpty) {
         try {
           final credential = await _auth.createUserWithEmailAndPassword(
-            email: adminEmail,
-            password: adminPassword,
+            email: email,
+            password: password,
           );
 
           await credential.user?.updateDisplayName(adminName);
@@ -206,8 +213,8 @@ class AuthService {
           final user = UserModel(
             uid: credential.user!.uid,
             name: adminName,
-            email: adminEmail,
-            role: UserRole.admin,
+            email: email,
+            role: UserRole.superAdmin,
             createdAt: DateTime.now(),
             isVerified: true,
             verificationStatus: VerificationStatus.approved,
@@ -215,36 +222,23 @@ class AuthService {
 
           await _firestore.collection('users').doc(user.uid).set(user.toMap());
           await _auth.signOut();
+          debugPrint('AuthService: Super Admin seeded successfully: $email');
         } on FirebaseAuthException catch (e) {
           if (e.code == 'email-already-in-use') {
-            final loginCredential = await _auth.signInWithEmailAndPassword(
-              email: adminEmail,
-              password: adminPassword,
-            );
-
-            final user = UserModel(
-              uid: loginCredential.user!.uid,
-              name: adminName,
-              email: adminEmail,
-              role: UserRole.admin,
-              createdAt: DateTime.now(),
-              isVerified: true,
-              verificationStatus: VerificationStatus.approved,
-            );
-
-            await _firestore.collection('users').doc(user.uid).set(user.toMap());
-            await _auth.signOut();
+            // Already exists in Auth but not in Firestore or under a different query
+            // Just update role if found later or log it
+            debugPrint('AuthService: Email already in use by another user.');
           }
         }
       } else {
         final doc = snapshot.docs.first;
-        if (doc['role'] != UserRole.admin.name) {
-          await doc.reference.update({'role': UserRole.admin.name});
+        if (doc['role'] != UserRole.superAdmin.name) {
+          await doc.reference.update({'role': UserRole.superAdmin.name});
+          debugPrint('AuthService: Updated existing user to Super Admin.');
         }
       }
     } catch (e) {
-      // Silently fail or log in debug
-      print('Seeding super admin failed: $e');
+      debugPrint('AuthService: Seeding super admin failed: $e');
     }
   }
 }

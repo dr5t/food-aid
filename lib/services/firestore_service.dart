@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rxdart/rxdart.dart';
 import '../models/donation_model.dart';
 import '../models/user_model.dart';
 import '../models/emergency_request_model.dart';
@@ -379,169 +380,193 @@ class FirestoreService {
             s.docs.map((d) => UserModel.fromFirestore(d)).toList());
   }
 
-  Future<Map<String, int>> getPlatformStats() async {
-    final usersSnapshot = await _users.get();
-    final donationsSnapshot = await _donations.get();
-    final pendingSnapshot = await _users
-        .where('verificationStatus', isEqualTo: 'pending')
-        .get();
+  Stream<Map<String, int>> getPlatformStats() {
+    return Rx.combineLatest2(
+      _users.snapshots(),
+      _donations.snapshots(),
+      (usersSnapshot, donationsSnapshot) {
+        int donors = 0, ngos = 0, companies = 0, employees = 0, admins = 0;
+        int pendingVerifications = 0;
 
-    int donors = 0, ngos = 0, companies = 0, employees = 0, admins = 0;
-    for (final doc in usersSnapshot.docs) {
-      final role = (doc.data() as Map<String, dynamic>)['role'] as String?;
-      switch (role) {
-        case 'donor':
-          donors++;
-        case 'ngo':
-          ngos++;
-        case 'logisticsCompany':
-          companies++;
-        case 'logisticsEmployee':
-          employees++;
-        case 'admin':
-          admins++;
-      }
-    }
+        for (final doc in usersSnapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          final role = data['role'] as String?;
+          final vStatus = data['verificationStatus'] as String?;
 
-    int activeDonations = 0, completedDonations = 0;
-    for (final doc in donationsSnapshot.docs) {
-      final status =
-          (doc.data() as Map<String, dynamic>)['status'] as String?;
-      if (status == 'delivered') {
-        completedDonations++;
-      } else if (status != 'rejected' && status != 'expired') {
-        activeDonations++;
-      }
-    }
+          if (vStatus == 'pending') pendingVerifications++;
 
-    return {
-      'totalUsers': usersSnapshot.docs.length,
-      'donors': donors,
-      'ngos': ngos,
-      'companies': companies,
-      'employees': employees,
-      'admins': admins,
-      'pendingVerifications': pendingSnapshot.docs.length,
-      'totalDonations': donationsSnapshot.docs.length,
-      'activeDonations': activeDonations,
-      'completedDonations': completedDonations,
-    };
+          switch (role) {
+            case 'donor':
+              donors++;
+              break;
+            case 'ngo':
+              ngos++;
+              break;
+            case 'logisticsCompany':
+              companies++;
+              break;
+            case 'logisticsEmployee':
+              employees++;
+              break;
+            case 'admin':
+              admins++;
+              break;
+          }
+        }
+
+        int activeDonations = 0, completedDonations = 0;
+        for (final doc in donationsSnapshot.docs) {
+          final status =
+              (doc.data() as Map<String, dynamic>)['status'] as String?;
+          if (status == 'delivered') {
+            completedDonations++;
+          } else if (status != 'rejected' && status != 'expired') {
+            activeDonations++;
+          }
+        }
+
+        return {
+          'totalUsers': usersSnapshot.docs.length,
+          'donors': donors,
+          'ngos': ngos,
+          'companies': companies,
+          'employees': employees,
+          'admins': admins,
+          'pendingVerifications': pendingVerifications,
+          'totalDonations': donationsSnapshot.docs.length,
+          'activeDonations': activeDonations,
+          'completedDonations': completedDonations,
+        };
+      },
+    );
   }
 
+  Stream<Map<String, int>> getDonorStats(String donorId) {
+    return _donations.where('donorId', isEqualTo: donorId).snapshots().map((snapshot) {
+      int active = 0, completed = 0, pending = 0;
 
-  Future<Map<String, int>> getDonorStats(String donorId) async {
-    final snapshot =
-        await _donations.where('donorId', isEqualTo: donorId).get();
-    int active = 0, completed = 0, pending = 0;
-
-    for (final doc in snapshot.docs) {
-      final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
-      switch (s) {
-        case 'pending':
-          pending++;
-        case 'delivered':
-          completed++;
-        case 'rejected':
-        case 'expired':
-          break;
-        default:
-          active++;
+      for (final doc in snapshot.docs) {
+        final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
+        switch (s) {
+          case 'pending':
+            pending++;
+            break;
+          case 'delivered':
+            completed++;
+            break;
+          case 'rejected':
+          case 'expired':
+            break;
+          default:
+            active++;
+        }
       }
-    }
 
-    return {
-      'total': snapshot.docs.length,
-      'active': active,
-      'completed': completed,
-      'pending': pending,
-    };
+      return {
+        'total': snapshot.docs.length,
+        'active': active,
+        'completed': completed,
+        'pending': pending,
+      };
+    });
   }
 
-  Future<Map<String, int>> getNgoStats(String ngoId) async {
-    final snapshot =
-        await _donations.where('ngoId', isEqualTo: ngoId).get();
-    int active = 0, completed = 0, inTransit = 0;
+  Stream<Map<String, int>> getNgoStats(String ngoId) {
+    return Rx.combineLatest2(
+      _donations.where('ngoId', isEqualTo: ngoId).snapshots(),
+      _donations.where('status', isEqualTo: 'pending').snapshots(),
+      (ngoDonations, pendingDonations) {
+        int active = 0, completed = 0, inTransit = 0;
 
-    for (final doc in snapshot.docs) {
-      final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
-      switch (s) {
-        case 'delivered':
-          completed++;
-        case 'picked':
-        case 'inTransit':
-        case 'nearLocation':
-          inTransit++;
-        default:
-          active++;
-      }
-    }
+        for (final doc in ngoDonations.docs) {
+          final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
+          switch (s) {
+            case 'delivered':
+              completed++;
+              break;
+            case 'picked':
+            case 'inTransit':
+            case 'nearLocation':
+              inTransit++;
+              break;
+            default:
+              active++;
+          }
+        }
 
-    final pendingSnapshot =
-        await _donations.where('status', isEqualTo: 'pending').get();
-
-    return {
-      'total': snapshot.docs.length,
-      'active': active,
-      'inTransit': inTransit,
-      'completed': completed,
-      'available': pendingSnapshot.docs.length,
-    };
+        return {
+          'total': ngoDonations.docs.length,
+          'active': active,
+          'inTransit': inTransit,
+          'completed': completed,
+          'available': pendingDonations.docs.length,
+        };
+      },
+    );
   }
 
-  Future<Map<String, int>> getCompanyStats(String companyId) async {
-    final snapshot =
-        await _donations.where('companyId', isEqualTo: companyId).get();
-    int active = 0, completed = 0;
+  Stream<Map<String, int>> getCompanyStats(String companyId) {
+    return Rx.combineLatest2(
+      _donations.where('companyId', isEqualTo: companyId).snapshots(),
+      _users
+          .where('companyId', isEqualTo: companyId)
+          .where('role', isEqualTo: 'logisticsEmployee')
+          .snapshots(),
+      (donationsSnapshot, employeesSnapshot) {
+        int active = 0, completed = 0;
 
-    for (final doc in snapshot.docs) {
-      final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
-      if (s == 'delivered') {
-        completed++;
-      } else {
-        active++;
-      }
-    }
+        for (final doc in donationsSnapshot.docs) {
+          final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
+          if (s == 'delivered') {
+            completed++;
+          } else {
+            active++;
+          }
+        }
 
-    final employees = await _users
-        .where('companyId', isEqualTo: companyId)
-        .where('role', isEqualTo: 'logisticsEmployee')
-        .get();
-
-    return {
-      'total': snapshot.docs.length,
-      'active': active,
-      'completed': completed,
-      'employees': employees.docs.length,
-    };
+        return {
+          'total': donationsSnapshot.docs.length,
+          'active': active,
+          'completed': completed,
+          'employees': employeesSnapshot.docs.length,
+        };
+      },
+    );
   }
 
-  Future<Map<String, int>> getEmployeeStats(String employeeId) async {
-    final snapshot =
-        await _donations.where('employeeId', isEqualTo: employeeId).get();
-    int assigned = 0, picked = 0, delivered = 0;
+  Stream<Map<String, int>> getEmployeeStats(String employeeId) {
+    return _donations
+        .where('employeeId', isEqualTo: employeeId)
+        .snapshots()
+        .map((snapshot) {
+      int assigned = 0, picked = 0, delivered = 0;
 
-    for (final doc in snapshot.docs) {
-      final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
-      switch (s) {
-        case 'assigned':
-          assigned++;
-        case 'picked':
-        case 'inTransit':
-        case 'nearLocation':
-          picked++;
-        case 'delivered':
-          delivered++;
-        default:
-          break;
+      for (final doc in snapshot.docs) {
+        final s = (doc.data() as Map<String, dynamic>)['status'] as String?;
+        switch (s) {
+          case 'assigned':
+            assigned++;
+            break;
+          case 'picked':
+          case 'inTransit':
+          case 'nearLocation':
+            picked++;
+            break;
+          case 'delivered':
+            delivered++;
+            break;
+          default:
+            break;
+        }
       }
-    }
 
-    return {
-      'total': snapshot.docs.length,
-      'assigned': assigned,
-      'inTransit': picked,
-      'delivered': delivered,
-    };
+      return {
+        'total': snapshot.docs.length,
+        'assigned': assigned,
+        'inTransit': picked,
+        'delivered': delivered,
+      };
+    });
   }
 
 

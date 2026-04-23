@@ -181,4 +181,70 @@ class AuthService {
     return List.generate(length, (_) => chars[random.nextInt(chars.length)])
         .join();
   }
+
+  Future<void> seedSuperAdmin() async {
+    const adminEmail = 'tiwarishaurya395@gmail.com';
+    const adminPassword = '123456';
+    const adminName = 'Super Admin';
+
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: adminEmail)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        try {
+          final credential = await _auth.createUserWithEmailAndPassword(
+            email: adminEmail,
+            password: adminPassword,
+          );
+
+          await credential.user?.updateDisplayName(adminName);
+
+          final user = UserModel(
+            uid: credential.user!.uid,
+            name: adminName,
+            email: adminEmail,
+            role: UserRole.admin,
+            createdAt: DateTime.now(),
+            isVerified: true,
+            verificationStatus: VerificationStatus.approved,
+          );
+
+          await _firestore.collection('users').doc(user.uid).set(user.toMap());
+          await _auth.signOut();
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'email-already-in-use') {
+            final loginCredential = await _auth.signInWithEmailAndPassword(
+              email: adminEmail,
+              password: adminPassword,
+            );
+
+            final user = UserModel(
+              uid: loginCredential.user!.uid,
+              name: adminName,
+              email: adminEmail,
+              role: UserRole.admin,
+              createdAt: DateTime.now(),
+              isVerified: true,
+              verificationStatus: VerificationStatus.approved,
+            );
+
+            await _firestore.collection('users').doc(user.uid).set(user.toMap());
+            await _auth.signOut();
+          }
+        }
+      } else {
+        final doc = snapshot.docs.first;
+        if (doc['role'] != UserRole.admin.name) {
+          await doc.reference.update({'role': UserRole.admin.name});
+        }
+      }
+    } catch (e) {
+      // Silently fail or log in debug
+      print('Seeding super admin failed: $e');
+    }
+  }
 }

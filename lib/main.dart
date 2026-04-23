@@ -11,6 +11,7 @@ import 'providers/logistics_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/connection_provider.dart';
 import 'services/firestore_service.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,7 @@ void main() async {
   );
 
   final firestoreService = FirestoreService();
+  await AuthService().seedSuperAdmin();
 
   runApp(
     MultiProvider(

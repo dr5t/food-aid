@@ -46,12 +46,12 @@ class CyberAppBar extends StatelessWidget implements PreferredSizeWidget {
           child: Container(
             decoration: BoxDecoration(
               color: isDark 
-                  ? Colors.black.withOpacity(0.7) 
-                  : Colors.white.withOpacity(0.7),
+                  ? Colors.black.withValues(alpha: 0.7) 
+                  : Colors.white.withValues(alpha: 0.7),
               border: showBottomBorder 
                   ? Border(
                       bottom: BorderSide(
-                        color: primaryColor.withOpacity(0.5),
+                        color: primaryColor.withValues(alpha: 0.5),
                         width: 1,
                       ),
                     )
@@ -79,7 +79,7 @@ class CyberAppBar extends StatelessWidget implements PreferredSizeWidget {
                       decoration: BoxDecoration(
                         boxShadow: [
                           BoxShadow(
-                            color: primaryColor.withOpacity(0.5),
+                            color: primaryColor.withValues(alpha: 0.5),
                             blurRadius: 10,
                             spreadRadius: 1,
                           ),

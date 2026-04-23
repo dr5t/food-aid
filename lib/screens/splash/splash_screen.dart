@@ -86,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen>
                 height: 300,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.neonCyan.withOpacity(0.05),
+                  color: AppColors.neonCyan.withValues(alpha: 0.05),
                 ),
               ).animate().fadeIn(duration: 2.seconds),
             ),
@@ -150,7 +150,7 @@ class _SplashScreenState extends State<SplashScreen>
                         boxShadow: [
                           if (authProvider.dbOnline)
                             BoxShadow(
-                              color: AppColors.neonGreen.withOpacity(0.5),
+                              color: AppColors.neonGreen.withValues(alpha: 0.5),
                               blurRadius: 8,
                             ),
                         ],

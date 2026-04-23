@@ -25,7 +25,7 @@ class CyberBottomNavigationBar extends StatelessWidget {
         color: Colors.transparent,
         border: Border(
           top: BorderSide(
-            color: AppColors.neonCyan.withOpacity(0.3),
+            color: AppColors.neonCyan.withValues(alpha: 0.3),
             width: 1,
           ),
         ),
@@ -34,7 +34,7 @@ class CyberBottomNavigationBar extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withValues(alpha: 0.7),
             padding: EdgeInsets.only(bottom: bottomPadding),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -52,7 +52,7 @@ class CyberBottomNavigationBar extends StatelessWidget {
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: AppColors.neonCyan.withOpacity(0.15),
+                                color: AppColors.neonCyan.withValues(alpha: 0.15),
                                 blurRadius: 15,
                                 spreadRadius: -2,
                               )
@@ -76,7 +76,7 @@ class CyberBottomNavigationBar extends StatelessWidget {
                             shadows: isSelected
                                 ? [
                                     Shadow(
-                                      color: AppColors.neonCyan.withOpacity(0.5),
+                                      color: AppColors.neonCyan.withValues(alpha: 0.5),
                                       blurRadius: 10,
                                     )
                                   ]
@@ -93,7 +93,7 @@ class CyberBottomNavigationBar extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.neonCyan.withOpacity(0.8),
+                                  color: AppColors.neonCyan.withValues(alpha: 0.8),
                                   blurRadius: 8,
                                 )
                               ],

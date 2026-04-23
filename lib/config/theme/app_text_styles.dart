@@ -26,11 +26,11 @@ class AppTextStyles {
         color: AppColors.neonCyan,
         shadows: [
           Shadow(
-            color: AppColors.neonCyan.withOpacity(0.5),
+            color: AppColors.neonCyan.withValues(alpha: 0.5),
             blurRadius: 10,
           ),
           Shadow(
-            color: AppColors.neonPurple.withOpacity(0.3),
+            color: AppColors.neonPurple.withValues(alpha: 0.3),
             blurRadius: 20,
           ),
         ],
@@ -43,11 +43,11 @@ class AppTextStyles {
         letterSpacing: 4,
         shadows: [
           Shadow(
-            color: AppColors.neonCyan.withOpacity(0.8),
+            color: AppColors.neonCyan.withValues(alpha: 0.8),
             blurRadius: 10,
           ),
           Shadow(
-            color: AppColors.neonPurple.withOpacity(0.5),
+            color: AppColors.neonPurple.withValues(alpha: 0.5),
             blurRadius: 20,
           ),
         ],

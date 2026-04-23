@@ -15,13 +15,13 @@ class DatabaseStatusIndicator extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
         boxShadow: [
           if (dbOnline)
             BoxShadow(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               blurRadius: 4,
               spreadRadius: 1,
             ),
@@ -98,10 +98,10 @@ class _PulseIndicatorState extends State<_PulseIndicator> with SingleTickerProvi
           height: 8,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: widget.color.withOpacity(opacity),
+            color: widget.color.withValues(alpha: opacity),
             boxShadow: [
               BoxShadow(
-                color: widget.color.withOpacity(0.8 * opacity),
+                color: widget.color.withValues(alpha: 0.8 * opacity),
                 blurRadius: 8 * opacity,
                 spreadRadius: 2 * opacity,
               ),

@@ -71,7 +71,7 @@ class AppButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.neonCyan.withOpacity(0.3),
+                  color: AppColors.neonCyan.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -103,7 +103,7 @@ class AppButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.neonPurple.withOpacity(0.3),
+                  color: AppColors.neonPurple.withValues(alpha: 0.3),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -132,7 +132,7 @@ class AppButton extends StatelessWidget {
           child: OutlinedButton(
             onPressed: isLoading ? null : onPressed,
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: AppColors.neonCyan.withOpacity(0.5), width: 1.5),
+              side: BorderSide(color: AppColors.neonCyan.withValues(alpha: 0.5), width: 1.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),

@@ -51,7 +51,7 @@ class AppInput extends StatelessWidget {
                 fontSize: 10,
                 letterSpacing: 1.5,
                 fontWeight: FontWeight.w800,
-                color: isDark ? AppColors.neonCyan.withOpacity(0.7) : AppColors.primary.withOpacity(0.7),
+                color: isDark ? AppColors.neonCyan.withValues(alpha: 0.7) : AppColors.primary.withValues(alpha: 0.7),
               ),
             ),
           ),
@@ -61,7 +61,7 @@ class AppInput extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             boxShadow: isDark ? [
               BoxShadow(
-                color: AppColors.neonCyan.withOpacity(0.03),
+                color: AppColors.neonCyan.withValues(alpha: 0.03),
                 blurRadius: 15,
                 spreadRadius: -5,
               ),
@@ -87,7 +87,7 @@ class AppInput extends StatelessWidget {
                   ? Icon(
                       prefixIcon, 
                       size: 20, 
-                      color: isDark ? AppColors.neonCyan.withOpacity(0.8) : AppColors.primary.withOpacity(0.8),
+                      color: isDark ? AppColors.neonCyan.withValues(alpha: 0.8) : AppColors.primary.withValues(alpha: 0.8),
                     )
                   : null,
               suffixIcon: suffix,

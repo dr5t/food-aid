@@ -37,7 +37,7 @@ class HitechLoader extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: primaryColor.withOpacity(0.1),
+                      color: primaryColor.withValues(alpha: 0.1),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -52,7 +52,7 @@ class HitechLoader extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: primaryColor.withOpacity(0.05),
+                    color: primaryColor.withValues(alpha: 0.05),
                     width: 1,
                   ),
                 ),
@@ -65,7 +65,7 @@ class HitechLoader extends StatelessWidget {
                 child: CustomPaint(
                   size: Size(size, size),
                   painter: _DashRingPainter(
-                    color: primaryColor.withOpacity(0.3),
+                    color: primaryColor.withValues(alpha: 0.3),
                     dashCount: 12,
                     strokeWidth: 1,
                   ),
@@ -118,7 +118,7 @@ class HitechLoader extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: primaryColor.withOpacity(0.8),
+                      color: primaryColor.withValues(alpha: 0.8),
                       blurRadius: 10,
                       spreadRadius: 2,
                     ),
@@ -126,7 +126,7 @@ class HitechLoader extends StatelessWidget {
                 ),
               ).animate(onPlay: (controller) => controller.repeat(reverse: true))
                .scale(duration: 600.ms, begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2))
-               .shimmer(duration: 1.seconds, color: Colors.white.withOpacity(0.5)),
+               .shimmer(duration: 1.seconds, color: Colors.white.withValues(alpha: 0.5)),
             ],
           ),
         ),
@@ -194,7 +194,7 @@ class _ScanningLine extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             Colors.transparent,
-            AppColors.neonCyan.withOpacity(0.5),
+            AppColors.neonCyan.withValues(alpha: 0.5),
             Colors.transparent,
           ],
         ),

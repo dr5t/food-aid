@@ -24,12 +24,12 @@ class NeonIndicator extends StatelessWidget {
         color: color,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.8),
+            color: color.withValues(alpha: 0.8),
             blurRadius: size * 1.5,
             spreadRadius: size * 0.2,
           ),
           BoxShadow(
-            color: color.withOpacity(0.5),
+            color: color.withValues(alpha: 0.5),
             blurRadius: size * 3,
             spreadRadius: size * 0.5,
           ),
@@ -48,7 +48,7 @@ class NeonIndicator extends StatelessWidget {
         )
         .shimmer(
           duration: 2.seconds,
-          color: Colors.white.withOpacity(0.5),
+          color: Colors.white.withValues(alpha: 0.5),
         );
   }
 }

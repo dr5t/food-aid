@@ -1,0 +1,47 @@
+Analyzing food aid...                                           
+
+   info • The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' • lib/config/theme/app_theme.dart:1:8 • unnecessary_import
+  error • The argument type 'Future<UserModel?> Function({required String email, required String name, required String password, String phone})' can't be assigned to the parameter type 'Future<UserModel?> Function({required String email, required String name, required String password, String? phone})'.  • lib/screens/admin/admin_dashboard.dart:779:27 • argument_type_not_assignable
+  error • The name 'SkeletonList' isn't a class • lib/screens/donor/donor_dashboard.dart:226:17 • creation_with_non_type
+  error • The named parameter 'margin' isn't defined • lib/screens/donor/donor_dashboard.dart:300:7 • undefined_named_parameter
+  error • The getter 'black24' isn't defined for the type 'Colors' • lib/screens/donor/donor_dashboard.dart:407:57 • undefined_getter
+  error • The getter 'black24' isn't defined for the type 'Colors' • lib/screens/donor/donor_dashboard.dart:442:101 • undefined_getter
+  error • The getter 'black24' isn't defined for the type 'Colors' • lib/screens/donor/donor_dashboard.dart:496:96 • undefined_getter
+warning • Unused import: '../../providers/theme_provider.dart' • lib/screens/logistics/company_dashboard.dart:12:8 • unused_import
+warning • Unused import: '../../services/auth_service.dart' • lib/screens/logistics/company_dashboard.dart:13:8 • unused_import
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/company_dashboard.dart:137:11 • unused_local_variable
+warning • Unused import: '../../providers/theme_provider.dart' • lib/screens/logistics/employee_dashboard.dart:10:8 • unused_import
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:35:11 • unused_local_variable
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:125:11 • unused_local_variable
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:160:11 • unused_local_variable
+warning • The value of the local variable 'isDark' isn't used • lib/screens/logistics/employee_dashboard.dart:221:11 • unused_local_variable
+  error • The method 'CyberNavItem' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:77:11 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:77:11 • non_constant_list_element
+  error • The method 'CyberNavItem' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:82:11 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:82:11 • non_constant_list_element
+  error • The method 'CyberNavItem' isn't defined for the type '_NgoDashboardState' • lib/screens/ngo/ngo_dashboard.dart:87:11 • undefined_method
+  error • The values in a const list literal must be constants • lib/screens/ngo/ngo_dashboard.dart:87:11 • non_constant_list_element
+   info • 'dialogBackgroundColor' is deprecated and shouldn't be used. Use DialogThemeData.backgroundColor instead. This feature was deprecated after v3.27.0-0.1.pre • lib/screens/ngo/ngo_dashboard.dart:135:17 • deprecated_member_use
+  error • The named parameter 'glowColor' isn't defined • lib/screens/ngo/ngo_dashboard.dart:143:19 • undefined_named_parameter
+  error • The name 'GeoPoint' isn't a class • lib/screens/ngo/ngo_dashboard.dart:250:43 • creation_with_non_type
+warning • The value of the local variable 'isDark' isn't used • lib/screens/ngo/ngo_dashboard.dart:315:11 • unused_local_variable
+warning • The value of the local variable 'emergencyProvider' isn't used • lib/screens/ngo/ngo_dashboard.dart:323:11 • unused_local_variable
+warning • The receiver can't be 'null' because of short-circuiting, so the null-aware operator '?.' can't be used • lib/screens/ngo/ngo_dashboard.dart:330:72 • invalid_null_aware_operator
+  error • The named parameter 'margin' isn't defined • lib/screens/ngo/ngo_dashboard.dart:463:11 • undefined_named_parameter
+  error • The getter 'radiusXs' isn't defined for the type 'AppSpacing' • lib/screens/ngo/ngo_dashboard.dart:487:62 • undefined_getter
+  error • The named parameter 'margin' isn't defined • lib/screens/ngo/ngo_dashboard.dart:611:11 • undefined_named_parameter
+  error • The getter 'radiusXs' isn't defined for the type 'AppSpacing' • lib/screens/ngo/ngo_dashboard.dart:620:64 • undefined_getter
+  error • The named parameter 'glowColor' isn't defined • lib/screens/ngo/ngo_dashboard.dart:686:7 • undefined_named_parameter
+warning • The declaration 'withAlphaValue' isn't referenced • lib/screens/ngo/ngo_dashboard.dart:741:18 • unused_element
+  error • The method 'animate' isn't defined for the type 'Container' • lib/screens/onboarding/onboarding_screen.dart:212:13 • undefined_method
+  error • The getter 'seconds' isn't defined for the type 'int' • lib/screens/onboarding/onboarding_screen.dart:212:68 • undefined_getter
+warning • The value of the field '_fadeAnimation' isn't used • lib/screens/splash/splash_screen.dart:20:26 • unused_field
+warning • The value of the field '_scaleAnimation' isn't used • lib/screens/splash/splash_screen.dart:21:26 • unused_field
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:54:33 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:54:77 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:64:24 • undefined_identifier
+  error • The getter 'bodyMedium' isn't defined for the type 'AppTextStyles' • lib/widgets/common/app_input.dart:79:34 • undefined_getter
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:90:39 • undefined_identifier
+  error • Undefined name 'AppColors' • lib/widgets/common/app_input.dart:90:83 • undefined_identifier
+   info • Use the null-aware marker '?' rather than a null check via an 'if' • lib/widgets/common/cyber_background.dart:17:9 • use_null_aware_elements
+

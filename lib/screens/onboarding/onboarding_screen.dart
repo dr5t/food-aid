@@ -195,7 +195,7 @@ class _OnboardingPage extends StatelessWidget {
             width: 140,
             height: 140,
             decoration: BoxDecoration(
-              gradient: gradient.withOpacity(0.1),
+              gradient: gradient.withAlphaValue(0.1),
               shape: BoxShape.circle,
               border: Border.all(
                 color: (gradient as LinearGradient).colors.first.withValues(alpha: 0.2),
@@ -236,13 +236,15 @@ class _OnboardingPage extends StatelessWidget {
 }
 
 extension on Gradient {
-  Gradient withOpacity(double opacity) {
+  Gradient withAlphaValue(double alpha) {
     if (this is LinearGradient) {
       final g = this as LinearGradient;
       return LinearGradient(
-        colors: g.colors.map((c) => c.withOpacity(opacity)).toList(),
+        colors: g.colors.map((c) => c.withValues(alpha: alpha)).toList(),
         begin: g.begin,
         end: g.end,
+        stops: g.stops,
+        transform: g.transform,
       );
     }
     return this;

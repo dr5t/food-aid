@@ -3,8 +3,9 @@ import '../../config/theme/app_colors.dart';
 
 class CyberBackground extends StatelessWidget {
   final List<Widget>? children;
+  final Widget? child;
 
-  const CyberBackground({super.key, this.children});
+  const CyberBackground({super.key, this.children, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,7 @@ class CyberBackground extends StatelessWidget {
     return Stack(
       children: [
         if (isDark) const Positioned.fill(child: _CyberGrid()),
+        if (child != null) child!,
         if (children != null) ...children!,
       ],
     );

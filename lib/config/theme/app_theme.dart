@@ -76,12 +76,6 @@ class AppTheme {
         backgroundColor: bg.withValues(alpha: 0.8),
         foregroundColor: textPrimary,
         centerTitle: false,
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(color: Colors.transparent),
-          ),
-        ),
         titleTextStyle: GoogleFonts.orbitron(
           fontSize: 20,
           fontWeight: FontWeight.w800,

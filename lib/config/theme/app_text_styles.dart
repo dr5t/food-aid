@@ -60,6 +60,20 @@ class AppTextStyles {
         letterSpacing: 2,
       );
 
+  static TextStyle get hitechHeading => GoogleFonts.orbitron(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: AppColors.neonCyan,
+        letterSpacing: 2,
+      );
+
+  static TextStyle get hitechSubtitle => GoogleFonts.orbitron(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AppColors.neonCyan,
+        letterSpacing: 1.5,
+      );
+
   static TextStyle get subheading => GoogleFonts.outfit(
         fontSize: 18,
         fontWeight: FontWeight.w600,

@@ -13,12 +13,12 @@ class CreateEmployeeDialog extends StatefulWidget {
     required String name,
     required String email,
     required String password,
-    String phone,
+    String? phone,
   }) onCreateEmployee;
 
   const CreateEmployeeDialog({
     super.key,
-    required this.title,
+    this.title = 'REGISTER OPERATIVE',
     required this.targetRole,
     required this.onCreateEmployee,
   });

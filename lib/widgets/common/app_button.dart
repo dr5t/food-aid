@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 
-import '../animations/scale_tap.dart';
-import 'hitech_loader.dart';
 
 enum AppButtonVariant { primary, secondary, outlined, text }
 

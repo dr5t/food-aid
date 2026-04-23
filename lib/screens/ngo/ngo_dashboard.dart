@@ -9,6 +9,11 @@ import '../../providers/emergency_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/common/connection_status_indicator.dart';
 import '../../widgets/common/skeleton_widgets.dart';
+import '../../widgets/common/cyber_app_bar.dart';
+import '../../widgets/common/cyber_bottom_nav_bar.dart';
+import '../../widgets/common/cyber_card.dart';
+import '../../widgets/common/cyber_background.dart';
+import '../../config/theme/app_text_styles.dart';
 
 class NgoDashboard extends StatefulWidget {
   const NgoDashboard({super.key});
@@ -36,50 +41,50 @@ class _NgoDashboardState extends State<NgoDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'NGO Dashboard',
-          style: GoogleFonts.inter(fontWeight: FontWeight.w700),
-        ),
+      extendBody: true, // For glassmorphism effect
+      appBar: CyberAppBar(
+        title: 'NGO TERMINAL',
         actions: [
           const ConnectionStatusIndicator(),
           IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 22),
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 20),
             onPressed: () => context.read<ThemeProvider>().toggleTheme(),
           ),
           IconButton(
-            icon: const Icon(Icons.logout, size: 22),
+            icon: const Icon(Icons.logout, size: 20),
             onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],
       ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: const [
-          _OverviewTab(),
-          _AvailableDonationsTab(),
-          _MyEmergenciesTab(),
-        ],
+      body: CyberBackground(
+        child: IndexedStack(
+          index: _currentIndex,
+          children: const [
+            _OverviewTab(),
+            _AvailableDonationsTab(),
+            _MyEmergenciesTab(),
+          ],
+        ),
       ),
       floatingActionButton: _buildEmergencyFAB(),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CyberBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
-            label: 'Overview',
+          CyberNavItem(
+            icon: Icons.dashboard_outlined,
+            activeIcon: Icons.dashboard,
+            label: 'OVERVIEW',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory_2_outlined),
-            activeIcon: Icon(Icons.inventory_2),
-            label: 'Available',
+          CyberNavItem(
+            icon: Icons.inventory_2_outlined,
+            activeIcon: Icons.inventory_2,
+            label: 'AVAILABLE',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.warning_amber),
-            activeIcon: Icon(Icons.warning),
-            label: 'My Emergencies',
+          CyberNavItem(
+            icon: Icons.warning_amber,
+            activeIcon: Icons.warning,
+            label: 'EMERGENCIES',
           ),
         ],
       ),

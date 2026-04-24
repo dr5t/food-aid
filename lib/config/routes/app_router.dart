@@ -20,9 +20,12 @@ import '../../screens/admin/admin_dashboard.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../screens/notifications/notifications_screen.dart';
 
+import '../../main.dart';
+
 class AppRouter {
   static GoRouter router(AuthProvider authProvider) {
     return GoRouter(
+      navigatorKey: navigatorKey,
       initialLocation: '/',
       refreshListenable: authProvider,
       redirect: (context, state) {

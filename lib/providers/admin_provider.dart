@@ -44,10 +44,23 @@ class AdminProvider with ChangeNotifier {
     });
 
     _statsSub?.cancel();
-    _statsSub = _firestoreService.getPlatformStatsStream().listen((stats) {
+    _statsSub = _firestoreService.getPlatformStats().listen((stats) {
       _platformStats = stats;
       notifyListeners();
     });
+  }
+
+  void startListening() {
+    _init();
+  }
+
+  Future<void> refreshStats() async {
+    _init();
+  }
+
+  void clearError() {
+    _error = null;
+    notifyListeners();
   }
 
   Future<void> _loadDeletedUids() async {

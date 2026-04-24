@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
-
-
+import '../../widgets/common/app_app_bar.dart';
 import '../../widgets/common/empty_state.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -11,7 +10,7 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Notifications')),
+      appBar: const AppAppBar(title: 'Notifications'),
       body: const EmptyState(
         icon: Icons.notifications_none_rounded,
         title: 'No notifications',

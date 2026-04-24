@@ -7,6 +7,7 @@ import '../../services/firestore_service.dart';
 import '../../widgets/dashboard/status_tracker.dart';
 import '../../widgets/skeleton/skeleton_loader.dart';
 import '../../widgets/animations/fade_slide_transition.dart';
+import '../../widgets/common/app_app_bar.dart';
 import 'package:intl/intl.dart';
 
 class DonationTrackingScreen extends StatelessWidget {
@@ -18,7 +19,7 @@ class DonationTrackingScreen extends StatelessWidget {
     final service = FirestoreService();
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Donation Tracking')),
+      appBar: const AppAppBar(title: 'Donation Tracking'),
       body: StreamBuilder<DonationModel>(
         stream: service.getDonationStream(donationId),
         builder: (context, snapshot) {

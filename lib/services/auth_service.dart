@@ -111,6 +111,7 @@ class AuthService {
     if (avatarUrl != null) data['avatarUrl'] = avatarUrl;
     if (address != null) data['address'] = address;
     if (location != null) data['location'] = location;
+    data['updatedAt'] = FieldValue.serverTimestamp();
     
     if (data.isNotEmpty) {
       await _firestore.collection('users').doc(uid).update(data);
@@ -322,7 +323,7 @@ class AuthService {
   }
 
   Future<void> adminWipeData(String adminUid) async {
-    const adminEmail = 'tiwarishaurya395@gmail.com';
+    const email = 'tiwarishaurya395@gmail.com';
     const password = '123456';
     
     FirebaseApp? secondaryApp;
@@ -339,7 +340,7 @@ class AuthService {
     final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
     
     try {
-      await secondaryAuth.signInWithEmailAndPassword(email: adminEmail, password: password);
+      await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
       
       final batch = secondaryFirestore.batch();
       final collections = ['donations', 'emergencyRequests', 'notifications', 'users'];
@@ -349,15 +350,10 @@ class AuthService {
         
         for (final doc in querySnapshot.docs) {
           final data = doc.data();
-          final email = data['email'] as String?;
+          final userEmail = data['email'] as String?;
           
-          // CRITICAL: Never delete the Super Admin account itself
-          if (doc.id == adminUid || email == adminEmail) {
-            // However, if it's a PENDING request with the admin's email (a "ghost" test), we might want to delete it.
-            // But to be safe, we only skip if it's the actual authenticated user.
+          if (doc.id == adminUid || userEmail == email) {
             if (doc.id == adminUid) continue;
-            
-            // If it's a different doc with the same email (the "tenten" ghost), we delete it if it's not the main admin doc.
             batch.delete(doc.reference);
           } else {
             batch.delete(doc.reference);
@@ -367,7 +363,7 @@ class AuthService {
       
       await batch.commit();
       await secondaryAuth.signOut();
-      debugPrint('AuthService: Wipe complete. All records (including ghosts) removed.');
+      debugPrint('AuthService: Wipe complete.');
     } catch (e) {
       debugPrint('AuthService: Wipe failed: $e');
       rethrow;

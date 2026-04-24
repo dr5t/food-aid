@@ -132,6 +132,17 @@ class AdminProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> deleteUser(String uid) async {
+    try {
+      await _firestoreService.deleteUser(uid);
+      return true;
+    } catch (e) {
+      _error = 'Failed to delete user: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
   void clearError() {
     _error = null;
     notifyListeners();

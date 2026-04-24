@@ -469,12 +469,21 @@ class _VerificationsTab extends StatelessWidget {
       itemCount: pending.length,
       separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
-        final user = pending[index];
         return _VerificationCard(
           user: user,
           isDark: isDark,
-          onApprove: () => admin.approveUser(user.uid),
-          onReject: () => _showRejectDialog(context, admin, user.uid),
+          onApprove: () async {
+            final ok = await admin.approveUser(user.uid);
+            if (ok && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('User approved. Confirmation email sent to ${user.email}'),
+                  backgroundColor: AppColors.primary,
+                ),
+              );
+            }
+          },
+          onReject: () => _showRejectDialog(context, admin, user),
         );
       },
     );
@@ -483,7 +492,7 @@ class _VerificationsTab extends StatelessWidget {
   void _showRejectDialog(
     BuildContext context,
     AdminProvider admin,
-    String uid,
+    UserModel user,
   ) {
     final controller = TextEditingController();
     showDialog(
@@ -509,9 +518,14 @@ class _VerificationsTab extends StatelessWidget {
             child: Text('Cancel', style: GoogleFonts.inter()),
           ),
           FilledButton(
-            onPressed: () {
-              admin.rejectUser(uid, controller.text.trim());
-              Navigator.pop(ctx);
+            onPressed: () async {
+              final ok = await admin.rejectUser(user.uid, controller.text.trim());
+              if (ok && context.mounted) {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Registration rejected for ${user.email}')),
+                );
+              }
             },
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
             child: Text(
@@ -754,23 +768,9 @@ class _TeamTab extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          'Admin',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
-                          ),
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 20),
+                        onPressed: () => _showDeleteConfirm(context, admin, emp),
                       ),
                     ],
                   ),

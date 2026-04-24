@@ -372,6 +372,10 @@ class FirestoreService {
     });
   }
 
+  Future<void> deleteUser(String uid) async {
+    await _users.doc(uid).delete();
+  }
+
   Stream<List<UserModel>> getAdminEmployees() {
     return _users
         .where('role', isEqualTo: 'admin')

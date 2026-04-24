@@ -90,16 +90,25 @@ class _NgoDashboardState extends State<NgoDashboard> {
     );
   }
 
+
   Widget _buildEmergencyFAB() {
     return FloatingActionButton.extended(
           onPressed: () => _showEmergencyDialog(),
-          backgroundColor: Colors.orange,
+          backgroundColor: AppColors.error,
           foregroundColor: Colors.white,
-          icon: const Icon(Icons.warning_amber, size: 20),
-          label: const Text('New Emergency Request'),
+          icon: const Icon(Icons.emergency_share, size: 24),
+          label: Text(
+            '🚨 SOS EMERGENCY',
+            style: GoogleFonts.orbitron(
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+              fontSize: 14,
+            ),
+          ),
         )
         .animate(onPlay: (controller) => controller.repeat())
-        .shimmer(duration: 3000.ms, color: Colors.white24);
+        .shimmer(duration: 2000.ms, color: Colors.white38)
+        .shake(duration: 500.ms, hz: 4);
   }
 
   void _showEmergencyDialog() {

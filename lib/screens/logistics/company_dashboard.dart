@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 import '../../config/theme/app_text_styles.dart';
@@ -7,9 +10,12 @@ import '../../models/donation_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/logistics_provider.dart';
+import '../../providers/emergency_provider.dart';
+import '../../models/emergency_request_model.dart';
 import '../../widgets/admin/create_employee_dialog.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/app_bottom_nav_bar.dart';
+import '../../widgets/common/app_app_bar.dart';
 
 class CompanyDashboard extends StatefulWidget {
   const CompanyDashboard({super.key});
@@ -53,6 +59,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
           ],
         ),
       ),
+      floatingActionButton: _buildEmergencyFAB(),
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
@@ -102,6 +109,183 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildEmergencyFAB() {
+    return FloatingActionButton.extended(
+          onPressed: () => _showEmergencyDialog(),
+          backgroundColor: AppColors.error,
+          foregroundColor: Colors.white,
+          icon: const Icon(Icons.emergency_share, size: 24),
+          label: Text(
+            '🚨 SOS EMERGENCY',
+            style: GoogleFonts.orbitron(
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1.5,
+              fontSize: 14,
+            ),
+          ),
+        )
+        .animate(onPlay: (controller) => controller.repeat())
+        .shimmer(duration: 2000.ms, color: Colors.white38)
+        .shake(duration: 500.ms, hz: 4);
+  }
+
+  void _showEmergencyDialog() {
+    String selectedMealType = 'veg';
+    final qtyController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) {
+            return AlertDialog(
+              backgroundColor: Colors.transparent,
+              contentPadding: EdgeInsets.zero,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+              content: AppCard(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.warning_amber,
+                          color: Colors.orange,
+                          size: 24,
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Text(
+                          'Logistics SOS Signal',
+                          style: AppTextStyles.titleMedium,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      'Broadcast urgent food pickup signal to nearby donors',
+                      style: AppTextStyles.bodySmall,
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    Text(
+                      'Meal Type',
+                      style: AppTextStyles.label.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _MealTypeOption(
+                            label: 'Vegetarian',
+                            icon: Icons.eco,
+                            color: Colors.green,
+                            isSelected: selectedMealType == 'veg',
+                            onTap: () => setDialogState(
+                              () => selectedMealType = 'veg',
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.sm),
+                        Expanded(
+                          child: _MealTypeOption(
+                            label: 'Non-Veg',
+                            icon: Icons.restaurant,
+                            color: Colors.red,
+                            isSelected: selectedMealType == 'nonVeg',
+                            onTap: () => setDialogState(
+                              () => selectedMealType = 'nonVeg',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    TextFormField(
+                      controller: qtyController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Quantity Needed',
+                        prefixIcon: Icon(Icons.people, size: 20),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: AppSpacing.md),
+                        ElevatedButton(
+                          onPressed: () async {
+                            final qty =
+                                int.tryParse(qtyController.text.trim()) ?? 0;
+                            if (qty <= 0) return;
+
+                            final user = context.read<AuthProvider>().user;
+                            if (user == null) return;
+
+                            final request = EmergencyRequestModel(
+                              id: '',
+                              ngoId: user.uid,
+                              ngoName: user.organizationName ?? user.name,
+                              mealType: selectedMealType,
+                              quantity: qty,
+                              ngoLocation:
+                                  user.location ??
+                                  const GeoPoint(28.6139, 77.2090),
+                              ngoAddress: user.address ?? 'Not specified',
+                              status: EmergencyStatus.open,
+                              createdAt: DateTime.now(),
+                              updatedAt: DateTime.now(),
+                            );
+
+                            await context
+                                .read<EmergencyProvider>()
+                                .createEmergencyRequest(request);
+
+                            if (ctx.mounted) Navigator.pop(ctx);
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: AppColors.error,
+                                  content: Text(
+                                    'SOS BROADCASTED TO NEARBY DONORS',
+                                    style: GoogleFonts.orbitron(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.error,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                          ),
+                          child: const Text('Broadcast SOS'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -657,4 +841,63 @@ void _showCreateEmployeeDialog(BuildContext context) {
       );
     },
   );
+}
+
+class _MealTypeOption extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _MealTypeOption({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? color.withValues(alpha: 0.1)
+              : Colors.white.withValues(alpha: 0.02),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          border: Border.all(
+            color: isSelected ? color : Colors.white12,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.2),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : null,
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: isSelected ? color : Colors.white38),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: AppTextStyles.label.copyWith(
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? color : Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

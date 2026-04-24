@@ -31,7 +31,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   UserRole _selectedRole = UserRole.donor;
   DonorType _selectedDonorType = DonorType.home;
+  GeoPoint? _location;
   bool _obscure = true;
+  bool _isLocating = false;
 
   @override
   void dispose() {
@@ -61,6 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
           : null,
       organizationDescription: _selectedRole == UserRole.ngo ? _orgDescCtrl.text.trim() : null,
       address: _addressCtrl.text.trim().isNotEmpty ? _addressCtrl.text.trim() : null,
+      location: _location,
     );
 
     if (success && mounted) {
@@ -81,6 +84,36 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       );
     }
+  }
+
+  Future<void> _getCurrentLocation() async {
+    setState(() => _isLocating = true);
+    try {
+      final loc = LocationService();
+      final pos = await loc.getCurrentPosition();
+      if (pos == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not get current location')),
+          );
+        }
+        setState(() => _isLocating = false);
+        return;
+      }
+      final geoPoint = GeoPoint(pos.latitude, pos.longitude);
+      final address = await loc.reverseGeocode(geoPoint);
+      setState(() {
+        _location = geoPoint;
+        _addressCtrl.text = address ?? '';
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Location error: $e')),
+        );
+      }
+    }
+    setState(() => _isLocating = false);
   }
 
   @override
@@ -170,9 +203,14 @@ class _SignupScreenState extends State<SignupScreen> {
                               AppInput(
                                 controller: _addressCtrl,
                                 label: 'Address',
-                                hint: 'e.g. Rajpur Road, Dehradun',
-                                prefixIcon: Icons.map_rounded,
-                                maxLines: 2,
+                                hint: 'Enter your address',
+                                prefixIcon: Icons.location_on_rounded,
+                                suffix: IconButton(
+                                  icon: _isLocating 
+                                    ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                                    : const Icon(Icons.my_location_rounded, size: 18),
+                                  onPressed: _getCurrentLocation,
+                                ),
                               ),
 
                               if (_selectedRole == UserRole.donor) ...[

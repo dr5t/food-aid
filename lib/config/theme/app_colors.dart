@@ -29,5 +29,33 @@ class AppColors {
   static const Color warning = Color(0xFFF9AB00);
   static const Color info = Color(0xFF1A73E8);
 
+  static const Color successLight = Color(0xFFE6F4EA);
+  static const Color warningLight = Color(0xFFFEF7E0);
+  static const Color infoLight = Color(0xFFE8F0FE);
+  static const Color errorLight = Color(0xFFFCE8E6);
+
   static const Color divider = Color(0xFFDADCE0);
+
+  // Skeleton Colors
+  static const Color skeleton1 = Color(0xFFEEEEEE);
+  static const Color skeleton2 = Color(0xFFF5F5F5);
+  static const Color darkSkeleton1 = Color(0xFF2C2C2C);
+  static const Color darkSkeleton2 = Color(0xFF383838);
+
+  // Status Colors
+  static const Color statusPending = warning;
+  static const Color statusAccepted = info;
+  static const Color statusAssigned = Color(0xFF673AB7);
+  static const Color statusPicked = Color(0xFF00BCD4);
+  static const Color statusInTransit = Color(0xFF009688);
+  static const Color statusNearLocation = Color(0xFF8BC34A);
+  static const Color statusDelivered = success;
+  static const Color statusRejected = error;
+  static const Color statusExpired = textHint;
+
+  // Additional Brand Colors
+  static const Color accentDark = Color(0xFF2980B9);
+  static const Color neonAmber = Color(0xFFFFB300);
+  static const Color darkTextHint = Color(0xFF80868B);
+  static const Color darkBg = darkBackground;
 }

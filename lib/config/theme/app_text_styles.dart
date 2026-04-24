@@ -68,4 +68,19 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
+  
+  static TextStyle get subheading => GoogleFonts.inter(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textSecondary,
+  );
+
+  static TextStyle get heading => headingMedium;
+
+  static TextStyle get overline => GoogleFonts.inter(
+    fontSize: 10,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 1.0,
+    color: AppColors.textSecondary,
+  );
 }

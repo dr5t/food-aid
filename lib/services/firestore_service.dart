@@ -658,34 +658,42 @@ class FirestoreService {
   }
 
   Future<void> factoryReset(String adminUid) async {
+    debugPrint('FirestoreService: Starting factory reset for Admin: $adminUid');
     final batch = _firestore.batch();
 
-    // 1. Delete all donations
-    final donations = await _donations.get();
+    // 1. Delete all donations (Force server source)
+    final donations = await _donations.get(const GetOptions(source: Source.server));
     for (var doc in donations.docs) {
       batch.delete(doc.reference);
     }
+    debugPrint('FirestoreService: Queued ${donations.docs.length} donations for deletion');
 
     // 2. Delete all emergency requests
-    final emergencies = await _emergencyRequests.get();
+    final emergencies = await _emergencyRequests.get(const GetOptions(source: Source.server));
     for (var doc in emergencies.docs) {
       batch.delete(doc.reference);
     }
+    debugPrint('FirestoreService: Queued ${emergencies.docs.length} emergencies for deletion');
 
     // 3. Delete all notifications
-    final notifs = await _notifications.get();
+    final notifs = await _notifications.get(const GetOptions(source: Source.server));
     for (var doc in notifs.docs) {
       batch.delete(doc.reference);
     }
+    debugPrint('FirestoreService: Queued ${notifs.docs.length} notifications for deletion');
 
     // 4. Delete all users EXCEPT the current admin
-    final users = await _users.get();
+    final users = await _users.get(const GetOptions(source: Source.server));
+    int userDeleteCount = 0;
     for (var doc in users.docs) {
       if (doc.id != adminUid) {
         batch.delete(doc.reference);
+        userDeleteCount++;
       }
     }
+    debugPrint('FirestoreService: Queued $userDeleteCount users for deletion');
 
     await batch.commit();
+    debugPrint('FirestoreService: Factory reset batch committed successfully.');
   }
 }

@@ -1,3 +1,6 @@
+import 'dart:async';
+import '../../utils/web_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -380,8 +383,14 @@ class _OverviewTab extends StatelessWidget {
               final ok = await admin.factoryReset(adminUid);
               if (ok && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('System has been reset to factory defaults')),
+                  const SnackBar(content: Text('System wiped. Reloading...')),
                 );
+                // Hard reload the website to clear all caches
+                Future.delayed(const Duration(seconds: 1), () {
+                  if (kIsWeb) {
+                    reloadWebPage();
+                  }
+                });
               }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),

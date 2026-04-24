@@ -41,8 +41,8 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
       backgroundColor: Theme.of(context).brightness == Brightness.dark 
           ? AppColors.darkBackground 
           : AppColors.background,
-      appBar: AppAppBar(
-        title: 'Logistics Dashboard',
+      appBar: AppBar(
+        title: const Text('Logistics Dashboard'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, size: 20),
@@ -89,32 +89,6 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Logistics Dashboard',
-                style: AppTextStyles.titleLarge,
-              ),
-              Text(
-                'Manage fleet and deliveries',
-                style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
-              ),
-            ],
-          ),
-          const Spacer(),
-          IconButton(
-            icon: Icon(Icons.logout, color: Theme.of(context).iconTheme.color),
-            onPressed: () => context.read<AuthProvider>().signOut(),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildEmergencyFAB() {

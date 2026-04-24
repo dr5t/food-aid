@@ -370,7 +370,7 @@ class _OverviewTab extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('🚨 PERMANENT DATA WIPE?'),
+        title: const Text('PERMANENT DATA WIPE?'),
         content: const Text(
           'This will DELETE ALL USERS (except you), all donations, and all requests. '
           'This is irreversible and for system testing only.',

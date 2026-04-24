@@ -8,7 +8,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/donation_provider.dart';
 import '../../providers/emergency_provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../widgets/common/app_app_bar.dart';
+// import '../../widgets/common/app_app_bar.dart'; // Removed as unused
 import '../../widgets/common/app_bottom_nav_bar.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/app_background.dart';

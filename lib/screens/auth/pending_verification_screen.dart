@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 import '../../config/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/app_card.dart';
+import '../../widgets/common/app_button.dart';
 
 class PendingVerificationScreen extends StatelessWidget {
   const PendingVerificationScreen({super.key});
@@ -15,9 +17,13 @@ class PendingVerificationScreen extends StatelessWidget {
     final user = authProvider.user;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isRejected = user?.isRejected ?? false;
+    final isEmailVerified = authProvider.isEmailVerified;
+
+    // Ann Seva Style: Emerald Green
+    const emeraldGreen = Color(0xFF10B981);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -27,7 +33,7 @@ class PendingVerificationScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildStatusIcon(isRejected),
+                  _buildStatusIcon(isRejected, isEmailVerified, emeraldGreen),
 
                   AppSpacing.verticalXl,
 
@@ -37,14 +43,14 @@ class PendingVerificationScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          _buildHeader(isRejected),
+                          _buildHeader(isRejected, isEmailVerified, emeraldGreen),
                           AppSpacing.verticalLg,
 
                           _buildUserInfo(user, isRejected, isDark),
 
                           AppSpacing.verticalXl,
 
-                          _buildActionButtons(authProvider, isDark, isRejected),
+                          _buildActionButtons(authProvider, isEmailVerified, emeraldGreen),
                         ],
                       ),
                     ),
@@ -58,41 +64,71 @@ class PendingVerificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusIcon(bool isRejected) {
+  Widget _buildStatusIcon(bool isRejected, bool isEmailVerified, Color emeraldGreen) {
+    IconData icon;
+    Color color;
+
+    if (!isEmailVerified) {
+      icon = Icons.mark_email_unread_rounded;
+      color = emeraldGreen;
+    } else if (isRejected) {
+      icon = Icons.error_outline_rounded;
+      color = AppColors.error;
+    } else {
+      icon = Icons.pending_actions_rounded;
+      color = emeraldGreen;
+    }
+
     return Container(
       width: 100,
       height: 100,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isRejected
-            ? AppColors.error.withValues(alpha: 0.1)
-            : AppColors.primary.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.1),
       ),
       child: Icon(
-        isRejected
-            ? Icons.error_outline_rounded
-            : Icons.pending_actions_rounded,
+        icon,
         size: 50,
-        color: isRejected ? AppColors.error : AppColors.primary,
+        color: color,
       ),
     );
   }
 
-  Widget _buildHeader(bool isRejected) {
+  Widget _buildHeader(bool isRejected, bool isEmailVerified, Color emeraldGreen) {
+    String title;
+    String subtitle;
+
+    if (!isEmailVerified) {
+      title = 'Verify Your Email';
+      subtitle = 'We\'ve sent a verification link to your email address. Please check your inbox and click the link to continue.';
+    } else if (isRejected) {
+      title = 'Account Rejected';
+      subtitle = 'Your application could not be approved at this time.';
+    } else {
+      title = 'Verification Pending';
+      subtitle = 'Our administrators are currently reviewing your account application. You\'ll be notified once approved.';
+    }
+
     return Column(
       children: [
         Text(
-          isRejected ? 'Account Rejected' : 'Verification Pending',
+          title,
           textAlign: TextAlign.center,
-          style: AppTextStyles.titleLarge,
+          style: GoogleFonts.inter(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF1E293B),
+          ),
         ),
         AppSpacing.verticalSm,
         Text(
-          isRejected
-              ? 'Your application could not be approved at this time.'
-              : 'Our administrators are currently reviewing your account application.',
+          subtitle,
           textAlign: TextAlign.center,
-          style: AppTextStyles.bodySmall,
+          style: GoogleFonts.inter(
+            fontSize: 14,
+            color: const Color(0xFF64748B),
+            height: 1.5,
+          ),
         ),
       ],
     );
@@ -107,52 +143,45 @@ class PendingVerificationScreen extends StatelessWidget {
         _infoRow('Role', user?.roleLabel ?? 'Unassigned'),
         AppSpacing.verticalMd,
         const Divider(),
-        if (isRejected && user?.rejectionReason != null) ...[
-          AppSpacing.verticalLg,
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.error.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.error.withValues(alpha: 0.1)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Reason for rejection:',
-                  style: AppTextStyles.label.copyWith(color: AppColors.error),
-                ),
-                AppSpacing.verticalXs,
-                Text(user!.rejectionReason!, style: AppTextStyles.bodySmall),
-              ],
-            ),
-          ),
-        ],
       ],
     );
   }
 
   Widget _infoRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppTextStyles.bodySmall),
-          Text(value, style: AppTextStyles.titleSmall),
+          Text(label, style: GoogleFonts.inter(fontSize: 14, color: const Color(0xFF64748B))),
+          Text(value, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B))),
         ],
       ),
     );
   }
 
-  Widget _buildActionButtons(AuthProvider auth, bool isDark, bool isRejected) {
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton(
-        onPressed: () => auth.signOut(),
-        child: const Text('Sign Out'),
-      ),
+  Widget _buildActionButtons(AuthProvider auth, bool isEmailVerified, Color emeraldGreen) {
+    return Column(
+      children: [
+        if (!isEmailVerified) ...[
+          AppButton(
+            text: 'I have verified my email',
+            onPressed: () => auth.reloadUser(),
+            backgroundColor: emeraldGreen,
+          ),
+          AppSpacing.verticalMd,
+        ],
+        SizedBox(
+          width: double.infinity,
+          child: TextButton(
+            onPressed: () => auth.signOut(),
+            child: Text(
+              'Sign Out',
+              style: GoogleFonts.inter(color: Colors.redAccent, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

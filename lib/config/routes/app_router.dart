@@ -49,6 +49,10 @@ class AppRouter {
         }
 
         if (isAuthenticated && isOnPublicRoute) {
+          if (!authProvider.isEmailVerified && authProvider.role != UserRole.superAdmin) {
+            debugPrint('AppRouter: Email not verified, redirecting to /pending-verification');
+            return '/pending-verification';
+          }
           if (authProvider.isPendingVerification ||
               authProvider.isRejected) {
             debugPrint('AppRouter: Authenticated but pending/rejected, redirecting to /pending-verification');
@@ -61,6 +65,10 @@ class AppRouter {
         }
 
         if (isAuthenticated && !isOnPublicRoute) {
+           if (!authProvider.isEmailVerified && currentPath != '/pending-verification' && authProvider.role != UserRole.superAdmin) {
+             debugPrint('AppRouter: Email not verified on private route, redirecting to /pending-verification');
+             return '/pending-verification';
+           }
            if ((authProvider.isPendingVerification || authProvider.isRejected) && currentPath != '/pending-verification') {
              debugPrint('AppRouter: Authenticated but pending/rejected on private route, redirecting to /pending-verification');
              return '/pending-verification';

@@ -226,7 +226,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       children: [
         AppInput(label: 'Email', controller: _emailCtrl, prefixIcon: Icons.email_outlined),
         const SizedBox(height: 16),
-        AppInput(label: 'Password', controller: _passCtrl, prefixIcon: Icons.lock_outline, obscureText: _obscure),
+        AppInput(
+          label: 'Password',
+          controller: _passCtrl,
+          prefixIcon: Icons.lock_outline,
+          obscureText: _obscure,
+          suffix: IconButton(
+            icon: Icon(_obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20),
+            onPressed: () => setState(() => _obscure = !_obscure),
+          ),
+        ),
         const SizedBox(height: 24),
         AppButton(label: 'Sign In', onPressed: _signIn, backgroundColor: _roleColor(_selectedRole!)),
       ],
@@ -240,7 +249,16 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         const SizedBox(height: 16),
         AppInput(label: 'Email', controller: _emailCtrl, prefixIcon: Icons.email_outlined),
         const SizedBox(height: 16),
-        AppInput(label: 'Password', controller: _passCtrl, prefixIcon: Icons.lock_outline, obscureText: _obscure),
+        AppInput(
+          label: 'Password',
+          controller: _passCtrl,
+          prefixIcon: Icons.lock_outline,
+          obscureText: _obscure,
+          suffix: IconButton(
+            icon: Icon(_obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20),
+            onPressed: () => setState(() => _obscure = !_obscure),
+          ),
+        ),
         const SizedBox(height: 16),
         if (_selectedRole == UserRole.donor) ...[
           const Text('Donor Category', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),

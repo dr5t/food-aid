@@ -748,3 +748,51 @@ class _InfoChip extends StatelessWidget {
     );
   }
 }
+
+class _CompletedTab extends StatelessWidget {
+  const _CompletedTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<DonationProvider>();
+    final completed = provider.ngoDonations.where((d) => d.status == DonationStatus.delivered).toList();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (completed.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_outline_rounded,
+              size: 64,
+              color: isDark ? Colors.white12 : Colors.grey.shade200,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No completed deliveries yet',
+              style: TextStyle(color: isDark ? Colors.white38 : Colors.grey),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      itemCount: completed.length,
+      itemBuilder: (_, i) {
+        final d = completed[i];
+        return AppCard(
+          margin: const EdgeInsets.only(bottom: AppSpacing.md),
+          child: ListTile(
+            leading: const Icon(Icons.check_circle_rounded, color: Colors.green),
+            title: Text(d.title, style: AppTextStyles.titleSmall),
+            subtitle: Text('Delivered on ${d.updatedAt.toString().split(' ')[0]}'),
+            trailing: const Text('COMPLETED', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
+          ),
+        );
+      },
+    );
+  }
+}

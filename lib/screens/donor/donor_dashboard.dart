@@ -425,7 +425,25 @@ class _EmergencyAlertsTab extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final user = context.read<AuthProvider>().user;
+                      if (user == null) return;
+
+                      await context.read<EmergencyProvider>().donorAcceptRequest(
+                            req.id,
+                            user.uid,
+                            user.name,
+                          );
+
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Emergency Response Sent!'),
+                            backgroundColor: AppColors.success,
+                          ),
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.error,
                       foregroundColor: Colors.white,

@@ -41,23 +41,23 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
       backgroundColor: Theme.of(context).brightness == Brightness.dark 
           ? AppColors.darkBackground 
           : AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: IndexedStack(
-                index: _currentIndex,
-                children: const [
-                  _OverviewTab(),
-                  _UnassignedTab(),
-                  _EmployeesTab(),
-                  _CompanyCompletedTab(),
-                ],
-              ),
-            ),
-          ],
-        ),
+      appBar: AppAppBar(
+        title: 'Logistics Dashboard',
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, size: 20),
+            onPressed: () => context.read<AuthProvider>().signOut(),
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          _OverviewTab(),
+          _UnassignedTab(),
+          _EmployeesTab(),
+          _CompanyCompletedTab(),
+        ],
       ),
       floatingActionButton: _buildEmergencyFAB(),
       bottomNavigationBar: AppBottomNavigationBar(

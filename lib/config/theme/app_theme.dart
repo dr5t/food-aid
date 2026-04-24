@@ -14,7 +14,7 @@ class AppTheme {
       brightness: Brightness.light,
       primary: AppColors.primary,
       onPrimary: Colors.white,
-      secondary: AppColors.neonBlue,
+      secondary: AppColors.primaryLight,
       onSecondary: Colors.white,
       error: AppColors.error,
       surface: AppColors.surface,
@@ -27,14 +27,14 @@ class AppTheme {
 
   static ThemeData get dark {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.neonCyan,
+      seedColor: AppColors.primary,
       brightness: Brightness.dark,
-      primary: AppColors.neonCyan,
+      primary: AppColors.darkPrimary,
       onPrimary: Colors.black,
-      secondary: AppColors.neonPurple,
+      secondary: AppColors.darkAccent,
       onSecondary: Colors.black,
       error: AppColors.error,
-      surface: const Color(0xFF0A0A0B),
+      surface: AppColors.darkSurface,
       onSurface: AppColors.darkTextPrimary,
     );
 
@@ -86,11 +86,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
-            color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(12),
         ),
         color: isDark ? AppColors.darkSurface : surface,
         margin: EdgeInsets.zero,

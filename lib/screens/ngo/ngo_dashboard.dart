@@ -13,10 +13,9 @@ import '../../providers/emergency_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/common/connection_status_indicator.dart';
 import '../../widgets/common/skeleton_widgets.dart';
-import '../../widgets/common/cyber_app_bar.dart';
-import '../../widgets/common/cyber_bottom_nav_bar.dart';
-import '../../widgets/common/cyber_card.dart';
-import '../../widgets/common/cyber_background.dart';
+import '../../widgets/common/app_app_bar.dart';
+import '../../widgets/common/app_card.dart';
+import '../../widgets/common/app_loader.dart';
 import '../../config/theme/app_text_styles.dart';
 
 class NgoDashboard extends StatefulWidget {
@@ -45,11 +44,9 @@ class _NgoDashboardState extends State<NgoDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      extendBody: true, // For glassmorphism effect
-      appBar: CyberAppBar(
-        title: 'NGO TERMINAL',
+      appBar: AppAppBar(
+        title: 'NGO Dashboard',
         actions: [
-          const ConnectionStatusIndicator(),
           IconButton(
             icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 20),
             onPressed: () => context.read<ThemeProvider>().toggleTheme(),
@@ -60,35 +57,36 @@ class _NgoDashboardState extends State<NgoDashboard> {
           ),
         ],
       ),
-      body: CyberBackground(
-        child: IndexedStack(
-          index: _currentIndex,
-          children: const [
-            _OverviewTab(),
-            _AvailableDonationsTab(),
-            _MyEmergenciesTab(),
-          ],
-        ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          _OverviewTab(),
+          _AvailableDonationsTab(),
+          _MyEmergenciesTab(),
+        ],
       ),
       floatingActionButton: _buildEmergencyFAB(),
-      bottomNavigationBar: CyberBottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
         items: const [
-          CyberBottomNavItem(
-            icon: Icons.dashboard_outlined,
-            activeIcon: Icons.dashboard,
-            label: 'OVERVIEW',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard_outlined),
+            activeIcon: Icon(Icons.dashboard),
+            label: 'Overview',
           ),
-          CyberBottomNavItem(
-            icon: Icons.inventory_2_outlined,
-            activeIcon: Icons.inventory_2,
-            label: 'AVAILABLE',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory_2_outlined),
+            activeIcon: Icon(Icons.inventory_2),
+            label: 'Available',
           ),
-          CyberBottomNavItem(
-            icon: Icons.warning_amber,
-            activeIcon: Icons.warning,
-            label: 'EMERGENCIES',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.warning_amber),
+            activeIcon: Icon(Icons.warning),
+            label: 'Emergencies',
           ),
         ],
       ),
@@ -97,29 +95,14 @@ class _NgoDashboardState extends State<NgoDashboard> {
 
 
   Widget _buildEmergencyFAB() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 80), // Avoid overlap with bottom nav
-      child: FloatingActionButton.extended(
-        onPressed: () => _showEmergencyDialog(),
-        backgroundColor: AppColors.neonAmber.withValues(alpha: 0.2),
-        foregroundColor: AppColors.neonAmber,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          side: const BorderSide(color: AppColors.neonAmber, width: 2),
-        ),
-        icon: const Icon(Icons.warning_amber, size: 20),
-        label: Text(
-          'EMERGENCY',
-          style: GoogleFonts.orbitron(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
-          ),
-        ),
-      ).animate(onPlay: (controller) => controller.repeat())
-        .shimmer(duration: 2000.ms, color: AppColors.neonAmber.withValues(alpha: 0.3)),
-    );
+    return FloatingActionButton.extended(
+      onPressed: () => _showEmergencyDialog(),
+      backgroundColor: Colors.orange,
+      foregroundColor: Colors.white,
+      icon: const Icon(Icons.warning_amber, size: 20),
+      label: const Text('New Emergency Request'),
+    ).animate(onPlay: (controller) => controller.repeat())
+      .shimmer(duration: 3000.ms, color: Colors.white24);
   }
 
   void _showEmergencyDialog() {
@@ -139,9 +122,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
                 backgroundColor: Colors.transparent,
                 contentPadding: EdgeInsets.zero,
                 insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-                content: CyberCard(
-                  borderColor: AppColors.neonAmber,
-                  glowColor: AppColors.neonAmber.withValues(alpha: 0.2),
+                content: AppCard(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,42 +130,32 @@ class _NgoDashboardState extends State<NgoDashboard> {
                       Row(
                         children: [
                           const Icon(Icons.warning_amber,
-                              color: AppColors.neonAmber, size: 24),
+                              color: Colors.orange, size: 24),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
-                            'EMERGENCY REQUEST',
-                            style: AppTextStyles.hitechHeading.copyWith(
-                              fontSize: 18,
-                              color: AppColors.neonAmber,
-                            ),
+                            'New Emergency Request',
+                            style: AppTextStyles.titleMedium,
                           ),
                         ],
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        'BROADCASTING TO ALL UNITS WITHIN 10KM RADIUS',
-                        style: AppTextStyles.hitechSubtitle.copyWith(
-                          fontSize: 10,
-                          color: Colors.white70,
-                        ),
+                        'Alerting nearby donors within 10km radius',
+                        style: AppTextStyles.bodySmall,
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       Text(
-                        'MEAL TYPE',
-                        style: GoogleFonts.orbitron(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        'Meal Type',
+                        style: AppTextStyles.label.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Row(
                         children: [
                           Expanded(
                             child: _MealTypeOption(
-                              label: 'VEG',
+                              label: 'Vegetarian',
                               icon: Icons.eco,
-                              color: AppColors.neonGreen,
+                              color: Colors.green,
                               isSelected: selectedMealType == 'veg',
                               onTap: () => setDialogState(
                                   () => selectedMealType = 'veg'),
@@ -193,9 +164,9 @@ class _NgoDashboardState extends State<NgoDashboard> {
                           const SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: _MealTypeOption(
-                              label: 'NON-VEG',
+                              label: 'Non-Vegetarian',
                               icon: Icons.restaurant,
-                              color: AppColors.neonPurple,
+                              color: Colors.red,
                               isSelected: selectedMealType == 'nonVeg',
                               onTap: () => setDialogState(
                                   () => selectedMealType = 'nonVeg'),
@@ -207,17 +178,9 @@ class _NgoDashboardState extends State<NgoDashboard> {
                       TextFormField(
                         controller: qtyController,
                         keyboardType: TextInputType.number,
-                        style: GoogleFonts.orbitron(color: Colors.white),
-                        decoration: InputDecoration(
-                          labelText: 'QUANTITY REQUIRED',
-                          labelStyle: GoogleFonts.orbitron(fontSize: 10),
-                          prefixIcon: const Icon(Icons.people, size: 20, color: AppColors.neonAmber),
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white24),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.neonAmber),
-                          ),
+                        decoration: const InputDecoration(
+                          labelText: 'Quantity Required',
+                          prefixIcon: Icon(Icons.people, size: 20),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xl),
@@ -226,10 +189,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
                         children: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx),
-                            child: Text(
-                              'CANCEL',
-                              style: GoogleFonts.orbitron(color: Colors.white54, fontSize: 12),
-                            ),
+                            child: const Text('Cancel'),
                           ),
                           const SizedBox(width: AppSpacing.md),
                           ElevatedButton(
@@ -277,17 +237,11 @@ class _NgoDashboardState extends State<NgoDashboard> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.neonAmber,
-                              foregroundColor: Colors.black,
+                              backgroundColor: Colors.orange,
+                              foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                             ),
-                            child: Text(
-                              'SEND ALERT',
-                              style: GoogleFonts.orbitron(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                            ),
+                            child: const Text('Send Alert'),
                           ),
                         ],
                       ),
@@ -325,19 +279,13 @@ class _OverviewTab extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
         Text(
-          'HELLO, ${user?.organizationName?.toUpperCase() ?? user?.name?.toUpperCase() ?? 'NGO'}',
-          style: AppTextStyles.hitechHeading.copyWith(
-            fontSize: 24,
-            color: AppColors.neonCyan,
-          ),
+          'Welcome, ${user?.organizationName ?? user?.name ?? 'NGO'}',
+          style: AppTextStyles.heading,
         ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
         const SizedBox(height: 4),
         Text(
-          'ACCESSING MISSION CONTROL // SYSTEM NOMINAL',
-          style: AppTextStyles.hitechSubtitle.copyWith(
-            fontSize: 12,
-            letterSpacing: 1.5,
-          ),
+          'Everything looks good today.',
+          style: AppTextStyles.bodySmall,
         ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideX(begin: -0.1),
         const SizedBox(height: AppSpacing.xl),
 
@@ -371,8 +319,7 @@ class _OverviewTab extends StatelessWidget {
                       label: 'Available',
                       value: '$available',
                       icon: Icons.inventory_2_outlined,
-                      color: AppColors.neonCyan,
-                      gradient: AppColors.neonCyanGradient,
+                      color: AppColors.primary,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
@@ -381,8 +328,7 @@ class _OverviewTab extends StatelessWidget {
                       label: 'Accepted',
                       value: '$accepted',
                       icon: Icons.thumb_up_outlined,
-                      color: AppColors.neonPurple,
-                      gradient: AppColors.neonPurpleGradient,
+                      color: Colors.purple,
                     ),
                   ),
                 ],
@@ -395,18 +341,16 @@ class _OverviewTab extends StatelessWidget {
                       label: 'Delivered',
                       value: '$delivered',
                       icon: Icons.check_circle_outline,
-                      color: AppColors.neonGreen,
-                      gradient: AppColors.neonGreenGradient,
+                      color: Colors.green,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Transit',
+                      label: 'In Transit',
                       value: '$inTransit',
                       icon: Icons.local_shipping_outlined,
-                      color: AppColors.neonAmber,
-                      gradient: AppColors.neonAmberGradient,
+                      color: Colors.orange,
                     ),
                   ),
                 ],
@@ -457,7 +401,7 @@ class _AvailableDonationsTab extends StatelessWidget {
       itemCount: pending.length,
       itemBuilder: (_, i) {
         final d = pending[i];
-        return CyberCard(
+        return AppCard(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,12 +410,8 @@ class _AvailableDonationsTab extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      d.title.toUpperCase(),
-                      style: AppTextStyles.hitechSubtitle.copyWith(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.neonCyan,
-                      ),
+                      d.title,
+                      style: AppTextStyles.titleMedium,
                     ),
                   ),
                   if (d.isExpired)
@@ -486,10 +426,9 @@ class _AvailableDonationsTab extends StatelessWidget {
                       ),
                       child: Text(
                         'EXPIRED',
-                        style: GoogleFonts.orbitron(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                        style: AppTextStyles.overline.copyWith(
                           color: AppColors.error,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -497,25 +436,21 @@ class _AvailableDonationsTab extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'SOURCE: ${d.donorName.toUpperCase()}',
-                style: GoogleFonts.orbitron(
-                  fontSize: 10,
-                  color: Colors.white70,
-                  letterSpacing: 1,
-                ),
+                'From: ${d.donorName}',
+                style: AppTextStyles.caption,
               ),
               const SizedBox(height: AppSpacing.md),
               Wrap(
                 spacing: AppSpacing.sm,
                 runSpacing: AppSpacing.sm,
                 children: [
-                  _InfoChip(Icons.restaurant, d.foodTypeLabel.toUpperCase(), AppColors.neonPurple),
-                  _InfoChip(Icons.eco, d.mealTypeLabel.toUpperCase(), AppColors.neonGreen),
-                  _InfoChip(Icons.scale, d.quantityDisplay.toUpperCase(), AppColors.neonAmber),
+                  _InfoChip(Icons.restaurant, d.foodTypeLabel, Colors.purple),
+                  _InfoChip(Icons.eco, d.mealTypeLabel, Colors.green),
+                  _InfoChip(Icons.scale, d.quantityDisplay, Colors.orange),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
-              _InfoChip(Icons.location_on, d.pickupAddress.toUpperCase(), AppColors.neonCyan),
+              _InfoChip(Icons.location_on, d.pickupAddress, AppColors.primary),
               const SizedBox(height: AppSpacing.lg),
               Row(
                 children: [
@@ -527,9 +462,7 @@ class _AvailableDonationsTab extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       child: Text(
-                        'DETAILS',
-                        style: GoogleFonts.orbitron(fontSize: 12, color: Colors.white),
-                      ),
+                      child: const Text('View Details'),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
@@ -553,18 +486,11 @@ class _AvailableDonationsTab extends StatelessWidget {
                               }
                             },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.neonCyan.withValues(alpha: 0.2),
-                        foregroundColor: AppColors.neonCyan,
-                        side: const BorderSide(color: AppColors.neonCyan),
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: Text(
-                        'ACCEPT',
-                        style: GoogleFonts.orbitron(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: const Text('Accept'),
                     ),
                   ),
                 ],
@@ -604,10 +530,9 @@ class _MyEmergenciesTab extends StatelessWidget {
       itemCount: requests.length,
       itemBuilder: (_, i) {
         final req = requests[i];
-        final color = req.isActive ? AppColors.neonAmber : AppColors.neonGreen;
-        return CyberCard(
+        final color = req.isActive ? Colors.orange : Colors.green;
+        return AppCard(
           margin: const EdgeInsets.only(bottom: AppSpacing.md),
-          borderColor: color.withValues(alpha: 0.5),
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             leading: Container(
@@ -625,33 +550,19 @@ class _MyEmergenciesTab extends StatelessWidget {
               ),
             ),
             title: Text(
-              '${req.quantity} ${req.mealTypeLabel.toUpperCase()} MEALS',
-              style: GoogleFonts.orbitron(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              '${req.quantity} ${req.mealTypeLabel} Meals',
+              style: AppTextStyles.titleSmall,
             ),
             subtitle: Text(
-              'STATUS: ${req.statusLabel.toUpperCase()}',
-              style: GoogleFonts.orbitron(
-                fontSize: 10,
-                color: color,
-                letterSpacing: 1,
-              ),
+              'Status: ${req.statusLabel}',
+              style: AppTextStyles.caption.copyWith(color: color),
             ),
             trailing: req.isActive
                 ? TextButton(
                     onPressed: () =>
                         context.read<EmergencyProvider>().cancelRequest(req.id),
                     child: Text(
-                      'ABORT',
-                      style: GoogleFonts.orbitron(
-                        fontSize: 11,
-                        color: AppColors.error,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: const Text('Cancel'),
                   )
                 : null,
           ),
@@ -679,9 +590,9 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CyberCard(
-      borderColor: color.withValues(alpha: 0.5),
-      glowColor: color.withValues(alpha: 0.2),
+    return AppCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      color: color.withValues(alpha: 0.05),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -689,12 +600,8 @@ class _StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                label.toUpperCase(),
-                style: AppTextStyles.hitechSubtitle.copyWith(
-                  fontSize: 10,
-                  color: color,
-                  letterSpacing: 1,
-                ),
+                label,
+                style: AppTextStyles.label.copyWith(color: color),
               ),
               Icon(icon, size: 16, color: color),
             ],
@@ -702,32 +609,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             value,
-            style: GoogleFonts.orbitron(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  color: color.withValues(alpha: 0.5),
-                  blurRadius: 8,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 4),
-          Container(
-            height: 2,
-            width: 40,
-            decoration: BoxDecoration(
-              color: color,
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.5),
-                  blurRadius: 4,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
+            style: AppTextStyles.heading,
           ),
         ],
       ),
@@ -790,11 +672,9 @@ class _MealTypeOption extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
-              style: GoogleFonts.orbitron(
-                fontSize: 10,
+              style: AppTextStyles.label.copyWith(
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? color : Colors.white38,
-                letterSpacing: 1,
+                color: isSelected ? color : Colors.grey,
               ),
             ),
           ],

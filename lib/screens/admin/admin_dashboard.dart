@@ -7,10 +7,9 @@ import '../../models/user_model.dart';
 import '../../providers/admin_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/admin/create_employee_dialog.dart';
-import '../../widgets/common/cyber_app_bar.dart';
-import '../../widgets/common/cyber_card.dart';
-import '../../widgets/common/neon_indicator.dart';
-import '../../widgets/common/hitech_loader.dart';
+import '../../widgets/common/app_app_bar.dart';
+import '../../widgets/common/app_card.dart';
+import '../../widgets/common/app_loader.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -45,10 +44,10 @@ class _AdminDashboardState extends State<AdminDashboard>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: CyberAppBar(
+      appBar: AppAppBar(
         title: authProvider.user?.role == UserRole.superAdmin 
-            ? 'Root Control' 
-            : 'Network Control',
+            ? 'Super Admin Dashboard' 
+            : 'Admin Dashboard',
         actions: [
           IconButton(
             onPressed: () => context.read<AdminProvider>().refreshStats(),
@@ -66,7 +65,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                   children: [
                     const Icon(Icons.logout_rounded, size: 20),
                     const SizedBox(width: 8),
-                    Text('DISCONNECT', style: GoogleFonts.orbitron(fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text('Sign Out', style: AppTextStyles.label),
                   ],
                 ),
               ),
@@ -80,21 +79,13 @@ class _AdminDashboardState extends State<AdminDashboard>
             color: isDark ? Colors.black : Colors.white,
             child: TabBar(
               controller: _tabController,
-              labelStyle: GoogleFonts.orbitron(
-                fontWeight: FontWeight.w900,
-                fontSize: 12,
-                letterSpacing: 1.0,
-              ),
-              unselectedLabelStyle: GoogleFonts.orbitron(
-                fontWeight: FontWeight.w500,
-                fontSize: 10,
-                letterSpacing: 1.0,
-              ),
-              indicatorColor: AppColors.neonCyan,
-              labelColor: AppColors.neonCyan,
+              labelStyle: AppTextStyles.label.copyWith(fontWeight: FontWeight.bold),
+              unselectedLabelStyle: AppTextStyles.label,
+              indicatorColor: AppColors.primary,
+              labelColor: AppColors.primary,
               indicatorSize: TabBarIndicatorSize.tab,
               tabs: [
-                const Tab(text: 'SYSTEM'),
+                const Tab(text: 'Overview'),
                 Tab(
                   child: Consumer<AdminProvider>(
                     builder: (_, admin, _) {
@@ -102,17 +93,36 @@ class _AdminDashboardState extends State<AdminDashboard>
                       return Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('VERIFY'),
+                          const Text('Verifications'),
                           if (count > 0) ...[
-                            const SizedBox(width: 4),
-                            NeonIndicator(size: 6, color: AppColors.neonOrange),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.orange,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: const BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Text(
+                                '$count',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ],
                         ],
                       );
                     },
                   ),
                 ),
-                const Tab(text: 'UNIT'),
+                const Tab(text: 'Team'),
               ],
             ),
           ),
@@ -144,7 +154,7 @@ class _OverviewTab extends StatelessWidget {
     final stats = admin.platformStats;
 
     if (admin.isLoading && stats.isEmpty) {
-      return const Center(child: HitechLoader(text: 'Syncing Stats...'));
+      return const Center(child: AppLoader(text: 'Updating statistics...'));
     }
 
     return RefreshIndicator(
@@ -154,26 +164,14 @@ class _OverviewTab extends StatelessWidget {
         children: [
           Text(
             authProvider.user?.role == UserRole.superAdmin 
-                ? 'SUPER ADMIN CONSOLE' 
-                : 'SYSTEM STATUS',
-            style: GoogleFonts.orbitron(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: isDark ? AppColors.neonCyan : AppColors.primary,
-              letterSpacing: 2.0,
-            ),
+                ? 'Administrator Console' 
+                : 'System Overview',
+            style: AppTextStyles.heading,
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'MONITORING DEHRADUN NODE-01',
-            style: GoogleFonts.orbitron(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.textSecondary,
-              letterSpacing: 1.5,
-            ),
+            'Platform Management & Monitoring',
+            style: AppTextStyles.bodySmall,
           ),
           const SizedBox(height: AppSpacing.md),
           if (authProvider.user?.role == UserRole.superAdmin)
@@ -208,12 +206,12 @@ class _OverviewTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'SUPER ADMIN CONSOLE',
+                          'SUPER ADMIN SESSION',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 1.1,
-                            fontSize: 11,
+                            letterSpacing: 0.5,
+                            fontSize: 12,
                           ),
                         ),
                         Text(
@@ -348,10 +346,9 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CyberCard(
+    return AppCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      borderColor: color.withValues(alpha: 0.4),
-      showGlow: true,
+      color: color.withValues(alpha: 0.05),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -360,23 +357,11 @@ class _StatCard extends StatelessWidget {
           const Spacer(),
           Text(
             value,
-            style: GoogleFonts.orbitron(
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
-              color: Theme.of(context).colorScheme.onSurface,
-              letterSpacing: 1.0,
-            ),
+            style: AppTextStyles.heading,
           ),
           Text(
-            label.toUpperCase(),
-            style: GoogleFonts.orbitron(
-              fontSize: 9,
-              fontWeight: FontWeight.w600,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.textSecondary,
-              letterSpacing: 1.0,
-            ),
+            label,
+            style: AppTextStyles.caption,
           ),
         ],
       ),
@@ -401,35 +386,25 @@ class _RoleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CyberCard(
+    return AppCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.sm,
       ),
-      borderRadius: 10,
-      showCorners: false,
+      margin: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Row(
         children: [
           Icon(icon, color: color, size: 20),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              label.toUpperCase(),
-              style: GoogleFonts.orbitron(
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: Theme.of(context).colorScheme.onSurface,
-                letterSpacing: 1.0,
-              ),
+              label,
+              style: AppTextStyles.titleSmall,
             ),
           ),
           Text(
             '$count',
-            style: GoogleFonts.jetBrainsMono(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              color: color,
-            ),
+            style: AppTextStyles.titleMedium.copyWith(color: color),
           ),
         ],
       ),
@@ -448,7 +423,7 @@ class _VerificationsTab extends StatelessWidget {
     final pending = admin.pendingVerifications;
 
     if (admin.isLoading && pending.isEmpty) {
-      return const Center(child: HitechLoader(text: 'Accessing Secure Data...'));
+      return const Center(child: AppLoader(text: 'Loading verifications...'));
     }
 
     if (pending.isEmpty) {
@@ -459,28 +434,17 @@ class _VerificationsTab extends StatelessWidget {
             Icon(
               Icons.verified_rounded,
               size: 64,
-              color: AppColors.neonCyan.withValues(alpha: 0.3),
+              color: AppColors.primary.withValues(alpha: 0.2),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'NO THREATS DETECTED',
-              style: GoogleFonts.orbitron(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                color: Theme.of(context).colorScheme.onSurface,
-                letterSpacing: 2.0,
-              ),
+              'All Caught Up',
+              style: AppTextStyles.titleMedium,
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'ALL UNITS VERIFIED',
-              style: GoogleFonts.orbitron(
-                fontSize: 10,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.textSecondary,
-                letterSpacing: 1.5,
-              ),
+              'No pending verifications',
+              style: AppTextStyles.bodySmall,
             ),
           ],
         ),
@@ -563,11 +527,10 @@ class _VerificationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isNgo = user.role == UserRole.ngo;
-    final accentColor = isNgo ? AppColors.neonCyan : AppColors.neonOrange;
+    final accentColor = isNgo ? AppColors.primary : Colors.orange;
 
-    return CyberCard(
+    return AppCard(
       padding: const EdgeInsets.all(AppSpacing.md),
-      borderColor: accentColor.withValues(alpha: 0.3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -588,43 +551,28 @@ class _VerificationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      (user.organizationName ?? user.name).toUpperCase(),
-                      style: GoogleFonts.orbitron(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w900,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        letterSpacing: 1.0,
-                      ),
+                      user.organizationName ?? user.name,
+                      style: AppTextStyles.titleSmall,
                     ),
                     Text(
-                      user.roleLabel.toUpperCase(),
-                      style: GoogleFonts.orbitron(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : AppColors.textSecondary,
-                        letterSpacing: 1.0,
-                      ),
+                      user.roleLabel,
+                      style: AppTextStyles.caption,
                     ),
                   ],
                 ),
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.neonOrange.withValues(alpha: 0.1),
+                  color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: AppColors.neonOrange.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   'PENDING',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.neonOrange,
-                    letterSpacing: 1.0,
+                  style: AppTextStyles.overline.copyWith(
+                    color: Colors.orange,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -645,14 +593,10 @@ class _VerificationCard extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: onReject,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.redAccent,
-                    side: const BorderSide(color: Colors.redAccent),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
+                    foregroundColor: Colors.red,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: Text('TERMINATE', style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                  child: const Text('Reject'),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -660,16 +604,11 @@ class _VerificationCard extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onApprove,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.neonCyan,
-                    foregroundColor: Colors.black,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    elevation: 5,
-                    shadowColor: AppColors.neonCyan.withValues(alpha: 0.5),
                   ),
-                  child: Text('AUTHORIZE', style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.0)),
+                  child: const Text('Approve'),
                 ),
               ),
             ],

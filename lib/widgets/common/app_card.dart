@@ -1,51 +1,52 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
-import '../../config/constants.dart';
 
-class AppCard extends StatefulWidget {
+class AppCard extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
   final Color? color;
+  final double? borderRadius;
+  final BorderSide? border;
+  final List<BoxShadow>? boxShadow;
 
   const AppCard({
     super.key,
     required this.child,
     this.onTap,
     this.padding,
+    this.margin,
     this.color,
+    this.borderRadius,
+    this.border,
+    this.boxShadow,
   });
 
   @override
-  State<AppCard> createState() => _AppCardState();
-}
-
-class _AppCardState extends State<AppCard> {
-  bool _isHovering = false;
-
-  @override
   Widget build(BuildContext context) {
-    final isWeb = kIsWeb;
-
-    return MouseRegion(
-      onEnter: isWeb ? (_) => setState(() => _isHovering = true) : null,
-      onExit: isWeb ? (_) => setState(() => _isHovering = false) : null,
-      child: AnimatedContainer(
-        duration: AppConstants.animationFast,
-        curve: Curves.easeOut,
-        child: Card(
-          elevation: _isHovering
-              ? AppConstants.cardHoverElevation
-              : AppSpacing.elevationSm,
-          color: widget.color,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        color: color ?? (isDark ? AppColors.darkSurface : AppColors.surface),
+        borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.radiusMd),
+        border: Border.fromBorderSide(border ?? BorderSide(
+          color: isDark ? Colors.white.withValues(alpha: 0.1) : Colors.black.withValues(alpha: 0.05),
+          width: 1,
+        )),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius ?? AppSpacing.radiusMd),
+        child: Material(
+          color: Colors.transparent,
           child: InkWell(
-            onTap: widget.onTap,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            onTap: onTap,
             child: Padding(
-              padding: widget.padding ?? AppSpacing.cardPadding,
-              child: widget.child,
+              padding: padding ?? AppSpacing.cardPadding,
+              child: child,
             ),
           ),
         ),

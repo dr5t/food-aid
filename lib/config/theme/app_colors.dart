@@ -65,123 +65,17 @@ class AppColors {
   static const Color emergencyLight = Color(0xFFF9DEDC);
   static const Color emergencyBg = Color(0xFFFFF1F0);
 
-  // Legacy Neon Colors (kept for compatibility but subdued)
-  static const Color neonCyan = Color(0xFF00677D);
-  static const Color neonPurple = Color(0xFF6750A4);
-  static const Color neonPink = Color(0xFF984061);
-  static const Color neonGreen = Color(0xFF2E7D32);
-  static const Color neonBlue = Color(0xFF005AC1);
-  static const Color neonOrange = Color(0xFF8B5000);
-  static const Color neonAmber = Color(0xFF725C00);
-
-  // Glassmorphism Colors (Simplified)
-  static Color glassBackground(Brightness brightness) => brightness == Brightness.dark
-      ? Colors.white.withValues(alpha: 0.05)
-      : Colors.black.withValues(alpha: 0.02);
-  
-  static Color glassBorder(Brightness brightness) => brightness == Brightness.dark
-      ? Colors.white.withValues(alpha: 0.1)
-      : Colors.black.withValues(alpha: 0.05);
-
-  // Clean Gradients
-  static const LinearGradient neonGradient = LinearGradient(
+  // Simple Gradients for status or highlights (optional, kept subtle)
+  static const LinearGradient primaryGradient = LinearGradient(
     colors: [primary, accent],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const LinearGradient cyberGradient = LinearGradient(
-    colors: [primaryDark, primary],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient dehradunMist = LinearGradient(
-    colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient cyberSaffron = LinearGradient(
-    colors: [Color(0xFFE65100), Color(0xFFFF9800)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient sunsetGradient = LinearGradient(
-    colors: [Color(0xFFF57C00), Color(0xFFFFB74D)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient emeraldGradient = LinearGradient(
+  static const LinearGradient successGradient = LinearGradient(
     colors: [Color(0xFF2E7D32), Color(0xFF4CAF50)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
-
-  static const LinearGradient fireGradient = LinearGradient(
-    colors: [Color(0xFFC62828), Color(0xFFEF5350)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient oceanGradient = LinearGradient(
-    colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient neonCyanGradient = LinearGradient(
-    colors: [Color(0xFF006064), Color(0xFF0097A7)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient neonPurpleGradient = LinearGradient(
-    colors: [Color(0xFF4527A0), Color(0xFF673AB7)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient neonGreenGradient = LinearGradient(
-    colors: [Color(0xFF2E7D32), Color(0xFF43A047)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient neonPinkGradient = LinearGradient(
-    colors: [Color(0xFF880E4F), Color(0xFFAD1457)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient neonBlueGradient = LinearGradient(
-    colors: [Color(0xFF1565C0), Color(0xFF1976D2)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient neonAmberGradient = LinearGradient(
-    colors: [Color(0xFFF57F17), Color(0xFFFBC02D)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const List<BoxShadow> neonGlow = [
-    BoxShadow(
-      color: Colors.black12,
-      blurRadius: 4,
-      spreadRadius: 0,
-    ),
-  ];
-
-  static List<BoxShadow> customGlow(Color color) => [
-    BoxShadow(
-      color: color.withValues(alpha: 0.1),
-      blurRadius: 8,
-      spreadRadius: 0,
-    ),
-  ];
 
 }

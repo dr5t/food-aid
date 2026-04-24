@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/constants.dart';
 import '../../providers/auth_provider.dart';
-import '../../widgets/common/hitech_loader.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -52,8 +51,6 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (mounted) {
       if (authProvider.isAuthenticated) {
-        // Redirection logic should be handled by the router, 
-        // but for now we follow the existing flow or trigger a refresh
         context.go('/');
       } else {
         context.go('/onboarding');
@@ -73,106 +70,60 @@ class _SplashScreenState extends State<SplashScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0A0A0B) : Colors.white,
-      body: Stack(
-        children: [
-          // Background ambient glow
-          if (isDark)
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.neonCyan.withValues(alpha: 0.05),
-                ),
-              ).animate().fadeIn(duration: 2.seconds),
-            ),
-
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const HitechLoader(
-                  size: 100,
-                  text: "System Initializing",
-                ),
-                const SizedBox(height: 60),
-                Text(
-                  AppConstants.appName.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 10,
-                    color: Colors.white,
-                    fontFamily: 'Orbitron',
-                    shadows: [
-                      Shadow(
-                        color: AppColors.neonCyan,
-                        blurRadius: 15,
-                      ),
-                    ],
+      backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
                   ),
-                ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
-                const SizedBox(height: 8),
-                Text(
-                  "DEHRADUN • INDIA",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 6,
-                    color: AppColors.neonCyan,
-                    fontFamily: 'Orbitron',
+                  child: const Icon(
+                    Icons.volunteer_activism,
+                    size: 80,
+                    color: AppColors.primary,
                   ),
-                ).animate().fadeIn(delay: 800.ms),
-              ],
+                ),
+              ),
             ),
-          ),
-
-          // Bottom Status Bar
-          Positioned(
-            bottom: 40,
-            left: 0,
-            right: 0,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: authProvider.dbOnline ? AppColors.neonGreen : AppColors.error,
-                        boxShadow: [
-                          if (authProvider.dbOnline)
-                            BoxShadow(
-                              color: AppColors.neonGreen.withValues(alpha: 0.5),
-                              blurRadius: 8,
-                            ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      authProvider.dbOnline ? "DATABASE SECURE" : "DATABASE OFFLINE",
-                      style: const TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 3,
-                        color: Colors.white38,
-                        fontFamily: 'Orbitron',
-                      ),
-                    ),
-                  ],
-                ).animate(onPlay: (c) => c.repeat(reverse: true)).fadeIn(duration: 1.seconds),
-              ],
-            ),
-          ),
-        ],
+            const SizedBox(height: 32),
+            Text(
+              AppConstants.appName,
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+                color: isDark ? Colors.white : AppColors.textPrimary,
+              ),
+            ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
+            const SizedBox(height: 8),
+            Text(
+              "Dehradun • India",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white54 : AppColors.textSecondary,
+                letterSpacing: 4,
+              ),
+            ).animate().fadeIn(delay: 800.ms),
+            const SizedBox(height: 48),
+            const SizedBox(
+              width: 40,
+              height: 40,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+              ),
+            ).animate().fadeIn(delay: 1000.ms),
+          ],
+        ),
       ),
     );
   }

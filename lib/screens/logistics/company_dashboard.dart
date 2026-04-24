@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 import '../../config/theme/app_text_styles.dart';
@@ -9,11 +7,9 @@ import '../../models/donation_model.dart';
 import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/logistics_provider.dart';
-import '../../providers/theme_provider.dart';
-import '../../services/auth_service.dart';
 import '../../widgets/admin/create_employee_dialog.dart';
-import '../../widgets/common/cyber_card.dart';
-import '../../widgets/common/cyber_bottom_nav_bar.dart';
+import '../../widgets/common/app_card.dart';
+import '../../widgets/common/app_bottom_nav_bar.dart';
 
 class CompanyDashboard extends StatefulWidget {
   const CompanyDashboard({super.key});
@@ -37,60 +33,44 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBg,
-      body: Stack(
-        children: [
-          // Background Glow
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.neonCyan.withValues(alpha: 0.05),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark 
+          ? AppColors.darkBackground 
+          : AppColors.background,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: IndexedStack(
+                index: _currentIndex,
+                children: const [
+                  _OverviewTab(),
+                  _UnassignedTab(),
+                  _EmployeesTab(),
+                ],
               ),
-            ).animate().fadeIn(duration: 1000.ms),
-          ),
-          
-          SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(context),
-                Expanded(
-                  child: IndexedStack(
-                    index: _currentIndex,
-                    children: const [
-                      _OverviewTab(),
-                      _UnassignedTab(),
-                      _EmployeesTab(),
-                    ],
-                  ),
-                ),
-              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      bottomNavigationBar: CyberBottomNavigationBar(
+      bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          CyberBottomNavItem(
+          AppBottomNavItem(
             icon: Icons.dashboard_outlined,
             activeIcon: Icons.dashboard,
-            label: 'HUB',
+            label: 'Dashboard',
           ),
-          CyberBottomNavItem(
+          AppBottomNavItem(
             icon: Icons.assignment_outlined,
             activeIcon: Icons.assignment,
-            label: 'TASKS',
+            label: 'Unassigned',
           ),
-          CyberBottomNavItem(
+          AppBottomNavItem(
             icon: Icons.group_outlined,
             activeIcon: Icons.group,
-            label: 'UNIT',
+            label: 'Employees',
           ),
         ],
       ),
@@ -106,18 +86,18 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'LOGISTICS HUB',
-                style: AppTextStyles.hitechHeading.copyWith(fontSize: 20),
+                'Logistics Dashboard',
+                style: AppTextStyles.titleLarge,
               ),
               Text(
-                'FLEET CONTROL CENTER',
-                style: AppTextStyles.hitechSubtitle.copyWith(fontSize: 10, color: AppColors.neonCyan),
+                'Manage fleet and deliveries',
+                style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
               ),
             ],
           ),
           const Spacer(),
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white70),
+            icon: Icon(Icons.logout, color: Theme.of(context).iconTheme.color),
             onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],
@@ -126,7 +106,6 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
   }
 }
 
-
 class _OverviewTab extends StatelessWidget {
   const _OverviewTab();
 
@@ -134,7 +113,6 @@ class _OverviewTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
     final provider = context.watch<LogisticsProvider>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final active = provider.companyDonations
         .where((d) => d.isActive)
@@ -146,27 +124,18 @@ class _OverviewTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 100),
       children: [
-        CyberCard(
+        AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'SYSTEM USER: ${user?.organizationName?.toUpperCase() ?? 'COMPANY'}',
-                style: GoogleFonts.orbitron(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.neonCyan,
-                  letterSpacing: 1,
-                ),
+                user?.organizationName ?? 'Logistics Company',
+                style: AppTextStyles.titleMedium,
               ),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'LOGISTICS AUTHENTICATED // STATUS: ONLINE',
-                style: GoogleFonts.orbitron(
-                  fontSize: 10,
-                  color: Colors.white54,
-                  letterSpacing: 0.5,
-                ),
+                'Active Session • All systems operational',
+                style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
               ),
             ],
           ),
@@ -182,36 +151,36 @@ class _OverviewTab extends StatelessWidget {
           childAspectRatio: 1.4,
           children: [
             _StatCard(
-              label: 'UNASSIGNED',
+              label: 'Unassigned',
               value: '${provider.unassignedDonations.length}',
               icon: Icons.assignment_outlined,
-              color: AppColors.neonAmber,
+              color: AppColors.statusPending,
             ),
             _StatCard(
-              label: 'ACTIVE',
+              label: 'Active',
               value: '$active',
               icon: Icons.local_shipping_outlined,
-              color: AppColors.neonCyan,
+              color: AppColors.statusAssigned,
             ),
             _StatCard(
-              label: 'DELIVERED',
+              label: 'Delivered',
               value: '$delivered',
               icon: Icons.check_circle_outline,
-              color: AppColors.neonGreen,
+              color: AppColors.statusDelivered,
             ),
             _StatCard(
-              label: 'EMPLOYEES',
+              label: 'Employees',
               value: '${provider.employees.length}',
               icon: Icons.group_outlined,
-              color: AppColors.neonPurple,
+              color: AppColors.primary,
             ),
           ],
         ),
 
         const SizedBox(height: AppSpacing.xl),
         Text(
-          'ACTIVE DELIVERIES',
-          style: AppTextStyles.hitechSubtitle.copyWith(color: Colors.white),
+          'Active Deliveries',
+          style: AppTextStyles.titleMedium,
         ),
         const SizedBox(height: AppSpacing.md),
 
@@ -225,12 +194,8 @@ class _OverviewTab extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Text(
-                'NO ACTIVE OPERATIONS',
-                style: GoogleFonts.orbitron(
-                  fontSize: 12,
-                  color: Colors.white24,
-                  letterSpacing: 1,
-                ),
+                'No active deliveries',
+                style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
               ),
             ),
           ),
@@ -238,7 +203,6 @@ class _OverviewTab extends StatelessWidget {
     );
   }
 }
-
 
 class _UnassignedTab extends StatelessWidget {
   const _UnassignedTab();
@@ -254,22 +218,20 @@ class _UnassignedTab extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                'PENDING TASKS',
-                style: AppTextStyles.hitechHeading.copyWith(fontSize: 18),
+                'Pending Tasks',
+                style: AppTextStyles.titleLarge,
               ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.neonAmber.withValues(alpha: 0.1),
-                  border: Border.all(color: AppColors.neonAmber.withValues(alpha: 0.5)),
-                  borderRadius: BorderRadius.circular(4),
+                  color: AppColors.statusPending.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Text(
-                  '${provider.unassignedDonations.length} DETECTED',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 10,
-                    color: AppColors.neonAmber,
+                  '${provider.unassignedDonations.length} Pending',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.statusPending,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -279,7 +241,7 @@ class _UnassignedTab extends StatelessWidget {
         ),
         Expanded(
           child: provider.unassignedDonations.isEmpty
-              ? _buildEmptyState('NO PENDING LOGISTICS DETECTED')
+              ? _buildEmptyState('No pending tasks available')
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                   itemCount: provider.unassignedDonations.length,
@@ -300,15 +262,11 @@ class _UnassignedTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.radar, size: 48, color: Colors.white10),
+          Icon(Icons.assignment_turned_in_outlined, size: 48, color: AppColors.textHint.withValues(alpha: 0.3)),
           const SizedBox(height: AppSpacing.md),
           Text(
             message,
-            style: GoogleFonts.orbitron(
-              fontSize: 12,
-              color: Colors.white24,
-              letterSpacing: 1,
-            ),
+            style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
           ),
         ],
       ),
@@ -330,22 +288,17 @@ class _EmployeesTab extends StatelessWidget {
           child: Row(
             children: [
               Text(
-                'UNIT ROSTER',
-                style: AppTextStyles.hitechHeading.copyWith(fontSize: 18),
+                'Employees',
+                style: AppTextStyles.titleLarge,
               ),
               const Spacer(),
               ElevatedButton.icon(
                 onPressed: () => _showCreateEmployeeDialog(context),
                 icon: const Icon(Icons.add, size: 18),
-                label: Text(
-                  'RECRUIT',
-                  style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.bold),
-                ),
+                label: const Text('Add Employee'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
-                  foregroundColor: AppColors.neonCyan,
-                  side: const BorderSide(color: AppColors.neonCyan),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
                 ),
               ),
             ],
@@ -353,7 +306,7 @@ class _EmployeesTab extends StatelessWidget {
         ),
         Expanded(
           child: provider.employees.isEmpty
-              ? _buildEmptyState('NO OPERATIVES ASSIGNED')
+              ? _buildEmptyState('No employees added yet')
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                   itemCount: provider.employees.length,
@@ -372,15 +325,11 @@ class _EmployeesTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.group_off_outlined, size: 48, color: Colors.white10),
+          Icon(Icons.group_outlined, size: 48, color: AppColors.textHint.withValues(alpha: 0.3)),
           const SizedBox(height: AppSpacing.md),
           Text(
             message,
-            style: GoogleFonts.orbitron(
-              fontSize: 12,
-              color: Colors.white24,
-              letterSpacing: 1,
-            ),
+            style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
           ),
         ],
       ),
@@ -403,32 +352,23 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CyberCard(
+    return AppCard(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: color, size: 20),
+          Icon(icon, color: color, size: 24),
           const SizedBox(height: AppSpacing.xs),
           Text(
             value,
-            style: GoogleFonts.orbitron(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-            ),
+            style: AppTextStyles.titleLarge,
           ),
           Text(
             label,
-            style: GoogleFonts.orbitron(
-              fontSize: 8,
-              color: color.withValues(alpha: 0.7),
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-            ),
+            style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 400.ms, delay: 100.ms).scale(begin: const Offset(0.95, 0.95));
+    );
   }
 }
 
@@ -447,82 +387,61 @@ class _DeliveryTile extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: CyberCard(
+      child: AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: statusColor.withValues(alpha: 0.1),
-                    border: Border.all(color: statusColor.withValues(alpha: 0.5)),
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: Text(
                     donation.status.name.toUpperCase(),
-                    style: GoogleFonts.orbitron(
-                      fontSize: 8,
-                      color: statusColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: AppTextStyles.overline.copyWith(color: statusColor),
                   ),
                 ),
                 const Spacer(),
                 Text(
                   '#${donation.id.substring(0, 8).toUpperCase()}',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 8,
-                    color: Colors.white24,
-                  ),
+                  style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              donation.mealType.name.toUpperCase(),
-              style: AppTextStyles.hitechHeading.copyWith(fontSize: 14),
+              donation.mealType.name,
+              style: AppTextStyles.titleMedium,
             ),
             const SizedBox(height: AppSpacing.xs),
-            _buildInfoRow(Icons.business, donation.ngoName ?? 'NGO Unknown'),
+            _buildInfoRow(Icons.business, donation.ngoName ?? 'Unknown NGO'),
             _buildInfoRow(Icons.location_on_outlined, donation.pickupAddress),
             const SizedBox(height: AppSpacing.md),
             if (isUnassigned)
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: FilledButton(
                   onPressed: () => _showAssignDialog(context, donation),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
-                    foregroundColor: AppColors.neonCyan,
-                    side: const BorderSide(color: AppColors.neonCyan),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  ),
-                  child: Text(
-                    'ASSIGN OPERATIVE',
-                    style: GoogleFonts.orbitron(fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
+                  child: const Text('Assign Employee'),
                 ),
               )
             else if (donation.employeeName != null)
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.03),
-                  borderRadius: BorderRadius.circular(4),
+                  color: AppColors.surfaceVariant,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.person_outline, size: 14, color: AppColors.neonCyan),
-                    const SizedBox(width: 8),
+                    const Icon(Icons.person_outline, size: 16, color: AppColors.primary),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
-                      'ASSIGNED TO: ${donation.employeeName?.toUpperCase()}',
-                      style: GoogleFonts.orbitron(
-                        fontSize: 9,
-                        color: AppColors.neonCyan,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Assigned to: ${donation.employeeName}',
+                      style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -530,24 +449,20 @@ class _DeliveryTile extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 300.ms).slideX(begin: 0.1, end: 0);
+    );
   }
 
   Widget _buildInfoRow(IconData icon, String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
+      padding: const EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          Icon(icon, size: 12, color: Colors.white38),
+          Icon(icon, size: 14, color: AppColors.textHint),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              text.toUpperCase(),
-              style: GoogleFonts.orbitron(
-                fontSize: 10,
-                color: Colors.white70,
-                letterSpacing: 0.5,
-              ),
+              text,
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -560,15 +475,15 @@ class _DeliveryTile extends StatelessWidget {
   Color _getStatusColor(DonationStatus status) {
     switch (status) {
       case DonationStatus.pending:
-        return AppColors.neonAmber;
+        return AppColors.statusPending;
       case DonationStatus.assigned:
-        return AppColors.neonCyan;
+        return AppColors.statusAssigned;
       case DonationStatus.picked:
-        return AppColors.neonPurple;
+        return AppColors.statusPicked;
       case DonationStatus.delivered:
-        return AppColors.neonGreen;
+        return AppColors.statusDelivered;
       default:
-        return Colors.white54;
+        return AppColors.textHint;
     }
   }
 }
@@ -582,18 +497,12 @@ class _EmployeeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: CyberCard(
+      child: AppCard(
         child: Row(
           children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.neonCyan.withValues(alpha: 0.1),
-                border: Border.all(color: AppColors.neonCyan.withValues(alpha: 0.3)),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.person, color: AppColors.neonCyan),
+            CircleAvatar(
+              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+              child: const Icon(Icons.person, color: AppColors.primary),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
@@ -601,19 +510,12 @@ class _EmployeeTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    employee.name.toUpperCase(),
-                    style: GoogleFonts.orbitron(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    employee.name,
+                    style: AppTextStyles.titleSmall,
                   ),
                   Text(
-                    employee.email.toUpperCase(),
-                    style: GoogleFonts.orbitron(
-                      fontSize: 10,
-                      color: Colors.white38,
-                    ),
+                    employee.email,
+                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
                   ),
                 ],
               ),
@@ -621,23 +523,18 @@ class _EmployeeTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.neonGreen.withValues(alpha: 0.1),
-                border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.5)),
-                borderRadius: BorderRadius.circular(4),
+                color: AppColors.statusDelivered.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Text(
-                'ACTIVE',
-                style: GoogleFonts.orbitron(
-                  fontSize: 8,
-                  color: AppColors.neonGreen,
-                  fontWeight: FontWeight.bold,
-                ),
+                'Active',
+                style: AppTextStyles.overline.copyWith(color: AppColors.statusDelivered),
               ),
             ),
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 300.ms).slideX(begin: -0.1, end: 0);
+    );
   }
 }
 
@@ -648,31 +545,28 @@ void _showAssignDialog(BuildContext context, DonationModel donation) {
       return Consumer<LogisticsProvider>(
         builder: (context, provider, _) {
           return Dialog(
-            backgroundColor: Colors.transparent,
-            child: CyberCard(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'ASSIGN OPERATIVE',
-                    style: AppTextStyles.hitechHeading.copyWith(fontSize: 18),
+                    'Assign Employee',
+                    style: AppTextStyles.titleLarge,
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'SELECT UNIT FOR TASK #${donation.id.substring(0, 8).toUpperCase()}',
-                    style: GoogleFonts.orbitron(
-                      fontSize: 10,
-                      color: AppColors.neonCyan,
-                      letterSpacing: 1,
-                    ),
+                    'Select an employee for task #${donation.id.substring(0, 8).toUpperCase()}',
+                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   if (provider.employees.isEmpty)
                     Center(
                       child: Text(
-                        'NO OPERATIVES AVAILABLE',
-                        style: GoogleFonts.orbitron(fontSize: 12, color: Colors.white24),
+                        'No employees available',
+                        style: AppTextStyles.bodySmall,
                       ),
                     )
                   else
@@ -682,58 +576,37 @@ void _showAssignDialog(BuildContext context, DonationModel donation) {
                         itemCount: provider.employees.length,
                         itemBuilder: (context, index) {
                           final employee = provider.employees[index];
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                             child: ListTile(
-                                onTap: () {
-                                  final user = context.read<AuthProvider>().user;
-                                  if (user != null) {
-                                    provider.assignEmployee(
-                                      donation.id,
-                                      user.uid,
-                                      user.organizationName ?? 'Company',
-                                      employee.uid,
-                                      employee.name,
-                                    );
-                                  }
-                                  Navigator.pop(context);
+                              onTap: () {
+                                final user = context.read<AuthProvider>().user;
+                                if (user != null) {
+                                  provider.assignEmployee(
+                                    donation.id,
+                                    user.uid,
+                                    user.organizationName ?? 'Company',
+                                    employee.uid,
+                                    employee.name,
+                                  );
+                                }
+                                Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    backgroundColor: AppColors.neonCyan,
-                                    content: Text(
-                                      'TASK ASSIGNED TO ${employee.name.toUpperCase()}',
-                                      style: GoogleFonts.orbitron(
-                                        color: Colors.black,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    content: Text('Task assigned to ${employee.name}'),
                                   ),
                                 );
                               },
                               leading: CircleAvatar(
-                                backgroundColor: AppColors.neonCyan.withValues(alpha: 0.1),
-                                child: const Icon(Icons.person, size: 16, color: AppColors.neonCyan),
+                                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                                child: const Icon(Icons.person, size: 18, color: AppColors.primary),
                               ),
-                              title: Text(
-                                employee.name.toUpperCase(),
-                                style: GoogleFonts.orbitron(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text(
-                                'READY',
-                                style: GoogleFonts.orbitron(
-                                  fontSize: 8,
-                                  color: AppColors.neonGreen,
-                                ),
-                              ),
-                              trailing: const Icon(Icons.chevron_right, color: Colors.white24),
+                              title: Text(employee.name),
+                              subtitle: const Text('Available'),
+                              trailing: const Icon(Icons.chevron_right),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                                side: const BorderSide(color: Colors.white10),
+                                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                                side: BorderSide(color: AppColors.divider.withValues(alpha: 0.1)),
                               ),
                             ),
                           );
@@ -745,14 +618,7 @@ void _showAssignDialog(BuildContext context, DonationModel donation) {
                     width: double.infinity,
                     child: TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'ABORT',
-                        style: GoogleFonts.orbitron(
-                          color: Colors.white54,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: const Text('Cancel'),
                     ),
                   ),
                 ],
@@ -771,7 +637,7 @@ void _showCreateEmployeeDialog(BuildContext context) {
     builder: (context) {
       final user = context.read<AuthProvider>().user;
       return CreateEmployeeDialog(
-        title: 'RECRUIT OPERATIVE',
+        title: 'Add New Employee',
         targetRole: UserRole.logisticsEmployee,
         onCreateEmployee: ({
           required String name,

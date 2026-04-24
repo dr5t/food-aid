@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
+import '../../config/theme/app_text_styles.dart';
 
-class HitechLoader extends StatelessWidget {
+class AppLoader extends StatelessWidget {
   final double size;
   final Color? color;
   final String? text;
 
-  const HitechLoader({
+  const AppLoader({
     super.key,
-    this.size = 40,
+    this.size = 24,
     this.color,
     this.text,
   });
@@ -26,17 +27,15 @@ class HitechLoader extends StatelessWidget {
           height: size,
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-            strokeWidth: 3,
+            strokeWidth: 2,
           ),
         ),
         if (text != null) ...[
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           Text(
             text!,
-            style: TextStyle(
-              color: primaryColor.withValues(alpha: 0.8),
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textSecondary,
             ),
           ),
         ],

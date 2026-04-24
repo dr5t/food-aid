@@ -20,38 +20,29 @@ class AppTextStyles {
         letterSpacing: -0.5,
       );
 
-  static TextStyle get neonGlow => GoogleFonts.outfit(
-        fontSize: 28,
-        fontWeight: FontWeight.w900,
-        color: AppColors.primary,
+  static TextStyle get display => GoogleFonts.outfit(
+        fontSize: 32,
+        fontWeight: FontWeight.w800,
+        color: AppColors.textPrimary,
+        letterSpacing: -0.5,
       );
 
-  static TextStyle get hitech => GoogleFonts.outfit(
-        fontSize: 28,
-        fontWeight: FontWeight.w900,
-        color: AppColors.primary,
-        letterSpacing: 1,
-      );
-  
-  static TextStyle get hitechSmall => GoogleFonts.outfit(
-        fontSize: 12,
+  static TextStyle get titleLarge => GoogleFonts.outfit(
+        fontSize: 22,
         fontWeight: FontWeight.w700,
-        color: AppColors.primary,
-        letterSpacing: 1,
+        color: AppColors.textPrimary,
       );
 
-  static TextStyle get hitechHeading => GoogleFonts.outfit(
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
-        color: AppColors.primary,
-        letterSpacing: 1,
-      );
-
-  static TextStyle get hitechSubtitle => GoogleFonts.outfit(
-        fontSize: 14,
+  static TextStyle get titleMedium => GoogleFonts.outfit(
+        fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: AppColors.primary,
-        letterSpacing: 1,
+        color: AppColors.textPrimary,
+      );
+
+  static TextStyle get titleSmall => GoogleFonts.outfit(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
       );
 
 
@@ -108,6 +99,21 @@ class AppTextStyles {
         color: AppColors.textSecondary,
         letterSpacing: 1.2,
         height: 1.4,
+      );
+
+  // Simplified "Hi-Tech" styles to fix build errors while keeping UI simple
+  static TextStyle get hitechHeading => heading.copyWith(
+        letterSpacing: 0,
+        fontWeight: FontWeight.w700,
+      );
+
+  static TextStyle get hitechSubtitle => bodySmall.copyWith(
+        letterSpacing: 0,
+        fontWeight: FontWeight.w500,
+      );
+
+  static TextStyle get hitech => bodySmall.copyWith(
+        letterSpacing: 0,
       );
 }
 

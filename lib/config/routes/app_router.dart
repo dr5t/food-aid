@@ -49,8 +49,13 @@ class AppRouter {
         }
 
         if (isAuthenticated && isOnPublicRoute) {
-          if (!authProvider.isEmailVerified && authProvider.role != UserRole.superAdmin) {
-            debugPrint('AppRouter: Email not verified, redirecting to /pending-verification');
+          // Bypass email verification if manually approved in Firestore
+          final needsVerification = !authProvider.isEmailVerified && 
+                                     authProvider.role != UserRole.superAdmin &&
+                                     !authProvider.isApproved;
+
+          if (needsVerification) {
+            debugPrint('AppRouter: Email not verified and not approved, redirecting to /pending-verification');
             return '/pending-verification';
           }
           if (authProvider.isPendingVerification ||
@@ -65,7 +70,12 @@ class AppRouter {
         }
 
         if (isAuthenticated && !isOnPublicRoute) {
-           if (!authProvider.isEmailVerified && currentPath != '/pending-verification' && authProvider.role != UserRole.superAdmin) {
+           final needsVerification = !authProvider.isEmailVerified && 
+                                      currentPath != '/pending-verification' && 
+                                      authProvider.role != UserRole.superAdmin &&
+                                      !authProvider.isApproved;
+
+           if (needsVerification) {
              debugPrint('AppRouter: Email not verified on private route, redirecting to /pending-verification');
              return '/pending-verification';
            }

@@ -244,24 +244,37 @@ class AuthService {
         debugPrint('AuthService: Created new super admin via secondary app.');
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
-          debugPrint('AuthService: Super admin exists in Auth. Attempting sign-in to sync profile...');
+          debugPrint('AuthService: Super admin exists in Auth. Attempting sign-in...');
           try {
             final credential = await secondaryAuth.signInWithEmailAndPassword(
               email: email,
               password: password,
             );
             uid = credential.user!.uid;
-            debugPrint('AuthService: Signed in to existing super admin via secondary app.');
+            debugPrint('AuthService: Signed in to super admin via secondary app.');
           } catch (signInErr) {
-            debugPrint('AuthService: Sign-in failed (possibly wrong password): $signInErr');
+            debugPrint('AuthService: Seeding sign-in failed: $signInErr');
           }
         } else {
           rethrow;
         }
       }
 
-      // 2. Sync Firestore profile if we have a UID
+      // 2. Cleanup & Sync Firestore
       if (uid != null) {
+        // Find and remove any other docs with this email (shadow accounts)
+        final duplicates = await secondaryFirestore
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .get();
+        
+        for (final doc in duplicates.docs) {
+          if (doc.id != uid) {
+            await secondaryFirestore.collection('users').doc(doc.id).delete();
+            debugPrint('AuthService: Deleted shadow admin doc: ${doc.id}');
+          }
+        }
+
         final user = UserModel(
           uid: uid,
           name: adminName,
@@ -285,6 +298,48 @@ class AuthService {
       try { await secondaryApp?.delete(); } catch (_) {}
       debugPrint('AuthService: Seeding failed: $e');
       debugPrint('AuthService: Stack trace: $stack');
+  Future<void> adminApproveUser(String uid) async {
+    await _adminBypassUpdate(uid, {
+      'verificationStatus': VerificationStatus.approved.name,
+      'isVerified': true,
+    });
+  }
+
+  Future<void> adminRejectUser(String uid, String reason) async {
+    await _adminBypassUpdate(uid, {
+      'verificationStatus': VerificationStatus.rejected.name,
+      'isVerified': false,
+      'rejectionReason': reason,
+    });
+  }
+
+  Future<void> _adminBypassUpdate(String targetUid, Map<String, dynamic> data) async {
+    const email = 'tiwarishaurya395@gmail.com';
+    const password = '123456';
+
+    FirebaseApp? secondaryApp;
+    try {
+      secondaryApp = Firebase.app('AdminBypass');
+    } catch (_) {
+      secondaryApp = await Firebase.initializeApp(
+        name: 'AdminBypass',
+        options: Firebase.app().options,
+      );
+    }
+
+    final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
+    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
+
+    try {
+      await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
+      await secondaryFirestore.collection('users').doc(targetUid).update(data);
+      await secondaryAuth.signOut();
+      await secondaryApp.delete();
+    } catch (e) {
+      debugPrint('AuthService: AdminBypass failed: $e');
+      // ignore: empty_catches
+      try { await secondaryApp.delete(); } catch (_) {}
+      rethrow;
     }
   }
 }

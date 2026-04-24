@@ -704,22 +704,41 @@ class _EmployeeTile extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.statusDelivered.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-              ),
-              child: Text(
-                'Active',
-                style: AppTextStyles.overline.copyWith(color: AppColors.statusDelivered),
-              ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+              onPressed: () => _showDeleteConfirm(context, employee),
             ),
           ],
         ),
       ),
     );
   }
+}
+
+void _showDeleteConfirm(BuildContext context, UserModel employee) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Remove Employee?'),
+      content: Text('Are you sure you want to remove ${employee.name}?'),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+        TextButton(
+          onPressed: () async {
+            final ok = await context.read<LogisticsProvider>().deleteEmployee(employee.uid);
+            if (ok && context.mounted) {
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Employee removed')),
+              );
+            }
+          },
+          style: TextButton.styleFrom(foregroundColor: Colors.red),
+          child: const Text('Remove'),
+        ),
+      ],
+    ),
+  );
 }
 
 void _showAssignDialog(BuildContext context, DonationModel donation) {

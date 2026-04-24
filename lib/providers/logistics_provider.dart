@@ -140,6 +140,17 @@ class LogisticsProvider extends ChangeNotifier {
     await _firestoreService.unassignEmployee(donationId);
   }
 
+  Future<bool> deleteEmployee(String uid) async {
+    try {
+      await _firestoreService.deleteUser(uid);
+      return true;
+    } catch (e) {
+      _error = 'Failed to delete employee: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
 
   Future<void> markPicked(String donationId) async {
     await _firestoreService.updateDonationStatus(

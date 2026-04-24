@@ -80,11 +80,16 @@ class AdminProvider extends ChangeNotifier {
 
   Future<bool> approveUser(String uid) async {
     try {
-      await _firestoreService.approveUser(uid);
+      _isLoading = true;
+      notifyListeners();
+      await _authService.adminApproveUser(uid);
+      _isLoading = false;
+      notifyListeners();
       return true;
     } catch (e) {
       debugPrint('AdminProvider: approveUser error: $e');
       _error = 'Failed to approve user: $e';
+      _isLoading = false;
       notifyListeners();
       return false;
     }
@@ -92,11 +97,16 @@ class AdminProvider extends ChangeNotifier {
 
   Future<bool> rejectUser(String uid, String reason) async {
     try {
-      await _firestoreService.rejectUser(uid, reason);
+      _isLoading = true;
+      notifyListeners();
+      await _authService.adminRejectUser(uid, reason);
+      _isLoading = false;
+      notifyListeners();
       return true;
     } catch (e) {
       debugPrint('AdminProvider: rejectUser error: $e');
       _error = 'Failed to reject user: $e';
+      _isLoading = false;
       notifyListeners();
       return false;
     }

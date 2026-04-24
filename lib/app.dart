@@ -31,7 +31,6 @@ class _FoodAidAppState extends State<FoodAidApp> {
     return MaterialApp.router(
       title: 'Food Aid',
       debugShowCheckedModeBanner: false,
-      key: navigatorKey,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeProvider.themeMode,

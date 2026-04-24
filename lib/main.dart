@@ -12,6 +12,8 @@ import 'providers/theme_provider.dart';
 import 'providers/connection_provider.dart';
 import 'services/firestore_service.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../models/emergency_request_model.dart';
 import '../../providers/emergency_provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../theme/app_colors.dart';
+import '../../config/theme/app_colors.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/app_app_bar.dart';
 import '../../widgets/common/app_background.dart';

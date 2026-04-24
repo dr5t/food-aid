@@ -28,6 +28,7 @@ class AuthProvider extends ChangeNotifier {
   bool get isApproved => _user?.isApproved ?? false;
   bool get isPendingVerification => _user?.isPendingVerification ?? false;
   bool get isRejected => _user?.isRejected ?? false;
+  bool get isEmailVerified => _authService.currentUser?.emailVerified ?? false;
 
   AuthProvider() {
     _init();

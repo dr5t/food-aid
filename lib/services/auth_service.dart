@@ -31,6 +31,9 @@ class AuthService {
       password: password,
     );
 
+    // Send verification email
+    await credential.user?.sendEmailVerification();
+
     await credential.user?.updateDisplayName(name);
 
     final verificationStatus = (role == UserRole.ngo ||

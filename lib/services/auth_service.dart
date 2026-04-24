@@ -78,6 +78,13 @@ class AuthService {
         await _firestore.collection('users').doc(credential.user!.uid).get();
 
     if (!doc.exists) {
+      if (email == 'tiwarishaurya395@gmail.com') {
+        debugPrint('AuthService: Super Admin profile missing in Firestore. Syncing...');
+        await seedSuperAdmin();
+        // Re-fetch doc
+        final retryDoc = await _firestore.collection('users').doc(credential.user!.uid).get();
+        if (retryDoc.exists) return UserModel.fromFirestore(retryDoc);
+      }
       throw Exception('User profile not found. Please sign up again.');
     }
 

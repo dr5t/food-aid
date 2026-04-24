@@ -36,65 +36,50 @@ class AppInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (label != null) ...[
           Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 6),
+            padding: const EdgeInsets.only(left: 4, bottom: 8),
             child: Text(
-              label!.toUpperCase(),
-              style: AppTextStyles.label.copyWith(
-                fontSize: 10,
-                letterSpacing: 1.5,
-                fontWeight: FontWeight.w800,
-                color: isDark ? AppColors.neonCyan.withValues(alpha: 0.7) : AppColors.primary.withValues(alpha: 0.7),
+              label!,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
               ),
             ),
           ),
         ],
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: isDark ? [
-              BoxShadow(
-                color: AppColors.neonCyan.withValues(alpha: 0.03),
-                blurRadius: 15,
-                spreadRadius: -5,
-              ),
-            ] : null,
+        TextFormField(
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          validator: validator,
+          onChanged: onChanged,
+          enabled: enabled,
+          textInputAction: textInputAction,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
           ),
-          child: TextFormField(
-            controller: controller,
-            obscureText: obscureText,
-            keyboardType: keyboardType,
-            maxLines: maxLines,
-            validator: validator,
-            onChanged: onChanged,
-            enabled: enabled,
-            textInputAction: textInputAction,
-            style: AppTextStyles.body.copyWith(
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.2,
-            ),
-            decoration: InputDecoration(
-              hintText: hint,
-              errorText: errorText,
-              prefixIcon: prefixIcon != null
-                  ? Icon(
-                      prefixIcon, 
-                      size: 20, 
-                      color: isDark ? AppColors.neonCyan.withValues(alpha: 0.8) : AppColors.primary.withValues(alpha: 0.8),
-                    )
-                  : null,
-              suffixIcon: suffix,
-            ),
+          decoration: InputDecoration(
+            hintText: hint,
+            errorText: errorText,
+            prefixIcon: prefixIcon != null
+                ? Icon(
+                    prefixIcon, 
+                    size: 22, 
+                  )
+                : null,
+            suffixIcon: suffix,
           ),
         ),
       ],
     );
   }
 }
+

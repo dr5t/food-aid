@@ -9,6 +9,8 @@ import '../../providers/logistics_provider.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/app_bottom_nav_bar.dart';
 
+import '../../widgets/common/app_app_bar.dart';
+
 class EmployeeDashboard extends StatefulWidget {
   const EmployeeDashboard({super.key});
 
@@ -34,18 +36,18 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: IndexedStack(
-                index: _currentIndex,
-                children: const [_ActiveTasksTab(), _CompletedTasksTab()],
-              ),
-            ),
-          ],
-        ),
+      appBar: AppAppBar(
+        title: 'Fleet Member',
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, size: 20),
+            onPressed: () => context.read<AuthProvider>().signOut(),
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [_ActiveTasksTab(), _CompletedTasksTab()],
       ),
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: _currentIndex,
@@ -66,50 +68,6 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final user = context.watch<AuthProvider>().user;
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.surface,
-        border: Border(
-          bottom: BorderSide(
-            color: (isDark ? AppColors.darkDivider : AppColors.divider)
-                .withValues(alpha: 0.5),
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Logistics Portal', style: AppTextStyles.titleLarge),
-                Text(
-                  user?.email ?? 'Field Operative',
-                  style: AppTextStyles.bodySmall,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.logout_rounded,
-              color: isDark
-                  ? AppColors.darkTextSecondary
-                  : AppColors.textSecondary,
-            ),
-            onPressed: () => context.read<AuthProvider>().signOut(),
-            tooltip: 'Sign Out',
-          ),
-        ],
-      ),
-    );
   }
 }
 

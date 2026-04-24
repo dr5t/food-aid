@@ -16,6 +16,7 @@ class AdminProvider extends ChangeNotifier {
   Map<String, int> _platformStats = {};
   bool _isLoading = false;
   String? _error;
+  final Set<String> _localHiddenUids = {}; // Local blacklist to hide "ghost" records immediately
 
   StreamSubscription? _pendingSub;
   StreamSubscription? _usersSub;
@@ -23,8 +24,10 @@ class AdminProvider extends ChangeNotifier {
   StreamSubscription? _statsSub;
 
 
-  List<UserModel> get pendingVerifications => _pendingVerifications;
-  List<UserModel> get allUsers => _allUsers;
+  List<UserModel> get pendingVerifications => 
+      _pendingVerifications.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+  List<UserModel> get allUsers => 
+      _allUsers.where((u) => !_localHiddenUids.contains(u.uid)).toList();
   List<UserModel> get adminEmployees => _adminEmployees;
   Map<String, int> get platformStats => _platformStats;
   bool get isLoading => _isLoading;
@@ -93,10 +96,10 @@ class AdminProvider extends ChangeNotifier {
         await _firestoreService.approveUser(uid);
       } catch (e) {
         debugPrint('AdminProvider: Direct approval failed, trying bypass: $e');
-        // Attempt 2: Bypass via Secondary App with Super Admin account
         await _authService.adminApproveUser(uid);
       }
 
+      _localHiddenUids.add(uid); // Optimistically hide from UI
       _isLoading = false;
       notifyListeners();
       return true;
@@ -120,10 +123,10 @@ class AdminProvider extends ChangeNotifier {
         await _firestoreService.rejectUser(uid, reason);
       } catch (e) {
         debugPrint('AdminProvider: Direct rejection failed, trying bypass: $e');
-        // Attempt 2: Bypass
         await _authService.adminRejectUser(uid, reason);
       }
 
+      _localHiddenUids.add(uid); // Optimistically hide
       _isLoading = false;
       notifyListeners();
       return true;
@@ -181,6 +184,7 @@ class AdminProvider extends ChangeNotifier {
         await _authService.adminDeleteUser(uid);
       }
       
+      _localHiddenUids.add(uid); // Optimistically hide
       _isLoading = false;
       notifyListeners();
       return true;

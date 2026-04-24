@@ -69,7 +69,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () => context.push('/donor/create'),
         icon: const Icon(Icons.add),
         label: const Text('Donate'),
         backgroundColor: AppColors.primary,

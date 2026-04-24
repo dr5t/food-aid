@@ -92,7 +92,6 @@ class _NgoDashboardState extends State<NgoDashboard> {
     );
   }
 
-
   Widget _buildEmergencyFAB() {
     return FloatingActionButton.extended(
       onPressed: () => _showEmergencyDialog(),
@@ -293,7 +292,7 @@ class _OverviewTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        // Welcome banner
+        
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),

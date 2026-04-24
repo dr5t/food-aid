@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  static const Color primary = Color(0xFF10B981); // Emerald Green
+  static const Color primary = Color(0xFF10B981); 
   static const Color primaryLight = Color(0xFF34D399);
   static const Color primaryDark = Color(0xFF059669);
 
@@ -36,13 +36,11 @@ class AppColors {
 
   static const Color divider = Color(0xFFDADCE0);
 
-  // Skeleton Colors
   static const Color skeleton1 = Color(0xFFEEEEEE);
   static const Color skeleton2 = Color(0xFFF5F5F5);
   static const Color darkSkeleton1 = Color(0xFF2C2C2C);
   static const Color darkSkeleton2 = Color(0xFF383838);
 
-  // Status Colors
   static const Color statusPending = warning;
   static const Color statusAccepted = info;
   static const Color statusAssigned = Color(0xFF673AB7);
@@ -53,7 +51,6 @@ class AppColors {
   static const Color statusRejected = error;
   static const Color statusExpired = textHint;
 
-  // Additional Brand Colors
   static const Color accentDark = Color(0xFF2980B9);
   static const Color neonAmber = Color(0xFFFFB300);
   static const Color darkTextHint = Color(0xFF80868B);

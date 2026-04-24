@@ -55,7 +55,6 @@ class FirestoreService {
         builder(snapshot.data() as Map<String, dynamic>, snapshot.id));
   }
 
-
   Future<String> createDonation(DonationModel donation) async {
     final doc = await _donations.add(donation.toMap());
     return doc.id;
@@ -66,7 +65,6 @@ class FirestoreService {
           (doc) => DonationModel.fromFirestore(doc),
         );
   }
-
 
   Stream<List<DonationModel>> getDonationsByDonor(String donorId) {
     return _donations
@@ -87,7 +85,6 @@ class FirestoreService {
         .map((s) =>
             s.docs.map((d) => DonationModel.fromFirestore(d)).toList());
   }
-
 
   Stream<List<DonationModel>> getPendingDonations() {
     return _donations
@@ -116,7 +113,6 @@ class FirestoreService {
         .map((s) =>
             s.docs.map((d) => DonationModel.fromFirestore(d)).toList());
   }
-
 
   Stream<List<DonationModel>> getDonationsByCompany(String companyId) {
     return _donations
@@ -163,7 +159,6 @@ class FirestoreService {
         .map((s) =>
             s.docs.map((d) => DonationModel.fromFirestore(d)).toList());
   }
-
 
   Future<void> updateDonationStatus(
     String donationId,
@@ -244,7 +239,6 @@ class FirestoreService {
     });
   }
 
-
   Future<String> createEmergencyRequest(
       EmergencyRequestModel request) async {
     final doc = await _emergencyRequests.add(request.toMap());
@@ -312,7 +306,6 @@ class FirestoreService {
     });
   }
 
-
   Stream<List<UserModel>> getUsersByRole(UserRole role) {
     return _users
         .where('role', isEqualTo: role.name)
@@ -347,7 +340,6 @@ class FirestoreService {
   Future<void> updateUserLocation(String uid, GeoPoint location) async {
     await _users.doc(uid).update({'location': location});
   }
-
 
   Stream<List<UserModel>> getPendingVerifications() {
     return _users
@@ -576,7 +568,6 @@ class FirestoreService {
     });
   }
 
-
   Future<void> createNotification({
     required String userId,
     required String title,
@@ -662,28 +653,24 @@ class FirestoreService {
     debugPrint('FirestoreService: Starting factory reset for Admin: $adminUid');
     final batch = _firestore.batch();
 
-    // 1. Delete all donations (Force server source)
     final donations = await _donations.get(const GetOptions(source: Source.server));
     for (var doc in donations.docs) {
       batch.delete(doc.reference);
     }
     debugPrint('FirestoreService: Queued ${donations.docs.length} donations for deletion');
 
-    // 2. Delete all emergency requests
     final emergencies = await _emergencyRequests.get(const GetOptions(source: Source.server));
     for (var doc in emergencies.docs) {
       batch.delete(doc.reference);
     }
     debugPrint('FirestoreService: Queued ${emergencies.docs.length} emergencies for deletion');
 
-    // 3. Delete all notifications
     final notifs = await _notifications.get(const GetOptions(source: Source.server));
     for (var doc in notifs.docs) {
       batch.delete(doc.reference);
     }
     debugPrint('FirestoreService: Queued ${notifs.docs.length} notifications for deletion');
 
-    // 4. Delete all users EXCEPT the current admin
     final users = await _users.get(const GetOptions(source: Source.server));
     int userDeleteCount = 0;
     for (var doc in users.docs) {

@@ -49,7 +49,7 @@ class AppRouter {
         }
 
         if (isAuthenticated && isOnPublicRoute) {
-          // Bypass email verification if manually approved in Firestore
+          
           final needsVerification = !authProvider.isEmailVerified && 
                                      authProvider.role != UserRole.superAdmin &&
                                      !authProvider.isApproved;

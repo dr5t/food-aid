@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import '../../config/constants.dart';
 
 class ScaleTap extends StatefulWidget {

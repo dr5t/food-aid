@@ -101,12 +101,11 @@ class _OverviewTab extends StatelessWidget {
     final provider = context.watch<DonationProvider>();
     final isFetching = provider.isFetching;
     final donations = provider.donations;
-    // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        // Welcome banner (simplified for Donor)
+        
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
@@ -146,7 +145,6 @@ class _OverviewTab extends StatelessWidget {
         ),
         const SizedBox(height: 24),
 
-        // Quick Stats
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,

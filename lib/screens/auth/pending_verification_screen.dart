@@ -18,7 +18,6 @@ class PendingVerificationScreen extends StatelessWidget {
     final isRejected = user?.isRejected ?? false;
     final isEmailVerified = authProvider.isEmailVerified;
 
-    // Ann Seva Style: Emerald Green
     const emeraldGreen = Color(0xFF10B981);
 
     return Scaffold(

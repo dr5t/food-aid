@@ -32,24 +32,23 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider() {
     _init();
-    // Periodic health check every 30 seconds
+    
     Timer.periodic(const Duration(seconds: 30), (_) => checkDatabaseHealth());
   }
 
   Future<void> _init() async {
-    // Background health check - don't block initialization
+    
     checkDatabaseHealth();
     
     _authService.authStateChanges.listen((firebaseUser) async {
       debugPrint('AuthProvider: authStateChanges emitted. User: ${firebaseUser?.uid}');
       
       if (_isProcessingAuth) return;
-      
-      // Cancel previous profile subscription
+
       await _userSubscription?.cancel();
       
       if (firebaseUser != null) {
-        // Start listening to the user document for real-time updates
+        
         _userSubscription = _authService.userStream(firebaseUser.uid).listen((userModel) {
           debugPrint('AuthProvider: Received real-time user update for ${firebaseUser.uid}');
           
@@ -79,7 +78,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> checkDatabaseHealth() async {
     try {
-      // Attempt a simple query to check if Firestore is reachable
+      
       await FirebaseFirestore.instance
           .collection('health_check')
           .limit(1)
@@ -147,7 +146,7 @@ class AuthProvider extends ChangeNotifier {
       _error = null;
       _isProcessingAuth = false;
       debugPrint('AuthProvider: signUp success. User: ${_user?.name}, Role: ${_user?.role}');
-      _setLoading(false); // This calls notifyListeners()
+      _setLoading(false); 
       return true;
     } on FirebaseAuthException catch (e) {
       _isProcessingAuth = false;
@@ -185,12 +184,11 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } on FirebaseAuthException catch (e) {
       _isProcessingAuth = false;
-      
-      // Auto-seed if it's the super admin and we haven't tried yet this call
+
       if (email == 'tiwarishaurya395@gmail.com' && !_isInitialized) {
         debugPrint('AuthProvider: Super Admin auth error (${e.code}). Attempting auto-seed...');
         await _authService.seedSuperAdmin();
-        _isInitialized = true; // Temporary flag to prevent loop
+        _isInitialized = true; 
         final result = await signIn(email: email, password: password);
         _isInitialized = false;
         return result;
@@ -247,7 +245,6 @@ class AuthProvider extends ChangeNotifier {
       _setLoading(false);
     }
   }
-
 
   Future<UserModel?> createLogisticsEmployee({
     required String name,

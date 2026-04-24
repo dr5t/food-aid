@@ -18,7 +18,6 @@ class EmergencyProvider extends ChangeNotifier {
   StreamSubscription? _openSub;
   StreamSubscription? _ngoSub;
 
-
   List<EmergencyRequestModel> get openRequests => _requests;
   List<EmergencyRequestModel> get ngoRequests => _ngoRequests;
   bool get isLoading => _isLoading;
@@ -26,7 +25,6 @@ class EmergencyProvider extends ChangeNotifier {
 
   List<EmergencyRequestModel> get activeNgoRequests =>
       _ngoRequests.where((r) => r.isActive).toList();
-
 
   void listenOpenRequests() {
     _openSub?.cancel();
@@ -67,7 +65,6 @@ class EmergencyProvider extends ChangeNotifier {
       return distance <= radiusKm;
     }).toList();
   }
-
 
   Future<String> createEmergencyRequest(
       EmergencyRequestModel request) async {
@@ -113,7 +110,6 @@ class EmergencyProvider extends ChangeNotifier {
     );
   }
 
-
   double _haversineKm(
       double lat1, double lon1, double lat2, double lon2) {
     const r = 6371.0;
@@ -126,7 +122,6 @@ class EmergencyProvider extends ChangeNotifier {
             sin(dLon / 2);
     return r * 2 * atan2(sqrt(a), sqrt(1 - a));
   }
-
 
   @override
   void dispose() {

@@ -49,8 +49,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     super.dispose();
   }
 
-  // ── Auth Logic ────────────────────────────────────────────────────────────
-
   Future<void> _signIn() async {
     final auth = context.read<AuthProvider>();
     final ok = await auth.signIn(
@@ -60,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     if (ok && mounted) {
       final user = auth.user;
       if (user != null) {
-        // Validate role matches selected category
+        
         bool roleMatches = false;
         if (_selectedRole == UserRole.admin) {
           roleMatches = user.role == UserRole.admin || user.role == UserRole.superAdmin;
@@ -101,8 +99,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   void _error(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), backgroundColor: AppColors.error));
   }
-
-  // ── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               onPressed: () => setState(() {
                 _selectedRole = null;
                 _selectedDonorType = null;
-                _tabController.index = 0; // Reset to Sign In tab
+                _tabController.index = 0; 
               }),
             ),
             const SizedBox(width: 8),

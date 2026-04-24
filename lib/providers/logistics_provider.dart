@@ -31,7 +31,6 @@ class LogisticsProvider extends ChangeNotifier {
   StreamSubscription? _companyStatsSub;
   StreamSubscription? _employeeStatsSub;
 
-
   List<DonationModel> get companyDonations => _companyDonations;
   List<UserModel> get employees => _employees;
   List<DonationModel> get unassignedDonations => _unassignedDonations;
@@ -42,7 +41,6 @@ class LogisticsProvider extends ChangeNotifier {
   String? get error => _error;
   Map<String, int> get companyStats => _companyStats;
   Map<String, int> get employeeStats => _employeeStats;
-
 
   void listenCompanyData(String companyId) {
     _companySub?.cancel();
@@ -85,7 +83,6 @@ class LogisticsProvider extends ChangeNotifier {
     });
   }
 
-
   void listenEmployeeData(String employeeId) {
     _activeTasksSub?.cancel();
     _completedTasksSub?.cancel();
@@ -120,7 +117,6 @@ class LogisticsProvider extends ChangeNotifier {
       notifyListeners();
     });
   }
-
 
   Future<void> assignEmployee(
     String donationId,
@@ -158,7 +154,6 @@ class LogisticsProvider extends ChangeNotifier {
     }
   }
 
-
   Future<void> markPicked(String donationId) async {
     await _firestoreService.updateDonationStatus(
       donationId,
@@ -195,7 +190,6 @@ class LogisticsProvider extends ChangeNotifier {
       String donationId, DonationStatus status) async {
     await _firestoreService.updateDonationStatus(donationId, status);
   }
-
 
   @override
   void dispose() {

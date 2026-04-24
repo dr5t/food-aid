@@ -23,7 +23,6 @@ class DonationProvider extends ChangeNotifier {
   StreamSubscription? _donorStatsSub;
   StreamSubscription? _ngoStatsSub;
 
-
   List<DonationModel> get donations => _donations;
   List<DonationModel> get pendingDonations => _pendingDonations;
   Map<String, int> get donorStats => _donorStats;
@@ -54,7 +53,6 @@ class DonationProvider extends ChangeNotifier {
 
     return result;
   }
-
 
   void listenDonorDonations(String donorId) {
     _isFetching = true;
@@ -158,7 +156,6 @@ class DonationProvider extends ChangeNotifier {
     });
   }
 
-
   void setSearchQuery(String query) {
     _searchQuery = query;
     notifyListeners();
@@ -174,7 +171,6 @@ class DonationProvider extends ChangeNotifier {
     _statusFilter = null;
     notifyListeners();
   }
-
 
   Future<String> createDonation(DonationModel donation) async {
     return _firestoreService.createDonation(donation);
@@ -220,7 +216,6 @@ class DonationProvider extends ChangeNotifier {
       employeeName,
     );
   }
-
 
   @override
   void dispose() {

@@ -46,8 +46,7 @@ class _AdminDashboardState extends State<AdminDashboard>
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    // Ann Seva Style
+
     const emeraldGreen = Color(0xFF10B981);
     final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
 
@@ -270,7 +269,7 @@ class _OverviewTab extends StatelessWidget {
                 icon: Icons.pending_actions_rounded,
                 label: 'New Requests',
                 value: '${stats['pendingVerifications'] ?? 0}',
-                color: const Color(0xFFF59E0B), // Amber for pending
+                color: const Color(0xFFF59E0B), 
                 isDark: isDark,
                 onTap: () {
                   final state = context.findAncestorStateOfType<_AdminDashboardState>();
@@ -281,7 +280,7 @@ class _OverviewTab extends StatelessWidget {
                 icon: Icons.volunteer_activism_rounded,
                 label: 'Donations',
                 value: '${stats['totalDonations'] ?? 0}',
-                color: const Color(0xFF6366F1), // Indigo
+                color: const Color(0xFF6366F1), 
                 isDark: isDark,
                 onTap: () => _showDonationsList(context),
               ),
@@ -289,7 +288,7 @@ class _OverviewTab extends StatelessWidget {
                 icon: Icons.check_circle_rounded,
                 label: 'Completed',
                 value: '${stats['completedDonations'] ?? 0}',
-                color: const Color(0xFF06B6D4), // Cyan
+                color: const Color(0xFF06B6D4), 
                 isDark: isDark,
                 onTap: () => _showDonationsList(context, completedOnly: true),
               ),
@@ -385,7 +384,7 @@ class _OverviewTab extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('System wiped. Reloading...')),
                 );
-                // Hard reload the website to clear all caches
+                
                 Future.delayed(const Duration(seconds: 1), () {
                   if (kIsWeb) {
                     reloadWebPage();
@@ -667,7 +666,7 @@ class _VerificationsTab extends StatelessWidget {
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           TextButton(
             onPressed: () async {
-              Navigator.pop(ctx); // Close immediately
+              Navigator.pop(ctx); 
               final ok = await admin.deleteUser(user.uid);
               if (ok && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(

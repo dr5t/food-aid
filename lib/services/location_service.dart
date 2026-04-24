@@ -25,7 +25,6 @@ class LocationService {
     final hasPermission = await checkPermission();
     if (!hasPermission) return null;
 
-    // Try high accuracy first, fallback to medium, then try IP-based location as a final resort
     try {
       return await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
@@ -42,7 +41,7 @@ class LocationService {
           ),
         );
       } catch (_) {
-        // Final fallback: IP-based geolocation (less precise but works without GPS)
+        
         try {
           final resp = await http.get(Uri.parse('https://ipapi.co/json/')).timeout(const Duration(seconds: 5));
           if (resp.statusCode == 200) {
@@ -74,7 +73,7 @@ class LocationService {
   Future<GeoPoint?> geocodeAddress(String address) async {
     try {
       if (kIsWeb) {
-        // Use Nominatim on Web since geocoding package doesn't support it
+        
         final uri = Uri.parse('https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(address)}&format=json&limit=1');
         final resp = await http.get(uri, headers: {'User-Agent': 'FoodAid-App/1.0'});
         if (resp.statusCode == 200) {

@@ -182,16 +182,14 @@ class AdminProvider extends ChangeNotifier {
     try {
       _isLoading = true;
       notifyListeners();
-      
-      // 1. Instantly clear local state for immediate feedback
+
       _localHiddenUids.clear();
       _pendingVerifications = [];
       _allUsers = [];
       _adminEmployees = [];
       _platformStats = {};
       notifyListeners();
-      
-      // 2. Perform server-side total wipe via bypass
+
       await _authService.adminWipeData(adminUid);
       
       _isLoading = false;

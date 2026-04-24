@@ -176,7 +176,7 @@ class AuthService {
       await secondaryAuth.signOut();
       return user;
     } catch (e) {
-      // ignore: empty_catches
+      
       try { await secondaryAuth.signOut(); } catch (_) {}
       rethrow;
     }

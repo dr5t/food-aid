@@ -1,88 +1,96 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
-import '../services/auth_service.dart';
-import '../services/firestore_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../models/user_model.dart';
+import '../../services/firestore_service.dart';
+import '../../services/auth_service.dart';
+import '../../main.dart';
 
-class AdminProvider extends ChangeNotifier {
+class AdminProvider with ChangeNotifier {
   final FirestoreService _firestoreService;
   final AuthService _authService = AuthService();
-
-  AdminProvider(this._firestoreService);
 
   List<UserModel> _pendingVerifications = [];
   List<UserModel> _allUsers = [];
   List<UserModel> _adminEmployees = [];
-  Map<String, int> _platformStats = {};
+  Map<String, dynamic> _platformStats = {};
   bool _isLoading = false;
   String? _error;
-  final Set<String> _localHiddenUids = {}; 
 
   StreamSubscription? _pendingSub;
-  StreamSubscription? _usersSub;
-  StreamSubscription? _employeesSub;
+  StreamSubscription? _allUsersSub;
   StreamSubscription? _statsSub;
 
-  List<UserModel> get pendingVerifications => 
-      _pendingVerifications.where((u) => !_localHiddenUids.contains(u.uid)).toList();
-  
-  List<UserModel> get allUsers => 
-      _allUsers.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+  Set<String> _localHiddenUids = {};
+  Set<String> _persistentDeletedUids = {};
 
-  List<UserModel> get adminEmployees => 
-      _adminEmployees.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+  AdminProvider(this._firestoreService) {
+    _init();
+  }
 
-  Map<String, int> get platformStats => _platformStats;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-  int get pendingCount => pendingVerifications.length;
-
-  void startListening() {
-    _isLoading = true;
-    notifyListeners();
-
+  Future<void> _init() async {
+    await _loadDeletedUids();
+    
     _pendingSub?.cancel();
-    _pendingSub = _firestoreService.getPendingVerifications().listen((list) {
-      _pendingVerifications = list;
-      _isLoading = false;
+    _pendingSub = _firestoreService.getPendingVerifications().listen((users) {
+      _pendingVerifications = users;
       notifyListeners();
     });
 
-    _usersSub?.cancel();
-    _usersSub = _firestoreService.getAllUsers().listen((list) {
-      _allUsers = list;
-      notifyListeners();
-    });
-
-    _employeesSub?.cancel();
-    _employeesSub = _firestoreService.getAdminEmployees().listen((list) {
-      _adminEmployees = list;
+    _allUsersSub?.cancel();
+    _allUsersSub = _firestoreService.getAllUsers().listen((users) {
+      _allUsers = users;
       notifyListeners();
     });
 
     _statsSub?.cancel();
-    _statsSub = _firestoreService.getPlatformStats().listen((stats) {
+    _statsSub = _firestoreService.getPlatformStatsStream().listen((stats) {
       _platformStats = stats;
       notifyListeners();
     });
   }
 
-  Future<void> refreshStats() async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-    startListening();
-  }
-
-  void clearError() {
-    _error = null;
-    notifyListeners();
-  }
-
-  Future<bool> approveUser(String uid) async {
+  Future<void> _loadDeletedUids() async {
     try {
-      _isLoading = true;
-      _error = null;
+      final prefs = await SharedPreferences.getInstance();
+      final list = prefs.getStringList('deleted_uids') ?? [];
+      _persistentDeletedUids = list.toSet();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('AdminProvider: Failed to load deleted UIDs: $e');
+    }
+  }
+
+  Future<void> _persistDeletedUid(String uid) async {
+    try {
+      _persistentDeletedUids.add(uid);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList('deleted_uids', _persistentDeletedUids.toList());
+      notifyListeners();
+    } catch (e) {
+      debugPrint('AdminProvider: Failed to persist deleted UID: $e');
+    }
+  }
+
+  List<UserModel> get pendingVerifications => 
+      _pendingVerifications.where((u) => !_localHiddenUids.contains(u.uid) && !_persistentDeletedUids.contains(u.uid)).toList();
+  
+  List<UserModel> get allUsers => 
+      _allUsers.where((u) => !_localHiddenUids.contains(u.uid) && !_persistentDeletedUids.contains(u.uid)).toList();
+  
+  List<UserModel> get adminEmployees => 
+      _adminEmployees.where((u) => !_localHiddenUids.contains(u.uid) && !_persistentDeletedUids.contains(u.uid)).toList();
+
+  int get pendingCount => pendingVerifications.length;
+  int get userCount => allUsers.length;
+  int get employeeCount => adminEmployees.length;
+  Map<String, dynamic> get platformStats => _platformStats;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> approveUser(String uid) async {
+    try {
+      _localHiddenUids.add(uid);
       notifyListeners();
 
       try {
@@ -91,22 +99,21 @@ class AdminProvider extends ChangeNotifier {
         await _authService.adminApproveUser(uid);
       }
 
-      _localHiddenUids.add(uid);
-      _isLoading = false;
-      notifyListeners();
-      return true;
+      ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+        const SnackBar(content: Text('User approved successfully'), backgroundColor: Colors.green),
+      );
     } catch (e) {
-      _error = 'Failed to approve user: $e';
-      _isLoading = false;
+      _localHiddenUids.remove(uid);
       notifyListeners();
-      return false;
+      ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+        SnackBar(content: Text('Failed to approve user: $e'), backgroundColor: Colors.red),
+      );
     }
   }
 
-  Future<bool> rejectUser(String uid, String reason) async {
+  Future<void> rejectUser(String uid, String reason) async {
     try {
-      _isLoading = true;
-      _error = null;
+      _localHiddenUids.add(uid);
       notifyListeners();
 
       try {
@@ -115,15 +122,15 @@ class AdminProvider extends ChangeNotifier {
         await _authService.adminRejectUser(uid, reason);
       }
 
-      _localHiddenUids.add(uid);
-      _isLoading = false;
-      notifyListeners();
-      return true;
+      ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+        const SnackBar(content: Text('User rejected successfully'), backgroundColor: Colors.orange),
+      );
     } catch (e) {
-      _error = 'Failed to reject user: $e';
-      _isLoading = false;
+      _localHiddenUids.remove(uid);
       notifyListeners();
-      return false;
+      ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+        SnackBar(content: Text('Failed to reject user: $e'), backgroundColor: Colors.red),
+      );
     }
   }
 
@@ -133,13 +140,15 @@ class AdminProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
       
+      _localHiddenUids.add(uid);
+      await _persistDeletedUid(uid);
+      
       try {
         await _firestoreService.deleteUser(uid);
       } catch (e) {
-        await _authService.adminDeleteUser(uid);
+        await _authService.adminDeleteUser(uid).catchError((_){});
       }
       
-      _localHiddenUids.add(uid);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -159,12 +168,13 @@ class AdminProvider extends ChangeNotifier {
       
       final uids = _pendingVerifications.map((u) => u.uid).toList();
       for (final uid in uids) {
+        _localHiddenUids.add(uid);
+        await _persistDeletedUid(uid);
         try {
           await _firestoreService.deleteUser(uid);
         } catch (e) {
-          await _authService.adminDeleteUser(uid);
+          await _authService.adminDeleteUser(uid).catchError((_){});
         }
-        _localHiddenUids.add(uid);
       }
       
       _isLoading = false;
@@ -183,6 +193,9 @@ class AdminProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
+      for (var u in _pendingVerifications) await _persistDeletedUid(u.uid);
+      for (var u in _allUsers) if(u.uid != adminUid) await _persistDeletedUid(u.uid);
+      
       _localHiddenUids.clear();
       _pendingVerifications = [];
       _allUsers = [];
@@ -208,24 +221,25 @@ class AdminProvider extends ChangeNotifier {
     required String email,
     required String password,
     required String createdByUid,
-    String phone = '',
   }) async {
     try {
       _isLoading = true;
+      _error = null;
       notifyListeners();
 
-      final user = await _authService.createUserWithCredentials(
+      final newUser = await _authService.createUserWithCredentials(
         name: name,
         email: email,
         password: password,
         role: UserRole.admin,
         createdByUid: createdByUid,
-        phone: phone,
+        phone: '',
       );
 
+      _adminEmployees.insert(0, newUser);
       _isLoading = false;
       notifyListeners();
-      return user;
+      return newUser;
     } catch (e) {
       _error = e.toString();
       _isLoading = false;
@@ -237,8 +251,7 @@ class AdminProvider extends ChangeNotifier {
   @override
   void dispose() {
     _pendingSub?.cancel();
-    _usersSub?.cancel();
-    _employeesSub?.cancel();
+    _allUsersSub?.cancel();
     _statsSub?.cancel();
     super.dispose();
   }

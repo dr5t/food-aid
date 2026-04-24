@@ -101,7 +101,7 @@ class AdminProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  Future<void> approveUser(String uid) async {
+  Future<bool> approveUser(String uid) async {
     try {
       _localHiddenUids.add(uid);
       notifyListeners();
@@ -115,16 +115,18 @@ class AdminProvider with ChangeNotifier {
       ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
         const SnackBar(content: Text('User approved successfully'), backgroundColor: Colors.green),
       );
+      return true;
     } catch (e) {
       _localHiddenUids.remove(uid);
       notifyListeners();
       ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
         SnackBar(content: Text('Failed to approve user: $e'), backgroundColor: Colors.red),
       );
+      return false;
     }
   }
 
-  Future<void> rejectUser(String uid, String reason) async {
+  Future<bool> rejectUser(String uid, String reason) async {
     try {
       _localHiddenUids.add(uid);
       notifyListeners();
@@ -138,12 +140,14 @@ class AdminProvider with ChangeNotifier {
       ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
         const SnackBar(content: Text('User rejected successfully'), backgroundColor: Colors.orange),
       );
+      return true;
     } catch (e) {
       _localHiddenUids.remove(uid);
       notifyListeners();
       ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
         SnackBar(content: Text('Failed to reject user: $e'), backgroundColor: Colors.red),
       );
+      return false;
     }
   }
 
@@ -234,6 +238,7 @@ class AdminProvider with ChangeNotifier {
     required String email,
     required String password,
     required String createdByUid,
+    String phone = '',
   }) async {
     try {
       _isLoading = true;
@@ -246,7 +251,7 @@ class AdminProvider with ChangeNotifier {
         password: password,
         role: UserRole.admin,
         createdByUid: createdByUid,
-        phone: '',
+        phone: phone,
       );
 
       _adminEmployees.insert(0, newUser);

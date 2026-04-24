@@ -6,7 +6,7 @@ import '../../services/firestore_service.dart';
 import '../../services/auth_service.dart';
 import '../../main.dart';
 
-class AdminProvider with ChangeNotifier {
+class AdminProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;
   final AuthService _authService = AuthService();
 
@@ -21,8 +21,8 @@ class AdminProvider with ChangeNotifier {
   StreamSubscription? _allUsersSub;
   StreamSubscription? _statsSub;
 
-  Set<String> _localHiddenUids = {};
-  Set<String> _persistentDeletedUids = {};
+  List<String> _localHiddenUids = [];
+  List<String> _persistentDeletedUids = [];
 
   AdminProvider(this._firestoreService) {
     _init();
@@ -67,7 +67,7 @@ class AdminProvider with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final list = prefs.getStringList('deleted_uids') ?? [];
-      _persistentDeletedUids = list.toSet();
+      _persistentDeletedUids = list;
       notifyListeners();
     } catch (e) {
       debugPrint('AdminProvider: Failed to load deleted UIDs: $e');

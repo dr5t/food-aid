@@ -12,12 +12,7 @@ class AppBackground extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: Stack(
-        children: [
-          if (child case final child?) child,
-          if (children != null) ...children!,
-        ],
-      ),
+      child: Stack(children: [?child, ...?children]),
     );
   }
 }

@@ -45,16 +45,24 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _initializeApp() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    // Wait for splash duration AND database health check
-    await Future.wait([
-      Future.delayed(AppConstants.splashDuration),
-      authProvider.checkDatabaseHealth(),
-    ]);
+    // Wait for minimum splash duration
+    await Future.delayed(AppConstants.splashDuration);
+
+    // Ensure AuthProvider is initialized before proceeding
+    // This handles cases where authStateChanges might be slow
+    int retryCount = 0;
+    while (!authProvider.isInitialized && retryCount < 50) { // Max 5 seconds
+      await Future.delayed(const Duration(milliseconds: 100));
+      retryCount++;
+    }
 
     if (mounted) {
       if (authProvider.isAuthenticated) {
-        context.go('/');
+        // Go to a temporary path or let GoRouter redirect handle it.
+        // Navigating to /login while authenticated will trigger redirect to dashboard.
+        context.go('/login'); 
       } else {
+        // New users go to onboarding
         context.go('/onboarding');
       }
     }

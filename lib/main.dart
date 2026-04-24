@@ -20,7 +20,8 @@ void main() async {
   );
 
   final firestoreService = FirestoreService();
-  await AuthService().seedSuperAdmin();
+  // Seeding is now handled dynamically in AuthProvider/AuthService during sign-in
+  // to prevent blocking the app startup sequence.
 
   runApp(
     MultiProvider(

@@ -37,8 +37,8 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> _init() async {
-    // Initial health check
-    await checkDatabaseHealth();
+    // Background health check - don't block initialization
+    checkDatabaseHealth();
     
     _authService.authStateChanges.listen((firebaseUser) async {
       debugPrint('AuthProvider: authStateChanges emitted. User: ${firebaseUser?.uid}');

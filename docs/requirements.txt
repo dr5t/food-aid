@@ -1,0 +1,13 @@
+# Food Aid System Requirements
+
+## Platform Support
+- Android (via gradlew.bat)
+- iOS (via Podfile)
+- Windows (via Win32/C++)
+- Web (via Docker/PHP)
+
+## Backend Stack
+- Language: PHP 8.1
+- Scripting: Python 3
+- Database: Relational SQL (MariaDB/MySQL)
+- Deployment: Railway / Docker

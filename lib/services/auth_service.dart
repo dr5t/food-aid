@@ -293,11 +293,12 @@ class AuthService {
       await secondaryAuth.signOut();
       await secondaryApp.delete();
       debugPrint('AuthService: Seeding complete.');
-    } catch (e, stack) {
-      // ignore: empty_catches
-      try { await secondaryApp?.delete(); } catch (_) {}
+    } catch (e) {
       debugPrint('AuthService: Seeding failed: $e');
-      debugPrint('AuthService: Stack trace: $stack');
+      try { await secondaryApp?.delete(); } catch (_) {}
+    }
+  }
+
   Future<void> adminApproveUser(String uid) async {
     await _adminBypassUpdate(uid, {
       'verificationStatus': VerificationStatus.approved.name,

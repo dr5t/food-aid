@@ -12,6 +12,7 @@ import '../../screens/donor/donor_dashboard.dart';
 import '../../screens/donor/create_donation_screen.dart';
 import '../../screens/donor/donation_tracking_screen.dart';
 import '../../screens/donor/donation_history_screen.dart';
+import '../../screens/donor/sos_requests_screen.dart';
 import '../../screens/ngo/ngo_dashboard.dart';
 import '../../screens/logistics/company_dashboard.dart';
 import '../../screens/logistics/employee_dashboard.dart';
@@ -161,6 +162,13 @@ class AppRouter {
               pageBuilder: (context, state) => _buildPage(
                 state,
                 const DonationHistoryScreen(),
+              ),
+            ),
+            GoRoute(
+              path: 'sos',
+              pageBuilder: (context, state) => _buildPage(
+                state,
+                const SOSRequestsScreen(),
               ),
             ),
           ],

@@ -525,6 +525,14 @@ class _AvailableDonationsTab extends StatelessWidget {
                                       user.organizationName ?? user.name,
                                       deliveryAddress: user.address,
                                     );
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Donation Accepted Successfully!'),
+                                      backgroundColor: AppColors.primary,
+                                    ),
+                                  );
+                                }
                               }
                             },
                       style: ElevatedButton.styleFrom(

@@ -83,6 +83,7 @@ class AdminProvider extends ChangeNotifier {
       await _firestoreService.approveUser(uid);
       return true;
     } catch (e) {
+      debugPrint('AdminProvider: approveUser error: $e');
       _error = 'Failed to approve user: $e';
       notifyListeners();
       return false;
@@ -94,6 +95,7 @@ class AdminProvider extends ChangeNotifier {
       await _firestoreService.rejectUser(uid, reason);
       return true;
     } catch (e) {
+      debugPrint('AdminProvider: rejectUser error: $e');
       _error = 'Failed to reject user: $e';
       notifyListeners();
       return false;

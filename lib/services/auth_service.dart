@@ -162,6 +162,7 @@ class AuthService {
     }
 
     final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
+    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
 
     try {
       final credential = await secondaryAuth.createUserWithEmailAndPassword(
@@ -186,8 +187,8 @@ class AuthService {
       );
 
       final data = user.toMap();
-      debugPrint('AuthService: Saving user doc to Firestore. UID: ${user.uid}, Data: $data');
-      await _firestore.collection('users').doc(user.uid).set(data);
+      debugPrint('AuthService: Saving user doc to Firestore (Secondary). UID: ${user.uid}, Data: $data');
+      await secondaryFirestore.collection('users').doc(user.uid).set(data);
 
       await secondaryAuth.signOut();
       await secondaryApp.delete();
@@ -228,6 +229,7 @@ class AuthService {
     }
     
     final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
+    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
     String? uid;
 
     try {
@@ -270,12 +272,8 @@ class AuthService {
           verificationStatus: VerificationStatus.approved,
         );
 
-        // We use the main Firestore instance but we are now "authenticated" in the eyes of Firebase? 
-        // Wait, Firestore instance is shared, but Auth state is app-specific.
-        // However, if rules allow "read if true" for this specific doc or similar, it might work.
-        // If not, we'll try to use the main Auth to sign in briefly.
-        
-        await _firestore.collection('users').doc(uid).set(user.toMap(), SetOptions(merge: true));
+        // We use the secondary Firestore instance to match the secondary Auth session
+        await secondaryFirestore.collection('users').doc(uid).set(user.toMap(), SetOptions(merge: true));
         debugPrint('AuthService: Super admin Firestore profile synchronized for UID: $uid');
       }
 

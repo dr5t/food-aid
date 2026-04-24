@@ -482,6 +482,14 @@ class _VerificationsTab extends StatelessWidget {
                   backgroundColor: AppColors.primary,
                 ),
               );
+            } else if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(admin.error ?? 'Approval failed'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+              admin.clearError();
             }
           },
           onReject: () => _showRejectDialog(context, admin, user),
@@ -526,6 +534,14 @@ class _VerificationsTab extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Registration rejected for ${user.email}')),
                 );
+              } else if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(admin.error ?? 'Rejection failed'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                admin.clearError();
               }
             },
             style: FilledButton.styleFrom(backgroundColor: Colors.red),

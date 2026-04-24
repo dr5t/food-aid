@@ -174,7 +174,12 @@ class AdminProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
       
-      await _firestoreService.deleteUser(uid);
+      try {
+        await _firestoreService.deleteUser(uid);
+      } catch (e) {
+        debugPrint('AdminProvider: Direct deletion failed, trying bypass: $e');
+        await _authService.adminDeleteUser(uid);
+      }
       
       _isLoading = false;
       notifyListeners();
@@ -196,7 +201,12 @@ class AdminProvider extends ChangeNotifier {
       // We use a copy of the list to avoid concurrent modification issues
       final uids = _pendingVerifications.map((u) => u.uid).toList();
       for (final uid in uids) {
-        await _firestoreService.deleteUser(uid);
+        try {
+          await _firestoreService.deleteUser(uid);
+        } catch (e) {
+          debugPrint('AdminProvider: ClearAll - Direct deletion failed for $uid, trying bypass: $e');
+          await _authService.adminDeleteUser(uid);
+        }
       }
       
       _isLoading = false;

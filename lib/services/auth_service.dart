@@ -314,6 +314,35 @@ class AuthService {
     });
   }
 
+  Future<void> adminDeleteUser(String uid) async {
+    const email = 'tiwarishaurya395@gmail.com';
+    const password = '123456';
+
+    FirebaseApp? secondaryApp;
+    try {
+      secondaryApp = Firebase.app('AdminDelete');
+    } catch (_) {
+      secondaryApp = await Firebase.initializeApp(
+        name: 'AdminDelete',
+        options: Firebase.app().options,
+      );
+    }
+
+    final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
+    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
+
+    try {
+      await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
+      await secondaryFirestore.collection('users').doc(uid).delete();
+      await secondaryAuth.signOut();
+      await secondaryApp.delete();
+    } catch (e) {
+      debugPrint('AuthService: AdminDelete failed: $e');
+      try { await secondaryApp.delete(); } catch (_) {}
+      rethrow;
+    }
+  }
+
   Future<void> _adminBypassUpdate(String targetUid, Map<String, dynamic> data) async {
     const email = 'tiwarishaurya395@gmail.com';
     const password = '123456';

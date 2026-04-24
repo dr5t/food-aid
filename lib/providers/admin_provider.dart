@@ -170,10 +170,41 @@ class AdminProvider extends ChangeNotifier {
 
   Future<bool> deleteUser(String uid) async {
     try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+      
       await _firestoreService.deleteUser(uid);
+      
+      _isLoading = false;
+      notifyListeners();
       return true;
     } catch (e) {
       _error = 'Failed to delete user: $e';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> clearAllPendingVerifications() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+      
+      // We use a copy of the list to avoid concurrent modification issues
+      final uids = _pendingVerifications.map((u) => u.uid).toList();
+      for (final uid in uids) {
+        await _firestoreService.deleteUser(uid);
+      }
+      
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = 'Failed to clear requests: $e';
+      _isLoading = false;
       notifyListeners();
       return false;
     }

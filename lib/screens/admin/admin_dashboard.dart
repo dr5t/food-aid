@@ -447,57 +447,119 @@ class _VerificationsTab extends StatelessWidget {
       return const Center(child: AppLoader(text: 'Loading verifications...'));
     }
 
-    if (pending.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.verified_rounded,
-              size: 64,
-              color: AppColors.primary.withValues(alpha: 0.2),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text('All Caught Up', style: AppTextStyles.titleMedium),
-            const SizedBox(height: AppSpacing.xs),
-            Text('No pending verifications', style: AppTextStyles.bodySmall),
-          ],
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.sm, AppSpacing.md, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${pending.length} Pending Requests',
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: const Color(0xFF64748B),
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () => _showClearAllConfirm(context, admin),
+                icon: const Icon(Icons.delete_sweep_rounded, size: 18, color: Colors.redAccent),
+                label: const Text('Clear All', style: TextStyle(color: Colors.redAccent, fontSize: 13)),
+              ),
+            ],
+          ),
         ),
-      );
-    }
-
-    return ListView.separated(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      itemCount: pending.length,
-      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
-      itemBuilder: (context, index) {
-        final user = pending[index];
-        return _VerificationCard(
-          user: user,
-          isDark: isDark,
-          onApprove: () async {
-            final ok = await admin.approveUser(user.uid);
-            if (ok && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('User approved. Confirmation email sent to ${user.email}'),
-                  backgroundColor: AppColors.primary,
-                ),
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            itemCount: pending.length,
+            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
+            itemBuilder: (context, index) {
+              final user = pending[index];
+              return _VerificationCard(
+                user: user,
+                isDark: isDark,
+                onApprove: () async {
+                  final ok = await admin.approveUser(user.uid);
+                  if (ok && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('User approved. Confirmation email sent to ${user.email}'),
+                        backgroundColor: AppColors.primary,
+                      ),
+                    );
+                  } else if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(admin.error ?? 'Approval failed'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    admin.clearError();
+                  }
+                },
+                onReject: () => _showRejectDialog(context, admin, user),
+                onDelete: () => _showDeleteUserConfirm(context, admin, user),
               );
-            } else if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(admin.error ?? 'Approval failed'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-              admin.clearError();
-            }
-          },
-          onReject: () => _showRejectDialog(context, admin, user),
-        );
-      },
+            },
+          ),
+        ),
+      ],
     );
+  }
+
+  void _showClearAllConfirm(BuildContext context, AdminProvider admin) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Clear All Requests?'),
+        content: const Text('This will permanently delete all pending registration requests. This action cannot be undone.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              final ok = await admin.clearAllPendingVerifications();
+              if (ok && context.mounted) {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('All pending requests cleared')),
+                );
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Clear All'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteUserConfirm(BuildContext context, AdminProvider admin, UserModel user) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Request?'),
+        content: Text('Are you sure you want to permanently delete the registration request from ${user.name}?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              final ok = await admin.deleteUser(user.uid);
+              if (ok && context.mounted) {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Request deleted')),
+                );
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
   }
 
   void _showRejectDialog(
@@ -563,12 +625,14 @@ class _VerificationCard extends StatelessWidget {
   final bool isDark;
   final VoidCallback onApprove;
   final VoidCallback onReject;
+  final VoidCallback onDelete;
 
   const _VerificationCard({
     required this.user,
     required this.isDark,
     required this.onApprove,
     required this.onReject,
+    required this.onDelete,
   });
 
   @override
@@ -605,6 +669,12 @@ class _VerificationCard extends StatelessWidget {
                   ],
                 ),
               ),
+              IconButton(
+                onPressed: onDelete,
+                icon: const Icon(Icons.delete_outline_rounded, size: 20, color: Colors.grey),
+                tooltip: 'Delete Request',
+              ),
+              const SizedBox(width: 4),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(

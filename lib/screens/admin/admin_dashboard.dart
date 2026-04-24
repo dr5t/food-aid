@@ -22,16 +22,11 @@ class AdminDashboard extends StatefulWidget {
 class _AdminDashboardState extends State<AdminDashboard>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late AnimationController _refreshController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _refreshController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AdminProvider>().startListening();
@@ -41,7 +36,6 @@ class _AdminDashboardState extends State<AdminDashboard>
   @override
   void dispose() {
     _tabController.dispose();
-    _refreshController.dispose();
     super.dispose();
   }
 
@@ -56,15 +50,6 @@ class _AdminDashboardState extends State<AdminDashboard>
 
     final admin = context.watch<AdminProvider>();
     
-    if (admin.isLoading) {
-      if (!_refreshController.isAnimating) _refreshController.repeat();
-    } else {
-      if (_refreshController.isAnimating) {
-        _refreshController.stop();
-        _refreshController.reset();
-      }
-    }
-
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppAppBar(
@@ -75,10 +60,7 @@ class _AdminDashboardState extends State<AdminDashboard>
         actions: [
           IconButton(
             onPressed: () => context.read<AdminProvider>().refreshStats(),
-            icon: RotationTransition(
-              turns: _refreshController,
-              child: const Icon(Icons.refresh_rounded, color: Color(0xFF64748B)),
-            ),
+            icon: _RotatingRefreshIcon(isLoading: admin.isLoading),
             tooltip: 'Refresh',
           ),
           PopupMenuButton<String>(
@@ -876,6 +858,56 @@ class _TeamTab extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _RotatingRefreshIcon extends StatefulWidget {
+  final bool isLoading;
+  const _RotatingRefreshIcon({required this.isLoading});
+
+  @override
+  State<_RotatingRefreshIcon> createState() => _RotatingRefreshIconState();
+}
+
+class _RotatingRefreshIconState extends State<_RotatingRefreshIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    if (widget.isLoading) _controller.repeat();
+  }
+
+  @override
+  void didUpdateWidget(_RotatingRefreshIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isLoading != oldWidget.isLoading) {
+      if (widget.isLoading) {
+        _controller.repeat();
+      } else {
+        _controller.stop();
+        _controller.reset();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RotationTransition(
+      turns: _controller,
+      child: const Icon(Icons.refresh_rounded, color: Color(0xFF64748B)),
     );
   }
 }

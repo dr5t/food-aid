@@ -374,7 +374,7 @@ class FirestoreService {
 
   Stream<List<UserModel>> getAdminEmployees() {
     return _users
-        .where('role', whereIn: ['admin', 'superAdmin'])
+        .where('role', isEqualTo: 'admin')
         .snapshots()
         .map((s) =>
             s.docs.map((d) => UserModel.fromFirestore(d)).toList());

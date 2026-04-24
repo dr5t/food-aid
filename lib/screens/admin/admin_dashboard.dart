@@ -560,7 +560,6 @@ class _VerificationsTab extends StatelessWidget {
       ),
     );
   }
-  }
 
   void _showRejectDialog(
     BuildContext context,

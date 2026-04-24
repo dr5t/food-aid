@@ -351,7 +351,6 @@ class FirestoreService {
   Stream<List<UserModel>> getPendingVerifications() {
     return _users
         .where('verificationStatus', isEqualTo: 'pending')
-        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((s) =>
             s.docs.map((d) => UserModel.fromFirestore(d)).toList());

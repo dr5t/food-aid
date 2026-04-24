@@ -22,11 +22,16 @@ class AdminDashboard extends StatefulWidget {
 class _AdminDashboardState extends State<AdminDashboard>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late AnimationController _refreshController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _refreshController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AdminProvider>().startListening();
@@ -36,6 +41,7 @@ class _AdminDashboardState extends State<AdminDashboard>
   @override
   void dispose() {
     _tabController.dispose();
+    _refreshController.dispose();
     super.dispose();
   }
 
@@ -48,6 +54,17 @@ class _AdminDashboardState extends State<AdminDashboard>
     const emeraldGreen = Color(0xFF10B981);
     final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
 
+    final admin = context.watch<AdminProvider>();
+    
+    if (admin.isLoading) {
+      if (!_refreshController.isAnimating) _refreshController.repeat();
+    } else {
+      if (_refreshController.isAnimating) {
+        _refreshController.stop();
+        _refreshController.reset();
+      }
+    }
+
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppAppBar(
@@ -58,7 +75,10 @@ class _AdminDashboardState extends State<AdminDashboard>
         actions: [
           IconButton(
             onPressed: () => context.read<AdminProvider>().refreshStats(),
-            icon: const Icon(Icons.refresh_rounded, color: Color(0xFF64748B)),
+            icon: RotationTransition(
+              turns: _refreshController,
+              child: const Icon(Icons.refresh_rounded, color: Color(0xFF64748B)),
+            ),
             tooltip: 'Refresh',
           ),
           PopupMenuButton<String>(

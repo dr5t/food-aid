@@ -72,17 +72,31 @@ class AdminProvider extends ChangeNotifier {
   }
 
   Future<void> refreshStats() async {
-    // With real-time streams, refresh is mostly redundant but we can keep it 
-    // to force notifyListeners or just leave it empty.
+    _isLoading = true;
+    _error = null;
     notifyListeners();
+    
+    // Re-trigger all streams
+    startListening();
   }
 
 
   Future<bool> approveUser(String uid) async {
     try {
       _isLoading = true;
+      _error = null;
       notifyListeners();
-      await _authService.adminApproveUser(uid);
+
+      // Attempt 1: Direct update via FirestoreService (Primary App)
+      // This works if the logged-in user has proper Firestore permissions.
+      try {
+        await _firestoreService.approveUser(uid);
+      } catch (e) {
+        debugPrint('AdminProvider: Direct approval failed, trying bypass: $e');
+        // Attempt 2: Bypass via Secondary App with Super Admin account
+        await _authService.adminApproveUser(uid);
+      }
+
       _isLoading = false;
       notifyListeners();
       return true;
@@ -98,8 +112,18 @@ class AdminProvider extends ChangeNotifier {
   Future<bool> rejectUser(String uid, String reason) async {
     try {
       _isLoading = true;
+      _error = null;
       notifyListeners();
-      await _authService.adminRejectUser(uid, reason);
+
+      // Attempt 1: Direct update via FirestoreService
+      try {
+        await _firestoreService.rejectUser(uid, reason);
+      } catch (e) {
+        debugPrint('AdminProvider: Direct rejection failed, trying bypass: $e');
+        // Attempt 2: Bypass
+        await _authService.adminRejectUser(uid, reason);
+      }
+
       _isLoading = false;
       notifyListeners();
       return true;

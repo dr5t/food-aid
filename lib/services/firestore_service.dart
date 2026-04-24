@@ -360,6 +360,7 @@ class FirestoreService {
     await _users.doc(uid).update({
       'verificationStatus': VerificationStatus.approved.name,
       'isVerified': true,
+      'updatedAt': Timestamp.now(),
     });
   }
 
@@ -368,6 +369,7 @@ class FirestoreService {
       'verificationStatus': VerificationStatus.rejected.name,
       'isVerified': false,
       'rejectionReason': reason,
+      'updatedAt': Timestamp.now(),
     });
   }
 

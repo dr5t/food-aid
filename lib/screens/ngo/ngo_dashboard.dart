@@ -43,7 +43,7 @@ class _NgoDashboardState extends State<NgoDashboard> {
       appBar: AppAppBar(
         title: 'Food Aid',
         actions: [
-          const ConnectionStatusIndicator(),
+          ConnectionStatusIndicator(),
           IconButton(
             icon: const Icon(Icons.logout, size: 20),
             onPressed: () => context.read<AuthProvider>().signOut(),

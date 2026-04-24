@@ -93,25 +93,49 @@ class _SignupScreenState extends State<SignupScreen> {
     try {
       final loc = LocationService();
       final pos = await loc.getCurrentPosition();
+      
       if (pos == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not get current location')),
+            const SnackBar(
+              content: Text('Could not get precise location. Please ensure GPS is enabled and permissions granted.'),
+              backgroundColor: Colors.orange,
+            ),
           );
         }
         setState(() => _isLocating = false);
         return;
       }
+
       final geoPoint = GeoPoint(pos.latitude, pos.longitude);
       final address = await loc.reverseGeocode(geoPoint);
-      setState(() {
-        _location = geoPoint;
-        _addressCtrl.text = address ?? '';
-      });
+      
+      if (mounted) {
+        setState(() {
+          _location = geoPoint;
+          _addressCtrl.text = address ?? '';
+        });
+        
+        if (address == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Location acquired, but address lookup failed. You can enter the address manually.'),
+              duration: Duration(seconds: 4),
+            ),
+          );
+        }
+      }
     } catch (e) {
       if (mounted) {
+        String msg = e.toString();
+        if (msg.contains('LocationPermission')) msg = 'Location permission denied.';
+        else if (msg.contains('LocationService')) msg = 'Location services are disabled.';
+        
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Location error: $e')),
+          SnackBar(
+            content: Text('Location error: $msg'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
     }

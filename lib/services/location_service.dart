@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 
 class LocationService {
-
   Future<bool> checkPermission() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return false;
@@ -19,17 +21,49 @@ class LocationService {
     return true;
   }
 
-
   Future<Position?> getCurrentPosition() async {
     final hasPermission = await checkPermission();
     if (!hasPermission) return null;
 
-    return Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    );
+    // Try high accuracy first, fallback to medium, then try IP-based location as a final resort
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 8),
+        ),
+      );
+    } catch (e) {
+      try {
+        return await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+            timeLimit: Duration(seconds: 5),
+          ),
+        );
+      } catch (_) {
+        // Final fallback: IP-based geolocation (less precise but works without GPS)
+        try {
+          final resp = await http.get(Uri.parse('https://ipapi.co/json/')).timeout(const Duration(seconds: 5));
+          if (resp.statusCode == 200) {
+            final data = jsonDecode(resp.body);
+            return Position(
+              latitude: data['latitude'],
+              longitude: data['longitude'],
+              timestamp: DateTime.now(),
+              accuracy: 1000,
+              altitude: 0,
+              heading: 0,
+              speed: 0,
+              speedAccuracy: 0,
+              altitudeAccuracy: 0,
+              headingAccuracy: 0,
+            );
+          }
+        } catch (_) {}
+        return null;
+      }
+    }
   }
 
   GeoPoint? positionToGeoPoint(Position? position) {
@@ -37,12 +71,23 @@ class LocationService {
     return GeoPoint(position.latitude, position.longitude);
   }
 
-
   Future<GeoPoint?> geocodeAddress(String address) async {
     try {
-      final locations = await locationFromAddress(address);
-      if (locations.isNotEmpty) {
-        return GeoPoint(locations.first.latitude, locations.first.longitude);
+      if (kIsWeb) {
+        // Use Nominatim on Web since geocoding package doesn't support it
+        final uri = Uri.parse('https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(address)}&format=json&limit=1');
+        final resp = await http.get(uri, headers: {'User-Agent': 'FoodAid-App/1.0'});
+        if (resp.statusCode == 200) {
+          final data = jsonDecode(resp.body);
+          if (data is List && data.isNotEmpty) {
+            return GeoPoint(double.parse(data[0]['lat']), double.parse(data[0]['lon']));
+          }
+        }
+      } else {
+        final locations = await locationFromAddress(address);
+        if (locations.isNotEmpty) {
+          return GeoPoint(locations.first.latitude, locations.first.longitude);
+        }
       }
     } catch (_) {}
     return null;
@@ -50,45 +95,34 @@ class LocationService {
 
   Future<String?> reverseGeocode(GeoPoint point) async {
     try {
-      final placemarks = await placemarkFromCoordinates(
-        point.latitude,
-        point.longitude,
-      );
-      if (placemarks.isNotEmpty) {
-        final p = placemarks.first;
-        final parts = [
-          p.street,
-          p.subLocality,
-          p.locality,
-          p.administrativeArea,
-          p.postalCode,
-        ].where((s) => s != null && s.isNotEmpty);
-        return parts.join(', ');
+      if (kIsWeb) {
+        final uri = Uri.parse('https://nominatim.openstreetmap.org/reverse?lat=${point.latitude}&lon=${point.longitude}&format=json');
+        final resp = await http.get(uri, headers: {'User-Agent': 'FoodAid-App/1.0'});
+        if (resp.statusCode == 200) {
+          final data = jsonDecode(resp.body);
+          return data['display_name'];
+        }
+      } else {
+        final placemarks = await placemarkFromCoordinates(point.latitude, point.longitude);
+        if (placemarks.isNotEmpty) {
+          final p = placemarks.first;
+          final parts = [
+            p.street,
+            p.subLocality,
+            p.locality,
+            p.administrativeArea,
+            p.postalCode,
+          ].where((s) => s != null && s.isNotEmpty);
+          return parts.join(', ');
+        }
       }
     } catch (_) {}
     return null;
   }
 
-  Future<bool> verifyAddress(String address) async {
-    final location = await geocodeAddress(address);
-    return location != null;
-  }
-
-
   double distanceBetween(GeoPoint a, GeoPoint b) {
-    return Geolocator.distanceBetween(
-          a.latitude,
-          a.longitude,
-          b.latitude,
-          b.longitude,
-        ) /
-        1000.0;
+    return Geolocator.distanceBetween(a.latitude, a.longitude, b.latitude, b.longitude) / 1000.0;
   }
-
-  bool isWithinRadius(GeoPoint a, GeoPoint b, double radiusKm) {
-    return distanceBetween(a, b) <= radiusKm;
-  }
-
 
   Stream<Position> getPositionStream() {
     return Geolocator.getPositionStream(

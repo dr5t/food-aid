@@ -24,10 +24,8 @@ class AdminProvider extends ChangeNotifier {
   StreamSubscription? _statsSub;
 
 
-  List<UserModel> get pendingVerifications => 
-      _pendingVerifications.where((u) => !_localHiddenUids.contains(u.uid)).toList();
-  List<UserModel> get allUsers => 
-      _allUsers.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+  List<UserModel> get pendingVerifications => _pendingVerifications;
+  List<UserModel> get allUsers => _allUsers;
   List<UserModel> get adminEmployees => _adminEmployees;
   Map<String, int> get platformStats => _platformStats;
   bool get isLoading => _isLoading;
@@ -54,7 +52,7 @@ class AdminProvider extends ChangeNotifier {
 
     _usersSub?.cancel();
     _usersSub = _firestoreService.getAllUsers().listen((list) {
-      _allUsers = list;
+      _allUsers = list.where((u) => !_localHiddenUids.contains(u.uid)).toList();
       notifyListeners();
     });
 
@@ -99,7 +97,9 @@ class AdminProvider extends ChangeNotifier {
         await _authService.adminApproveUser(uid);
       }
 
-      _localHiddenUids.add(uid); // Optimistically hide from UI
+      _localHiddenUids.add(uid); 
+      _pendingVerifications.removeWhere((u) => u.uid == uid);
+      _allUsers.removeWhere((u) => u.uid == uid);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -127,6 +127,8 @@ class AdminProvider extends ChangeNotifier {
       }
 
       _localHiddenUids.add(uid); // Optimistically hide
+      _pendingVerifications.removeWhere((u) => u.uid == uid);
+      _allUsers.removeWhere((u) => u.uid == uid);
       _isLoading = false;
       notifyListeners();
       return true;

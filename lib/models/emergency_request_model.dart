@@ -157,13 +157,13 @@ class EmergencyRequestModel {
       case EmergencyStatus.assigned:
         return 'Logistics Assigned';
       case EmergencyStatus.picked:
-        return 'Picked Up';
+        return 'Pickup';
       case EmergencyStatus.inTransit:
         return 'In Transit';
       case EmergencyStatus.nearLocation:
         return 'Near Location';
       case EmergencyStatus.delivered:
-        return 'Delivered';
+        return 'Completed';
       case EmergencyStatus.cancelled:
         return 'Cancelled';
     }

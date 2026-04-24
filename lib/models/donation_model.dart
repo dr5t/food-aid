@@ -265,7 +265,7 @@ class DonationModel {
       case DonationStatus.assigned:
         return 'Assigned';
       case DonationStatus.picked:
-        return 'Picked Up';
+        return 'Pickup';
       case DonationStatus.inTransit:
         return 'In Transit';
       case DonationStatus.nearLocation:

@@ -191,14 +191,11 @@ class AuthService {
       await secondaryFirestore.collection('users').doc(user.uid).set(data);
 
       await secondaryAuth.signOut();
-      await secondaryApp.delete();
-
+      // Keep app alive for reuse
       return user;
     } catch (e) {
       // ignore: empty_catches
       try { await secondaryAuth.signOut(); } catch (_) {}
-      // ignore: empty_catches
-      try { await secondaryApp.delete(); } catch (_) {}
       rethrow;
     }
   }
@@ -291,11 +288,9 @@ class AuthService {
       }
 
       await secondaryAuth.signOut();
-      await secondaryApp.delete();
       debugPrint('AuthService: Seeding complete.');
     } catch (e) {
       debugPrint('AuthService: Seeding failed: $e');
-      try { await secondaryApp.delete(); } catch (_) {}
     }
   }
 
@@ -335,10 +330,8 @@ class AuthService {
       await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
       await secondaryFirestore.collection('users').doc(uid).delete();
       await secondaryAuth.signOut();
-      await secondaryApp.delete();
     } catch (e) {
       debugPrint('AuthService: AdminDelete failed: $e');
-      try { await secondaryApp.delete(); } catch (_) {}
       rethrow;
     }
   }
@@ -364,11 +357,8 @@ class AuthService {
       await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
       await secondaryFirestore.collection('users').doc(targetUid).update(data);
       await secondaryAuth.signOut();
-      await secondaryApp.delete();
     } catch (e) {
       debugPrint('AuthService: AdminBypass failed: $e');
-      // ignore: empty_catches
-      try { await secondaryApp.delete(); } catch (_) {}
       rethrow;
     }
   }

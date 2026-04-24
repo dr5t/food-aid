@@ -56,7 +56,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       email: _emailCtrl.text.trim(),
       password: _passCtrl.text,
     );
-    if (!ok && mounted) _error(auth.error ?? 'Login Failed');
+    if (!ok && mounted) {
+      _error(auth.error ?? 'Login Failed');
+    }
   }
 
   Future<void> _signUp() async {

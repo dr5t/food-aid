@@ -252,6 +252,7 @@ class AuthService {
 
       // 4. Create or Update Firestore document if we have a UID
       if (uid != null) {
+        debugPrint('AuthService: Finalizing super admin Firestore doc for UID: $uid');
         final user = UserModel(
           uid: uid,
           name: adminName,
@@ -272,8 +273,9 @@ class AuthService {
       }
       
       debugPrint('AuthService: Super admin seeding complete.');
-    } catch (e) {
+    } catch (e, stack) {
       debugPrint('AuthService: Seeding super admin failed: $e');
+      debugPrint('AuthService: Stack trace: $stack');
     }
   }
 }

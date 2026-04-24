@@ -41,8 +41,8 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
       backgroundColor: Theme.of(context).brightness == Brightness.dark 
           ? AppColors.darkBackground 
           : AppColors.background,
-      appBar: AppBar(
-        title: const Text('Logistics Dashboard'),
+      appBar: AppAppBar(
+        title: 'Fleet Member',
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, size: 20),

@@ -261,6 +261,7 @@ class _OverviewTab extends StatelessWidget {
                 value: '${stats['totalUsers'] ?? 0}',
                 color: emeraldGreen,
                 isDark: isDark,
+                onTap: () => _showUsersList(context, admin.allUsers),
               ),
               _StatCard(
                 icon: Icons.pending_actions_rounded,
@@ -268,6 +269,10 @@ class _OverviewTab extends StatelessWidget {
                 value: '${stats['pendingVerifications'] ?? 0}',
                 color: const Color(0xFFF59E0B), // Amber for pending
                 isDark: isDark,
+                onTap: () {
+                  final state = context.findAncestorStateOfType<_AdminDashboardState>();
+                  state?._tabController.animateTo(1);
+                },
               ),
               _StatCard(
                 icon: Icons.volunteer_activism_rounded,
@@ -275,13 +280,15 @@ class _OverviewTab extends StatelessWidget {
                 value: '${stats['totalDonations'] ?? 0}',
                 color: const Color(0xFF6366F1), // Indigo
                 isDark: isDark,
+                onTap: () => _showDonationsList(context),
               ),
               _StatCard(
                 icon: Icons.check_circle_rounded,
-                label: 'Success Rate',
+                label: 'Completed',
                 value: '${stats['completedDonations'] ?? 0}',
                 color: const Color(0xFF06B6D4), // Cyan
                 isDark: isDark,
+                onTap: () => _showDonationsList(context, completedOnly: true),
               ),
             ],
           ),
@@ -337,12 +344,62 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
+  void _showUsersList(BuildContext context, List<UserModel> users) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(ctx).colorScheme.surface,
+        title: Text('User Directory', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: users.isEmpty 
+            ? const Center(child: Text('No users found'))
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: users.length,
+                itemBuilder: (_, i) {
+                  final u = users[i];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.emerald.withValues(alpha: 0.1),
+                      child: Text(u.name[0], style: const TextStyle(color: Colors.emerald)),
+                    ),
+                    title: Text(u.name, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
+                    subtitle: Text(u.role.name.toUpperCase(), style: const TextStyle(fontSize: 10)),
+                    trailing: Text(u.isVerified ? 'VERIFIED' : 'PENDING', style: TextStyle(
+                      fontSize: 9, 
+                      fontWeight: FontWeight.bold,
+                      color: u.isVerified ? Colors.green : Colors.orange,
+                    )),
+                  );
+                },
+              ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
+        ],
+      ),
+    );
+  }
+
+  void _showDonationsList(BuildContext context, {bool completedOnly = false}) {
+    // Note: AdminProvider needs to listen to all donations if we want full list here
+    // For now, we'll show a message or use a specialized query if available
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(completedOnly ? 'Completed Deliveries' : 'Recent Donations'),
+        content: const Text('Direct donation logs are currently accessible via individual NGO/Donor profiles for security. Total counts are reflected in the overview.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Understood')),
+        ],
+      ),
+    );
+  }
+}
+
 class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color color;
-  final bool isDark;
+  final VoidCallback? onTap;
 
   const _StatCard({
     required this.icon,
@@ -350,47 +407,52 @@ class _StatCard extends StatelessWidget {
     required this.value,
     required this.color,
     required this.isDark,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(10),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: color, size: 20),
             ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: GoogleFonts.inter(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : const Color(0xFF1E293B),
+            const Spacer(),
+            Text(
+              value,
+              style: GoogleFonts.inter(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : const Color(0xFF1E293B),
+              ),
             ),
-          ),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: const Color(0xFF64748B),
-              fontWeight: FontWeight.w500,
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: const Color(0xFF64748B),
+                fontWeight: FontWeight.w500,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

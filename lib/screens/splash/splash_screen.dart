@@ -114,15 +114,7 @@ class _SplashScreenState extends State<SplashScreen>
                 letterSpacing: 4,
               ),
             ).animate().fadeIn(delay: 800.ms),
-            const SizedBox(height: 48),
-            const SizedBox(
-              width: 40,
-              height: 40,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-              ),
-            ).animate().fadeIn(delay: 1000.ms),
+
           ],
         ),
       ),

@@ -42,7 +42,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
           ? AppColors.darkBackground 
           : AppColors.background,
       appBar: AppAppBar(
-        title: 'Fleet Member',
+        title: 'Logistics Dashboard',
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, size: 20),

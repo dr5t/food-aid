@@ -322,7 +322,7 @@ class AuthService {
   }
 
   Future<void> adminWipeData(String adminUid) async {
-    const email = 'tiwarishaurya395@gmail.com';
+    const adminEmail = 'tiwarishaurya395@gmail.com';
     const password = '123456';
     
     FirebaseApp? secondaryApp;
@@ -339,21 +339,37 @@ class AuthService {
     final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
     
     try {
-      await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
+      await secondaryAuth.signInWithEmailAndPassword(email: adminEmail, password: password);
       
       final batch = secondaryFirestore.batch();
       final collections = ['donations', 'emergencyRequests', 'notifications', 'users'];
+      
       for (final coll in collections) {
-        final docs = await secondaryFirestore.collection(coll).get(const GetOptions(source: Source.server));
-        for (final doc in docs.docs) {
-          if (coll == 'users' && doc.id == adminUid) continue; 
-          batch.delete(doc.reference);
+        final querySnapshot = await secondaryFirestore.collection(coll).get(const GetOptions(source: Source.server));
+        
+        for (final doc in querySnapshot.docs) {
+          final data = doc.data();
+          final email = data['email'] as String?;
+          
+          // CRITICAL: Never delete the Super Admin account itself
+          if (doc.id == adminUid || email == adminEmail) {
+            // However, if it's a PENDING request with the admin's email (a "ghost" test), we might want to delete it.
+            // But to be safe, we only skip if it's the actual authenticated user.
+            if (doc.id == adminUid) continue;
+            
+            // If it's a different doc with the same email (the "tenten" ghost), we delete it if it's not the main admin doc.
+            batch.delete(doc.reference);
+          } else {
+            batch.delete(doc.reference);
+          }
         }
       }
       
       await batch.commit();
       await secondaryAuth.signOut();
+      debugPrint('AuthService: Wipe complete. All records (including ghosts) removed.');
     } catch (e) {
+      debugPrint('AuthService: Wipe failed: $e');
       rethrow;
     }
   }

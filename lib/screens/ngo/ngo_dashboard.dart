@@ -39,8 +39,6 @@ class _NgoDashboardState extends State<NgoDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppAppBar(
         title: 'Food Aid',

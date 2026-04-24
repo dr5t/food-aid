@@ -24,14 +24,19 @@ class AdminProvider extends ChangeNotifier {
   StreamSubscription? _statsSub;
 
 
-  List<UserModel> get pendingVerifications => _pendingVerifications;
-  List<UserModel> get allUsers => _allUsers;
-  List<UserModel> get adminEmployees => _adminEmployees;
+  List<UserModel> get pendingVerifications => 
+      _pendingVerifications.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+  
+  List<UserModel> get allUsers => 
+      _allUsers.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+
+  List<UserModel> get adminEmployees => 
+      _adminEmployees.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+
   Map<String, int> get platformStats => _platformStats;
   bool get isLoading => _isLoading;
   String? get error => _error;
-
-  int get pendingCount => _pendingVerifications.length;
+  int get pendingCount => pendingVerifications.length;
 
 
   void startListening() {
@@ -39,20 +44,15 @@ class AdminProvider extends ChangeNotifier {
     notifyListeners();
 
     _pendingSub?.cancel();
-    _pendingSub =
-        _firestoreService.getPendingVerifications().listen((list) {
+    _pendingSub = _firestoreService.getPendingVerifications().listen((list) {
       _pendingVerifications = list;
-      _isLoading = false;
-      notifyListeners();
-    }, onError: (e) {
-      _error = e.toString();
       _isLoading = false;
       notifyListeners();
     });
 
     _usersSub?.cancel();
     _usersSub = _firestoreService.getAllUsers().listen((list) {
-      _allUsers = list.where((u) => !_localHiddenUids.contains(u.uid)).toList();
+      _allUsers = list;
       notifyListeners();
     });
 
@@ -66,9 +66,6 @@ class AdminProvider extends ChangeNotifier {
     _statsSub = _firestoreService.getPlatformStats().listen((stats) {
       _platformStats = stats;
       notifyListeners();
-    }, onError: (e) {
-      _error = 'Failed to load stats: $e';
-      notifyListeners();
     });
   }
 
@@ -76,9 +73,12 @@ class AdminProvider extends ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-    
-    // Re-trigger all streams
     startListening();
+  }
+
+  void clearError() {
+    _error = null;
+    notifyListeners();
   }
 
 
@@ -88,8 +88,6 @@ class AdminProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      // Attempt 1: Direct update via FirestoreService (Primary App)
-      // This works if the logged-in user has proper Firestore permissions.
       try {
         await _firestoreService.approveUser(uid);
       } catch (e) {
@@ -97,9 +95,7 @@ class AdminProvider extends ChangeNotifier {
         await _authService.adminApproveUser(uid);
       }
 
-      _localHiddenUids.add(uid); 
-      _pendingVerifications.removeWhere((u) => u.uid == uid);
-      _allUsers.removeWhere((u) => u.uid == uid);
+      _localHiddenUids.add(uid);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -118,7 +114,6 @@ class AdminProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
 
-      // Attempt 1: Direct update via FirestoreService
       try {
         await _firestoreService.rejectUser(uid, reason);
       } catch (e) {
@@ -126,9 +121,7 @@ class AdminProvider extends ChangeNotifier {
         await _authService.adminRejectUser(uid, reason);
       }
 
-      _localHiddenUids.add(uid); // Optimistically hide
-      _pendingVerifications.removeWhere((u) => u.uid == uid);
-      _allUsers.removeWhere((u) => u.uid == uid);
+      _localHiddenUids.add(uid);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -138,38 +131,6 @@ class AdminProvider extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return false;
-    }
-  }
-
-
-  Future<UserModel?> createAdminEmployee({
-    required String name,
-    required String email,
-    required String password,
-    required String createdByUid,
-    String phone = '',
-  }) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-
-      final user = await _authService.createUserWithCredentials(
-        name: name,
-        email: email,
-        password: password,
-        role: UserRole.admin,
-        createdByUid: createdByUid,
-        phone: phone,
-      );
-
-      _isLoading = false;
-      notifyListeners();
-      return user;
-    } catch (e) {
-      _error = 'Failed to create employee: $e';
-      _isLoading = false;
-      notifyListeners();
-      return null;
     }
   }
 
@@ -186,7 +147,7 @@ class AdminProvider extends ChangeNotifier {
         await _authService.adminDeleteUser(uid);
       }
       
-      _localHiddenUids.add(uid); // Optimistically hide
+      _localHiddenUids.add(uid);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -204,33 +165,87 @@ class AdminProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
       
-      // We use a copy of the list to avoid concurrent modification issues
       final uids = _pendingVerifications.map((u) => u.uid).toList();
       for (final uid in uids) {
         try {
           await _firestoreService.deleteUser(uid);
         } catch (e) {
-          debugPrint('AdminProvider: ClearAll - Direct deletion failed for $uid, trying bypass: $e');
           await _authService.adminDeleteUser(uid);
         }
+        _localHiddenUids.add(uid);
       }
       
       _isLoading = false;
       notifyListeners();
       return true;
     } catch (e) {
-      _error = 'Failed to clear requests: $e';
+      _error = 'Failed to clear all: $e';
       _isLoading = false;
       notifyListeners();
       return false;
     }
   }
 
-  void clearError() {
-    _error = null;
-    notifyListeners();
+  Future<bool> factoryReset(String adminUid) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      
+      // 1. Clear local UI state
+      _localHiddenUids.clear();
+      
+      // 2. Perform server-side total wipe
+      await _firestoreService.factoryReset(adminUid);
+      
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = 'Factory reset failed: $e';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 
+  Future<UserModel?> createAdminEmployee({
+    required String name,
+    required String email,
+    required String password,
+    required String createdByUid,
+    String phone = '',
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final data = {
+        'name': name,
+        'email': email,
+        'role': UserRole.admin.name,
+        'verificationStatus': VerificationStatus.approved.name,
+        'isVerified': true,
+        'createdAt': DateTime.now().toIso8601String(),
+        'createdBy': createdByUid,
+        'phone': phone,
+      };
+
+      final user = await _authService.adminCreateUser(
+        email: email,
+        password: password,
+        data: data,
+      );
+
+      _isLoading = false;
+      notifyListeners();
+      return user;
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return null;
+    }
+  }
 
   @override
   void dispose() {

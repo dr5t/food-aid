@@ -656,4 +656,36 @@ class FirestoreService {
   Future<void> markNotificationRead(String notificationId) async {
     await _notifications.doc(notificationId).update({'isRead': true});
   }
+
+  Future<void> factoryReset(String adminUid) async {
+    final batch = _firestore.batch();
+
+    // 1. Delete all donations
+    final donations = await _donations.get();
+    for (var doc in donations.docs) {
+      batch.delete(doc.reference);
+    }
+
+    // 2. Delete all emergency requests
+    final emergencies = await _emergencyRequests.get();
+    for (var doc in emergencies.docs) {
+      batch.delete(doc.reference);
+    }
+
+    // 3. Delete all notifications
+    final notifs = await _notifications.get();
+    for (var doc in notifs.docs) {
+      batch.delete(doc.reference);
+    }
+
+    // 4. Delete all users EXCEPT the current admin
+    final users = await _users.get();
+    for (var doc in users.docs) {
+      if (doc.id != adminUid) {
+        batch.delete(doc.reference);
+      }
+    }
+
+    await batch.commit();
+  }
 }

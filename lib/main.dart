@@ -10,9 +10,8 @@ import 'providers/emergency_provider.dart';
 import 'providers/logistics_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/connection_provider.dart';
+import 'config/navigation/navigator_key.dart';
 import 'services/firestore_service.dart';
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

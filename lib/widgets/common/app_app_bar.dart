@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
 
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -21,16 +20,10 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
-        title,
-        style: AppTextStyles.titleMedium,
-      ),
+      title: Text(title, style: AppTextStyles.titleMedium),
       leading: leading,
       centerTitle: centerTitle,
-      actions: [
-        if (actions != null) ...actions!,
-        const SizedBox(width: 8),
-      ],
+      actions: [if (actions != null) ...actions!, const SizedBox(width: 8)],
       bottom: showBottomBorder
           ? PreferredSize(
               preferredSize: const Size.fromHeight(1),

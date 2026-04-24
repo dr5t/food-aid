@@ -31,7 +31,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
       body: SafeArea(
@@ -41,10 +41,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
             Expanded(
               child: IndexedStack(
                 index: _currentIndex,
-                children: const [
-                  _ActiveTasksTab(),
-                  _CompletedTasksTab(),
-                ],
+                children: const [_ActiveTasksTab(), _CompletedTasksTab()],
               ),
             ),
           ],
@@ -54,14 +51,14 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_shipping_outlined),
-            activeIcon: Icon(Icons.local_shipping),
+          AppBottomNavItem(
+            icon: Icons.local_shipping_outlined,
+            activeIcon: Icons.local_shipping,
             label: 'Active',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            activeIcon: Icon(Icons.history),
+          AppBottomNavItem(
+            icon: Icons.history_outlined,
+            activeIcon: Icons.history,
             label: 'History',
           ),
         ],
@@ -79,7 +76,8 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
         color: isDark ? AppColors.darkSurface : AppColors.surface,
         border: Border(
           bottom: BorderSide(
-            color: (isDark ? AppColors.darkDivider : AppColors.divider).withValues(alpha: 0.5),
+            color: (isDark ? AppColors.darkDivider : AppColors.divider)
+                .withValues(alpha: 0.5),
           ),
         ),
       ),
@@ -89,10 +87,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Logistics Portal',
-                  style: AppTextStyles.titleLarge,
-                ),
+                Text('Logistics Portal', style: AppTextStyles.titleLarge),
                 Text(
                   user?.email ?? 'Field Operative',
                   style: AppTextStyles.bodySmall,
@@ -105,7 +100,9 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
           IconButton(
             icon: Icon(
               Icons.logout_rounded,
-              color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
+              color: isDark
+                  ? AppColors.darkTextSecondary
+                  : AppColors.textSecondary,
             ),
             onPressed: () => context.read<AuthProvider>().signOut(),
             tooltip: 'Sign Out',
@@ -239,8 +236,6 @@ class _ActiveTaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: AppCard(
@@ -257,11 +252,7 @@ class _ActiveTaskCard extends StatelessWidget {
                       color: _statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     ),
-                    child: Icon(
-                      _statusIcon,
-                      color: _statusColor,
-                      size: 24,
-                    ),
+                    child: Icon(_statusIcon, color: _statusColor, size: 24),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
@@ -288,11 +279,17 @@ class _ActiveTaskCard extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                 child: Divider(height: 1),
               ),
-              _buildInfoRow(Icons.business_rounded, donation.ngoName ?? 'NGO Unknown'),
+              _buildInfoRow(
+                Icons.business_rounded,
+                donation.ngoName ?? 'NGO Unknown',
+              ),
               const SizedBox(height: AppSpacing.xs),
               _buildInfoRow(Icons.location_on_rounded, donation.pickupAddress),
               const SizedBox(height: AppSpacing.xs),
-              _buildInfoRow(Icons.flag_rounded, donation.deliveryAddress ?? 'Target Location'),
+              _buildInfoRow(
+                Icons.flag_rounded,
+                donation.deliveryAddress ?? 'Target Location',
+              ),
               const SizedBox(height: AppSpacing.lg),
               _StatusStepper(currentStatus: donation.status),
               const SizedBox(height: AppSpacing.lg),
@@ -309,10 +306,7 @@ class _ActiveTaskCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     ),
                   ),
-                  child: Text(
-                    _nextActionLabel,
-                    style: AppTextStyles.button,
-                  ),
+                  child: Text(_nextActionLabel, style: AppTextStyles.button),
                 ),
               ),
             ],
@@ -326,18 +320,9 @@ class _ActiveTaskCard extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          icon,
-          size: 18,
-          color: AppColors.textHint,
-        ),
+        Icon(icon, size: 18, color: AppColors.textHint),
         const SizedBox(width: AppSpacing.sm),
-        Expanded(
-          child: Text(
-            text,
-            style: AppTextStyles.bodySmall,
-          ),
-        ),
+        Expanded(child: Text(text, style: AppTextStyles.bodySmall)),
       ],
     );
   }
@@ -405,7 +390,10 @@ class _ActiveTaskCard extends StatelessWidget {
       default:
         nextStatus = donation.status;
     }
-    context.read<LogisticsProvider>().updateDeliveryStatus(donation.id, nextStatus);
+    context.read<LogisticsProvider>().updateDeliveryStatus(
+      donation.id,
+      nextStatus,
+    );
   }
 }
 
@@ -441,7 +429,6 @@ class _StatusStepper extends StatelessWidget {
           final stepIdx = i ~/ 2;
           final isComplete = stepIdx <= currentIdx;
           final isCurrent = stepIdx == currentIdx;
-          final stepColor = isComplete ? AppColors.primary : (isDark ? AppColors.darkDivider : AppColors.divider);
 
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -450,24 +437,28 @@ class _StatusStepper extends StatelessWidget {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: isCurrent ? AppColors.primary : (isComplete ? AppColors.primary : Colors.transparent),
+                  color: isCurrent
+                      ? AppColors.primary
+                      : (isComplete ? AppColors.primary : Colors.transparent),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isComplete ? AppColors.primary : (isDark ? AppColors.darkDivider : AppColors.divider),
+                    color: isComplete
+                        ? AppColors.primary
+                        : (isDark ? AppColors.darkDivider : AppColors.divider),
                     width: 2,
                   ),
                 ),
                 child: isComplete && !isCurrent
                     ? const Icon(Icons.check, size: 14, color: Colors.white)
                     : (isCurrent
-                        ? Container(
-                            margin: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                          )
-                        : null),
+                          ? Container(
+                              margin: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                            )
+                          : null),
               ),
               const SizedBox(height: 6),
               Text(
@@ -489,7 +480,9 @@ class _StatusStepper extends StatelessWidget {
           child: Container(
             height: 2,
             margin: const EdgeInsets.only(bottom: 18),
-            color: isComplete ? AppColors.primary : (isDark ? AppColors.darkDivider : AppColors.divider),
+            color: isComplete
+                ? AppColors.primary
+                : (isDark ? AppColors.darkDivider : AppColors.divider),
           ),
         );
       }),

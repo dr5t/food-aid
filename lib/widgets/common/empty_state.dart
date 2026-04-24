@@ -7,6 +7,7 @@ class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
   final String? subtitle;
+  final String? message;
   final Widget? action;
 
   const EmptyState({
@@ -14,6 +15,7 @@ class EmptyState extends StatelessWidget {
     required this.icon,
     required this.title,
     this.subtitle,
+    this.message,
     this.action,
   });
 
@@ -32,11 +34,7 @@ class EmptyState extends StatelessWidget {
                 color: AppColors.surfaceVariant,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 36,
-                color: AppColors.textSecondary,
-              ),
+              child: Icon(icon, size: 36, color: AppColors.textSecondary),
             ),
             AppSpacing.verticalLg,
             Text(
@@ -44,18 +42,15 @@ class EmptyState extends StatelessWidget {
               style: AppTextStyles.subheading,
               textAlign: TextAlign.center,
             ),
-            if (subtitle != null) ...[
+            if ((subtitle ?? message) != null) ...[
               AppSpacing.verticalSm,
               Text(
-                subtitle!,
+                subtitle ?? message!,
                 style: AppTextStyles.bodySmall,
                 textAlign: TextAlign.center,
               ),
             ],
-            if (action != null) ...[
-              AppSpacing.verticalLg,
-              action!,
-            ],
+            if (action != null) ...[AppSpacing.verticalLg, action!],
           ],
         ),
       ),

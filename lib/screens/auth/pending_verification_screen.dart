@@ -4,9 +4,7 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 import '../../config/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
-import '../../widgets/common/app_background.dart';
 import '../../widgets/common/app_card.dart';
-import '../../widgets/common/app_button.dart';
 
 class PendingVerificationScreen extends StatelessWidget {
   const PendingVerificationScreen({super.key});
@@ -30,7 +28,7 @@ class PendingVerificationScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildStatusIcon(isRejected),
-                  
+
                   AppSpacing.verticalXl,
 
                   AppCard(
@@ -41,11 +39,11 @@ class PendingVerificationScreen extends StatelessWidget {
                         children: [
                           _buildHeader(isRejected),
                           AppSpacing.verticalLg,
-                          
+
                           _buildUserInfo(user, isRejected, isDark),
-                          
+
                           AppSpacing.verticalXl,
-                          
+
                           _buildActionButtons(authProvider, isDark, isRejected),
                         ],
                       ),
@@ -66,10 +64,14 @@ class PendingVerificationScreen extends StatelessWidget {
       height: 100,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isRejected ? AppColors.error.withValues(alpha: 0.1) : AppColors.primary.withValues(alpha: 0.1),
+        color: isRejected
+            ? AppColors.error.withValues(alpha: 0.1)
+            : AppColors.primary.withValues(alpha: 0.1),
       ),
       child: Icon(
-        isRejected ? Icons.error_outline_rounded : Icons.pending_actions_rounded,
+        isRejected
+            ? Icons.error_outline_rounded
+            : Icons.pending_actions_rounded,
         size: 50,
         color: isRejected ? AppColors.error : AppColors.primary,
       ),
@@ -86,7 +88,7 @@ class PendingVerificationScreen extends StatelessWidget {
         ),
         AppSpacing.verticalSm,
         Text(
-          isRejected 
+          isRejected
               ? 'Your application could not be approved at this time.'
               : 'Our administrators are currently reviewing your account application.',
           textAlign: TextAlign.center,
@@ -122,10 +124,7 @@ class PendingVerificationScreen extends StatelessWidget {
                   style: AppTextStyles.label.copyWith(color: AppColors.error),
                 ),
                 AppSpacing.verticalXs,
-                Text(
-                  user!.rejectionReason!,
-                  style: AppTextStyles.bodySmall,
-                ),
+                Text(user!.rejectionReason!, style: AppTextStyles.bodySmall),
               ],
             ),
           ),

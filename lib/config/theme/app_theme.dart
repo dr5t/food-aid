@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
@@ -6,7 +5,6 @@ import 'app_spacing.dart';
 
 class AppTheme {
   AppTheme._();
-
 
   static ThemeData get light {
     final colorScheme = ColorScheme.fromSeed(
@@ -24,7 +22,6 @@ class AppTheme {
     return _buildTheme(colorScheme, Brightness.light);
   }
 
-
   static ThemeData get dark {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.primary,
@@ -41,17 +38,22 @@ class AppTheme {
     return _buildTheme(colorScheme, Brightness.dark);
   }
 
-
   static ThemeData _buildTheme(ColorScheme cs, Brightness brightness) {
     final isDark = brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkBackground : AppColors.background;
     final surface = isDark ? AppColors.darkSurface : AppColors.surface;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.textPrimary;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.textSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.textPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.textSecondary;
     final textHint = isDark ? AppColors.darkTextHint : AppColors.textHint;
     final dividerColor = isDark ? AppColors.darkDivider : AppColors.divider;
     final primary = isDark ? AppColors.darkPrimary : AppColors.primary;
-    final surfaceVariant = isDark ? AppColors.darkSurfaceVariant : AppColors.surfaceVariant;
+    final surfaceVariant = isDark
+        ? AppColors.darkSurfaceVariant
+        : AppColors.surfaceVariant;
 
     return ThemeData(
       useMaterial3: true,
@@ -85,9 +87,7 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         color: isDark ? AppColors.darkSurface : surface,
         margin: EdgeInsets.zero,
       ),
@@ -130,7 +130,9 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.02),
+        fillColor: isDark
+            ? Colors.white.withValues(alpha: 0.05)
+            : Colors.black.withValues(alpha: 0.02),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
@@ -187,7 +189,9 @@ class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: isDark ? Colors.white.withValues(alpha: 0.1) : surfaceVariant,
+        backgroundColor: isDark
+            ? Colors.white.withValues(alpha: 0.1)
+            : surfaceVariant,
         selectedColor: primary.withValues(alpha: 0.2),
         labelStyle: GoogleFonts.outfit(
           fontSize: 12,
@@ -195,9 +199,7 @@ class AppTheme {
           color: textPrimary,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         side: BorderSide.none,
       ),
       dialogTheme: DialogThemeData(
@@ -205,10 +207,11 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: isDark ? const BorderSide(color: Colors.white10) : BorderSide.none,
+          side: isDark
+              ? const BorderSide(color: Colors.white10)
+              : BorderSide.none,
         ),
       ),
-
     );
   }
 }

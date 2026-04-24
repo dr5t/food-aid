@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
@@ -84,18 +83,9 @@ class _DonorDashboardState extends State<DonorDashboard> {
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view_rounded),
-            label: 'Overview',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_rounded),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.warning_amber_rounded),
-            label: 'Alerts',
-          ),
+          AppBottomNavItem(icon: Icons.grid_view_rounded, label: 'Overview'),
+          AppBottomNavItem(icon: Icons.history_rounded, label: 'History'),
+          AppBottomNavItem(icon: Icons.warning_amber_rounded, label: 'Alerts'),
         ],
       ),
     );
@@ -139,7 +129,11 @@ class _OverviewTab extends StatelessWidget {
               ],
             ),
             if (!isFetching)
-              const Icon(Icons.verified_user_rounded, color: AppColors.success, size: 28),
+              const Icon(
+                Icons.verified_user_rounded,
+                color: AppColors.success,
+                size: 28,
+              ),
           ],
         ),
         const SizedBox(height: AppSpacing.xl),
@@ -181,10 +175,7 @@ class _OverviewTab extends StatelessWidget {
 
         const SizedBox(height: AppSpacing.xl),
 
-        Text(
-          'Recent Activity',
-          style: AppTextStyles.titleMedium,
-        ),
+        Text('Recent Activity', style: AppTextStyles.titleMedium),
         const SizedBox(height: AppSpacing.md),
 
         if (donations.isEmpty && !isFetching)
@@ -225,12 +216,16 @@ class _StatCard extends StatelessWidget {
             const Spacer(),
             Text(
               value,
-              style: AppTextStyles.headingMedium.copyWith(fontWeight: FontWeight.bold),
+              style: AppTextStyles.headingMedium.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text(
               label,
               style: AppTextStyles.label.copyWith(
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white60 : Colors.black54,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white60
+                    : Colors.black54,
               ),
             ),
           ],
@@ -263,10 +258,7 @@ class _DonationTile extends StatelessWidget {
             size: 20,
           ),
         ),
-        title: Text(
-          donation.title,
-          style: AppTextStyles.titleSmall,
-        ),
+        title: Text(donation.title, style: AppTextStyles.titleSmall),
         subtitle: Text(
           '${donation.foodTypeLabel} · ${donation.quantityDisplay}',
           style: AppTextStyles.bodySmall,
@@ -281,29 +273,47 @@ class _DonationTile extends StatelessWidget {
 
   StatusBadgeType _statusType(DonationStatus s) {
     switch (s) {
-      case DonationStatus.pending: return StatusBadgeType.warning;
-      case DonationStatus.accepted: return StatusBadgeType.info;
-      case DonationStatus.assigned: return StatusBadgeType.info;
-      case DonationStatus.picked: return StatusBadgeType.info;
-      case DonationStatus.inTransit: return StatusBadgeType.info;
-      case DonationStatus.nearLocation: return StatusBadgeType.info;
-      case DonationStatus.delivered: return StatusBadgeType.success;
-      case DonationStatus.rejected: return StatusBadgeType.error;
-      case DonationStatus.expired: return StatusBadgeType.neutral;
+      case DonationStatus.pending:
+        return StatusBadgeType.warning;
+      case DonationStatus.accepted:
+        return StatusBadgeType.info;
+      case DonationStatus.assigned:
+        return StatusBadgeType.info;
+      case DonationStatus.picked:
+        return StatusBadgeType.info;
+      case DonationStatus.inTransit:
+        return StatusBadgeType.info;
+      case DonationStatus.nearLocation:
+        return StatusBadgeType.info;
+      case DonationStatus.delivered:
+        return StatusBadgeType.success;
+      case DonationStatus.rejected:
+        return StatusBadgeType.error;
+      case DonationStatus.expired:
+        return StatusBadgeType.neutral;
     }
   }
 
   IconData _statusIcon(DonationStatus s) {
     switch (s) {
-      case DonationStatus.pending: return Icons.access_time_rounded;
-      case DonationStatus.accepted: return Icons.handshake_rounded;
-      case DonationStatus.assigned: return Icons.person_rounded;
-      case DonationStatus.picked: return Icons.inventory_2_rounded;
-      case DonationStatus.inTransit: return Icons.local_shipping_rounded;
-      case DonationStatus.nearLocation: return Icons.location_on_rounded;
-      case DonationStatus.delivered: return Icons.check_circle_rounded;
-      case DonationStatus.rejected: return Icons.block_rounded;
-      case DonationStatus.expired: return Icons.timer_off_rounded;
+      case DonationStatus.pending:
+        return Icons.access_time_rounded;
+      case DonationStatus.accepted:
+        return Icons.handshake_rounded;
+      case DonationStatus.assigned:
+        return Icons.person_rounded;
+      case DonationStatus.picked:
+        return Icons.inventory_2_rounded;
+      case DonationStatus.inTransit:
+        return Icons.local_shipping_rounded;
+      case DonationStatus.nearLocation:
+        return Icons.location_on_rounded;
+      case DonationStatus.delivered:
+        return Icons.check_circle_rounded;
+      case DonationStatus.rejected:
+        return Icons.block_rounded;
+      case DonationStatus.expired:
+        return Icons.timer_off_rounded;
     }
   }
 }
@@ -314,7 +324,6 @@ class _MyDonationsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<DonationProvider>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       children: [
@@ -340,11 +349,12 @@ class _MyDonationsTab extends StatelessWidget {
                   message: 'Try adjusting your search query.',
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  itemCount: provider.filteredDonations.length,
-                  itemBuilder: (_, i) => _DonationTile(
-                    donation: provider.filteredDonations[i],
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
                   ),
+                  itemCount: provider.filteredDonations.length,
+                  itemBuilder: (_, i) =>
+                      _DonationTile(donation: provider.filteredDonations[i]),
                 ),
         ),
       ],
@@ -382,17 +392,26 @@ class _EmergencyAlertsTab extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.warning_amber_rounded, color: AppColors.error, size: 20),
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      color: AppColors.error,
+                      size: 20,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Emergency: ${req.ngoName}',
-                      style: AppTextStyles.titleSmall.copyWith(color: AppColors.error),
+                      style: AppTextStyles.titleSmall.copyWith(
+                        color: AppColors.error,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.md),
                 _EmergencyDetail(Icons.restaurant_rounded, req.mealTypeLabel),
-                _EmergencyDetail(Icons.people_rounded, '${req.quantity} meals required'),
+                _EmergencyDetail(
+                  Icons.people_rounded,
+                  '${req.quantity} meals required',
+                ),
                 _EmergencyDetail(Icons.location_on_rounded, req.ngoAddress),
                 const SizedBox(height: AppSpacing.md),
                 SizedBox(
@@ -428,12 +447,7 @@ class _EmergencyDetail extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: Colors.grey),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              text,
-              style: AppTextStyles.bodySmall,
-            ),
-          ),
+          Expanded(child: Text(text, style: AppTextStyles.bodySmall)),
         ],
       ),
     );

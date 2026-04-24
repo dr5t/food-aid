@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
-import '../../config/theme/app_spacing.dart';
-
 
 enum AppButtonVariant { primary, secondary, outlined, text }
 
@@ -47,7 +45,10 @@ class AppButton extends StatelessWidget {
         ? const SizedBox(
             height: 24,
             width: 24,
-            child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              color: Colors.white,
+            ),
           )
         : Row(
             mainAxisSize: MainAxisSize.min,
@@ -56,10 +57,7 @@ class AppButton extends StatelessWidget {
                 Icon(icon, size: 20),
                 const SizedBox(width: 8),
               ],
-              Text(
-                label,
-                style: textStyle,
-              ),
+              Text(label, style: textStyle),
             ],
           );
 
@@ -72,9 +70,7 @@ class AppButton extends StatelessWidget {
       case AppButtonVariant.secondary:
         return ElevatedButton(
           onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.secondary,
-          ),
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.secondary),
           child: buttonChild,
         );
       case AppButtonVariant.outlined:
@@ -97,4 +93,3 @@ class AppButton extends StatelessWidget {
     }
   }
 }
-

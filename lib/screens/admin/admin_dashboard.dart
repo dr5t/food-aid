@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
+import '../../config/theme/app_text_styles.dart';
 import '../../models/user_model.dart';
 import '../../providers/admin_provider.dart';
 import '../../providers/auth_provider.dart';
@@ -45,8 +46,8 @@ class _AdminDashboardState extends State<AdminDashboard>
 
     return Scaffold(
       appBar: AppAppBar(
-        title: authProvider.user?.role == UserRole.superAdmin 
-            ? 'Super Admin Dashboard' 
+        title: authProvider.user?.role == UserRole.superAdmin
+            ? 'Super Admin Dashboard'
             : 'Admin Dashboard',
         actions: [
           IconButton(
@@ -79,7 +80,9 @@ class _AdminDashboardState extends State<AdminDashboard>
             color: isDark ? Colors.black : Colors.white,
             child: TabBar(
               controller: _tabController,
-              labelStyle: AppTextStyles.label.copyWith(fontWeight: FontWeight.bold),
+              labelStyle: AppTextStyles.label.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               unselectedLabelStyle: AppTextStyles.label,
               indicatorColor: AppColors.primary,
               labelColor: AppColors.primary,
@@ -132,7 +135,10 @@ class _AdminDashboardState extends State<AdminDashboard>
               children: [
                 _OverviewTab(isDark: isDark),
                 _VerificationsTab(isDark: isDark),
-                _TeamTab(isDark: isDark, adminUid: authProvider.user?.uid ?? ''),
+                _TeamTab(
+                  isDark: isDark,
+                  adminUid: authProvider.user?.uid ?? '',
+                ),
               ],
             ),
           ),
@@ -141,7 +147,6 @@ class _AdminDashboardState extends State<AdminDashboard>
     );
   }
 }
-
 
 class _OverviewTab extends StatelessWidget {
   final bool isDark;
@@ -163,8 +168,8 @@ class _OverviewTab extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
           Text(
-            authProvider.user?.role == UserRole.superAdmin 
-                ? 'Administrator Console' 
+            authProvider.user?.role == UserRole.superAdmin
+                ? 'Administrator Console'
                 : 'System Overview',
             style: AppTextStyles.heading,
           ),
@@ -183,7 +188,7 @@ class _OverviewTab extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     AppColors.primary,
-                    AppColors.primary.withOpacity(0.7),
+                    AppColors.primary.withValues(alpha: 0.7),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -191,7 +196,7 @@ class _OverviewTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -199,7 +204,11 @@ class _OverviewTab extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.security_rounded, color: Colors.white, size: 28),
+                  const Icon(
+                    Icons.security_rounded,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -217,7 +226,7 @@ class _OverviewTab extends StatelessWidget {
                         Text(
                           'Root access active for ${authProvider.user?.name}',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                             fontSize: 14,
                           ),
                         ),
@@ -225,9 +234,12 @@ class _OverviewTab extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
+                      color: Colors.white.withValues(alpha: 0.25),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
@@ -294,35 +306,40 @@ class _OverviewTab extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           _RoleRow(
-              label: 'Donors',
-              count: stats['donors'] ?? 0,
-              icon: Icons.favorite_rounded,
-              color: Colors.red,
-              isDark: isDark),
+            label: 'Donors',
+            count: stats['donors'] ?? 0,
+            icon: Icons.favorite_rounded,
+            color: Colors.red,
+            isDark: isDark,
+          ),
           _RoleRow(
-              label: 'NGOs',
-              count: stats['ngos'] ?? 0,
-              icon: Icons.business_rounded,
-              color: Colors.blue,
-              isDark: isDark),
+            label: 'NGOs',
+            count: stats['ngos'] ?? 0,
+            icon: Icons.business_rounded,
+            color: Colors.blue,
+            isDark: isDark,
+          ),
           _RoleRow(
-              label: 'Logistics Companies',
-              count: stats['companies'] ?? 0,
-              icon: Icons.local_shipping_rounded,
-              color: Colors.orange,
-              isDark: isDark),
+            label: 'Logistics Companies',
+            count: stats['companies'] ?? 0,
+            icon: Icons.local_shipping_rounded,
+            color: Colors.orange,
+            isDark: isDark,
+          ),
           _RoleRow(
-              label: 'Delivery Partners',
-              count: stats['employees'] ?? 0,
-              icon: Icons.delivery_dining_rounded,
-              color: Colors.purple,
-              isDark: isDark),
+            label: 'Delivery Partners',
+            count: stats['employees'] ?? 0,
+            icon: Icons.delivery_dining_rounded,
+            color: Colors.purple,
+            isDark: isDark,
+          ),
           _RoleRow(
-              label: 'Team Members',
-              count: stats['admins'] ?? 0,
-              icon: Icons.admin_panel_settings_rounded,
-              color: Colors.indigo,
-              isDark: isDark),
+            label: 'Team Members',
+            count: stats['admins'] ?? 0,
+            icon: Icons.admin_panel_settings_rounded,
+            color: Colors.indigo,
+            isDark: isDark,
+          ),
         ],
       ),
     );
@@ -355,14 +372,8 @@ class _StatCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 24),
           const Spacer(),
-          Text(
-            value,
-            style: AppTextStyles.heading,
-          ),
-          Text(
-            label,
-            style: AppTextStyles.caption,
-          ),
+          Text(value, style: AppTextStyles.heading),
+          Text(label, style: AppTextStyles.caption),
         ],
       ),
     );
@@ -396,12 +407,7 @@ class _RoleRow extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 20),
           const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Text(
-              label,
-              style: AppTextStyles.titleSmall,
-            ),
-          ),
+          Expanded(child: Text(label, style: AppTextStyles.titleSmall)),
           Text(
             '$count',
             style: AppTextStyles.titleMedium.copyWith(color: color),
@@ -411,7 +417,6 @@ class _RoleRow extends StatelessWidget {
     );
   }
 }
-
 
 class _VerificationsTab extends StatelessWidget {
   final bool isDark;
@@ -437,15 +442,9 @@ class _VerificationsTab extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.2),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(
-              'All Caught Up',
-              style: AppTextStyles.titleMedium,
-            ),
+            Text('All Caught Up', style: AppTextStyles.titleMedium),
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              'No pending verifications',
-              style: AppTextStyles.bodySmall,
-            ),
+            Text('No pending verifications', style: AppTextStyles.bodySmall),
           ],
         ),
       );
@@ -468,7 +467,10 @@ class _VerificationsTab extends StatelessWidget {
   }
 
   void _showRejectDialog(
-      BuildContext context, AdminProvider admin, String uid) {
+    BuildContext context,
+    AdminProvider admin,
+    String uid,
+  ) {
     final controller = TextEditingController();
     showDialog(
       context: context,
@@ -484,9 +486,7 @@ class _VerificationsTab extends StatelessWidget {
           decoration: InputDecoration(
             hintText: 'Reason for rejection...',
             hintStyle: GoogleFonts.inter(fontSize: 14),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           ),
         ),
         actions: [
@@ -554,16 +554,12 @@ class _VerificationCard extends StatelessWidget {
                       user.organizationName ?? user.name,
                       style: AppTextStyles.titleSmall,
                     ),
-                    Text(
-                      user.roleLabel,
-                      style: AppTextStyles.caption,
-                    ),
+                    Text(user.roleLabel, style: AppTextStyles.caption),
                   ],
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
@@ -584,7 +580,7 @@ class _VerificationCard extends StatelessWidget {
           _detailRow(Icons.email_outlined, user.email),
           if (user.phone.isNotEmpty)
             _detailRow(Icons.phone_outlined, user.phone),
-          
+
           const SizedBox(height: AppSpacing.md),
 
           Row(
@@ -628,7 +624,10 @@ class _VerificationCard extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade600),
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                color: Colors.grey.shade600,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -638,7 +637,6 @@ class _VerificationCard extends StatelessWidget {
     );
   }
 }
-
 
 class _TeamTab extends StatelessWidget {
   final bool isDark;
@@ -686,8 +684,7 @@ class _TeamTab extends StatelessWidget {
           : ListView.separated(
               padding: const EdgeInsets.all(AppSpacing.md),
               itemCount: employees.length,
-              separatorBuilder: (_, _) =>
-                  const SizedBox(height: AppSpacing.sm),
+              separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final emp = employees[index];
                 return Container(
@@ -707,8 +704,9 @@ class _TeamTab extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 22,
-                        backgroundColor:
-                            AppColors.primary.withValues(alpha: 0.1),
+                        backgroundColor: AppColors.primary.withValues(
+                          alpha: 0.1,
+                        ),
                         child: Text(
                           emp.initials,
                           style: GoogleFonts.inter(
@@ -727,9 +725,7 @@ class _TeamTab extends StatelessWidget {
                               style: GoogleFonts.inter(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             Text(
@@ -789,19 +785,19 @@ class _TeamTab extends StatelessWidget {
       builder: (ctx) => CreateEmployeeDialog(
         title: 'Create Admin Employee',
         targetRole: UserRole.admin,
-        onCreateEmployee: ({
-          required String name,
-          required String email,
-          required String password,
-          String? phone = '',
-        }) =>
-            admin.createAdminEmployee(
-          name: name,
-          email: email,
-          password: password,
-          createdByUid: adminUid,
-          phone: phone ?? '',
-        ),
+        onCreateEmployee:
+            ({
+              required String name,
+              required String email,
+              required String password,
+              String? phone = '',
+            }) => admin.createAdminEmployee(
+              name: name,
+              email: email,
+              password: password,
+              createdByUid: adminUid,
+              phone: phone ?? '',
+            ),
       ),
     );
   }

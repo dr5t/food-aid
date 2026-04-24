@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
-import '../../config/theme/app_text_styles.dart';
 
 class AppInput extends StatelessWidget {
   final TextEditingController? controller;
@@ -62,19 +61,11 @@ class AppInput extends StatelessWidget {
           onChanged: onChanged,
           enabled: enabled,
           textInputAction: textInputAction,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           decoration: InputDecoration(
             hintText: hint,
             errorText: errorText,
-            prefixIcon: prefixIcon != null
-                ? Icon(
-                    prefixIcon, 
-                    size: 22, 
-                  )
-                : null,
+            prefixIcon: prefixIcon != null ? Icon(prefixIcon, size: 22) : null,
             suffixIcon: suffix,
           ),
         ),
@@ -82,4 +73,3 @@ class AppInput extends StatelessWidget {
     );
   }
 }
-

@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
-import '../../config/theme/app_text_styles.dart';
 import '../../widgets/common/app_button.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -79,8 +78,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: _pages.length,
-                onPageChanged: (index) =>
-                    setState(() => _currentPage = index),
+                onPageChanged: (index) => setState(() => _currentPage = index),
                 itemBuilder: (context, index) => _pages[index],
               ),
             ),
@@ -102,8 +100,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           color: _currentPage == index
                               ? AppColors.primary
                               : (isDark ? Colors.white12 : Colors.black12),
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.radiusFull),
+                          borderRadius: BorderRadius.circular(
+                            AppSpacing.radiusFull,
+                          ),
                         ),
                       ),
                     ),
@@ -161,20 +160,17 @@ class _OnboardingPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 160,
-            height: 160,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Icon(
-                icon,
-                size: 80,
-                color: color,
-              ),
-            ),
-          ).animate().fadeIn(duration: 600.ms).scale(begin: const Offset(0.8, 0.8)),
+                width: 160,
+                height: 160,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(child: Icon(icon, size: 80, color: color)),
+              )
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .scale(begin: const Offset(0.8, 0.8)),
           AppSpacing.verticalXl,
           Text(
             title,

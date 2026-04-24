@@ -27,13 +27,15 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 1200),
     );
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
 
@@ -42,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _initializeApp() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
+
     // Wait for splash duration AND database health check
     await Future.wait([
       Future.delayed(AppConstants.splashDuration),
@@ -66,7 +68,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(

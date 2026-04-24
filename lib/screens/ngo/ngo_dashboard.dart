@@ -5,17 +5,14 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
-import '../../models/donation_model.dart';
 import '../../models/emergency_request_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/donation_provider.dart';
 import '../../providers/emergency_provider.dart';
 import '../../providers/theme_provider.dart';
-import '../../widgets/common/connection_status_indicator.dart';
 import '../../widgets/common/skeleton_widgets.dart';
 import '../../widgets/common/app_app_bar.dart';
 import '../../widgets/common/app_card.dart';
-import '../../widgets/common/app_loader.dart';
 import '../../config/theme/app_text_styles.dart';
 
 class NgoDashboard extends StatefulWidget {
@@ -93,16 +90,16 @@ class _NgoDashboardState extends State<NgoDashboard> {
     );
   }
 
-
   Widget _buildEmergencyFAB() {
     return FloatingActionButton.extended(
-      onPressed: () => _showEmergencyDialog(),
-      backgroundColor: Colors.orange,
-      foregroundColor: Colors.white,
-      icon: const Icon(Icons.warning_amber, size: 20),
-      label: const Text('New Emergency Request'),
-    ).animate(onPlay: (controller) => controller.repeat())
-      .shimmer(duration: 3000.ms, color: Colors.white24);
+          onPressed: () => _showEmergencyDialog(),
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
+          icon: const Icon(Icons.warning_amber, size: 20),
+          label: const Text('New Emergency Request'),
+        )
+        .animate(onPlay: (controller) => controller.repeat())
+        .shimmer(duration: 3000.ms, color: Colors.white24);
   }
 
   void _showEmergencyDialog() {
@@ -116,7 +113,9 @@ class _NgoDashboardState extends State<NgoDashboard> {
           builder: (ctx, setDialogState) {
             return Theme(
               data: Theme.of(context).copyWith(
-                dialogBackgroundColor: AppColors.darkBg.withValues(alpha: 0.9),
+                dialogTheme: Theme.of(context).dialogTheme.copyWith(
+                  backgroundColor: AppColors.darkBg.withValues(alpha: 0.9),
+                ),
               ),
               child: AlertDialog(
                 backgroundColor: Colors.transparent,
@@ -129,8 +128,11 @@ class _NgoDashboardState extends State<NgoDashboard> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.warning_amber,
-                              color: Colors.orange, size: 24),
+                          const Icon(
+                            Icons.warning_amber,
+                            color: Colors.orange,
+                            size: 24,
+                          ),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
                             'New Emergency Request',
@@ -146,7 +148,9 @@ class _NgoDashboardState extends State<NgoDashboard> {
                       const SizedBox(height: AppSpacing.xl),
                       Text(
                         'Meal Type',
-                        style: AppTextStyles.label.copyWith(fontWeight: FontWeight.bold),
+                        style: AppTextStyles.label.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Row(
@@ -158,7 +162,8 @@ class _NgoDashboardState extends State<NgoDashboard> {
                               color: Colors.green,
                               isSelected: selectedMealType == 'veg',
                               onTap: () => setDialogState(
-                                  () => selectedMealType = 'veg'),
+                                () => selectedMealType = 'veg',
+                              ),
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
@@ -169,7 +174,8 @@ class _NgoDashboardState extends State<NgoDashboard> {
                               color: Colors.red,
                               isSelected: selectedMealType == 'nonVeg',
                               onTap: () => setDialogState(
-                                  () => selectedMealType = 'nonVeg'),
+                                () => selectedMealType = 'nonVeg',
+                              ),
                             ),
                           ),
                         ],
@@ -207,7 +213,8 @@ class _NgoDashboardState extends State<NgoDashboard> {
                                 ngoName: user.organizationName ?? user.name,
                                 mealType: selectedMealType,
                                 quantity: qty,
-                                ngoLocation: user.location ??
+                                ngoLocation:
+                                    user.location ??
                                     const GeoPoint(28.6139, 77.2090),
                                 ngoAddress: user.address ?? 'Not specified',
                                 status: EmergencyStatus.open,
@@ -239,7 +246,10 @@ class _NgoDashboardState extends State<NgoDashboard> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.orange,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
                             ),
                             child: const Text('Send Alert'),
                           ),
@@ -257,7 +267,6 @@ class _NgoDashboardState extends State<NgoDashboard> {
   }
 }
 
-
 class _OverviewTab extends StatelessWidget {
   const _OverviewTab();
 
@@ -268,11 +277,10 @@ class _OverviewTab extends StatelessWidget {
     final delivered = stats['completed'] ?? 0;
     final available = stats['available'] ?? 0;
     final inTransit = stats['inTransit'] ?? 0;
- 
+
     final authProvider = context.watch<AuthProvider>();
     final user = authProvider.user;
     final donationProvider = context.watch<DonationProvider>();
-    final emergencyProvider = context.watch<EmergencyProvider>();
     final isFetching = donationProvider.isLoading;
 
     return ListView(
@@ -362,7 +370,6 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
-
 class _AvailableDonationsTab extends StatelessWidget {
   const _AvailableDonationsTab();
 
@@ -376,10 +383,11 @@ class _AvailableDonationsTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inbox_outlined, size: 56,
-                color: isDark
-                    ? AppColors.darkTextHint
-                    : AppColors.textHint),
+            Icon(
+              Icons.inbox_outlined,
+              size: 56,
+              color: isDark ? AppColors.darkTextHint : AppColors.textHint,
+            ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'No donations available',
@@ -397,7 +405,12 @@ class _AvailableDonationsTab extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 100),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        100,
+      ),
       itemCount: pending.length,
       itemBuilder: (_, i) {
         final d = pending[i];
@@ -409,20 +422,20 @@ class _AvailableDonationsTab extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      d.title,
-                      style: AppTextStyles.titleMedium,
-                    ),
+                    child: Text(d.title, style: AppTextStyles.titleMedium),
                   ),
                   if (d.isExpired)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.error.withValues(alpha: 0.1),
                         border: Border.all(color: AppColors.error),
-                        borderRadius:
-                            BorderRadius.circular(AppSpacing.radiusXs),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusXs,
+                        ),
                       ),
                       child: Text(
                         'EXPIRED',
@@ -435,10 +448,7 @@ class _AvailableDonationsTab extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.xs),
-              Text(
-                'From: ${d.donorName}',
-                style: AppTextStyles.caption,
-              ),
+              Text('From: ${d.donorName}', style: AppTextStyles.caption),
               const SizedBox(height: AppSpacing.md),
               Wrap(
                 spacing: AppSpacing.sm,
@@ -461,7 +471,6 @@ class _AvailableDonationsTab extends StatelessWidget {
                         side: const BorderSide(color: Colors.white24),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: Text(
                       child: const Text('View Details'),
                     ),
                   ),
@@ -471,16 +480,14 @@ class _AvailableDonationsTab extends StatelessWidget {
                       onPressed: d.isExpired
                           ? null
                           : () async {
-                              final user =
-                                  context.read<AuthProvider>().user;
+                              final user = context.read<AuthProvider>().user;
                               if (user != null) {
                                 await context
                                     .read<DonationProvider>()
                                     .acceptDonation(
                                       d.id,
                                       user.uid,
-                                      user.organizationName ??
-                                          user.name,
+                                      user.organizationName ?? user.name,
                                       deliveryAddress: user.address,
                                     );
                               }
@@ -502,7 +509,6 @@ class _AvailableDonationsTab extends StatelessWidget {
     );
   }
 }
-
 
 class _MyEmergenciesTab extends StatelessWidget {
   const _MyEmergenciesTab();
@@ -526,7 +532,12 @@ class _MyEmergenciesTab extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.md, AppSpacing.md, AppSpacing.md, 100),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.md,
+        AppSpacing.md,
+        AppSpacing.md,
+        100,
+      ),
       itemCount: requests.length,
       itemBuilder: (_, i) {
         final req = requests[i];
@@ -561,7 +572,6 @@ class _MyEmergenciesTab extends StatelessWidget {
                 ? TextButton(
                     onPressed: () =>
                         context.read<EmergencyProvider>().cancelRequest(req.id),
-                    child: Text(
                     child: const Text('Cancel'),
                   )
                 : null,
@@ -572,20 +582,17 @@ class _MyEmergenciesTab extends StatelessWidget {
   }
 }
 
-
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
   final Color color;
-  final LinearGradient? gradient;
 
   const _StatCard({
     required this.label,
     required this.value,
     required this.icon,
     required this.color,
-    this.gradient,
   });
 
   @override
@@ -599,32 +606,14 @@ class _StatCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                label,
-                style: AppTextStyles.label.copyWith(color: color),
-              ),
+              Text(label, style: AppTextStyles.label.copyWith(color: color)),
               Icon(icon, size: 16, color: color),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            value,
-            style: AppTextStyles.heading,
-          ),
+          Text(value, style: AppTextStyles.heading),
         ],
       ),
-    );
-  }
-}
-
-extension on LinearGradient {
-  LinearGradient withAlphaValue(double alpha) {
-    return LinearGradient(
-      colors: colors.map((c) => c.withValues(alpha: alpha)).toList(),
-      begin: begin,
-      end: end,
-      stops: stops,
-      transform: transform,
     );
   }
 }
@@ -652,19 +641,23 @@ class _MealTypeOption extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.02),
+          color: isSelected
+              ? color.withValues(alpha: 0.1)
+              : Colors.white.withValues(alpha: 0.02),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
             color: isSelected ? color : Colors.white12,
             width: isSelected ? 2 : 1,
           ),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: color.withValues(alpha: 0.2),
-              blurRadius: 8,
-              spreadRadius: 1,
-            )
-          ] : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.2),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : null,
         ),
         child: Column(
           children: [

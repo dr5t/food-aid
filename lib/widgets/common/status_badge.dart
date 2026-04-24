@@ -4,10 +4,13 @@ import '../../config/theme/app_spacing.dart';
 import '../../config/theme/app_text_styles.dart';
 import '../../models/donation_model.dart';
 
-class StatusBadge extends StatelessWidget {
-  final DonationStatus status;
+enum StatusBadgeType { success, warning, info, error, neutral }
 
-  const StatusBadge({super.key, required this.status});
+class StatusBadge extends StatelessWidget {
+  final Object status;
+  final StatusBadgeType? type;
+
+  const StatusBadge({super.key, required this.status, this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,10 @@ class StatusBadge extends StatelessWidget {
   }
 
   String get _label {
+    if (status is String) {
+      return status as String;
+    }
+
     switch (status) {
       case DonationStatus.pending:
         return 'Pending';
@@ -52,9 +59,15 @@ class StatusBadge extends StatelessWidget {
       case DonationStatus.expired:
         return 'Expired';
     }
+
+    return 'Unknown';
   }
 
   Color get _textColor {
+    if (status is String) {
+      return _legacyTextColor(type ?? StatusBadgeType.neutral);
+    }
+
     switch (status) {
       case DonationStatus.pending:
         return AppColors.statusPending;
@@ -75,9 +88,15 @@ class StatusBadge extends StatelessWidget {
       case DonationStatus.expired:
         return AppColors.statusExpired;
     }
+
+    return _legacyTextColor(type ?? StatusBadgeType.neutral);
   }
 
   Color get _backgroundColor {
+    if (status is String) {
+      return _legacyBackgroundColor(type ?? StatusBadgeType.neutral);
+    }
+
     switch (status) {
       case DonationStatus.pending:
         return AppColors.warningLight;
@@ -97,6 +116,38 @@ class StatusBadge extends StatelessWidget {
         return AppColors.errorLight;
       case DonationStatus.expired:
         return const Color(0xFFF5F5F5);
+    }
+
+    return _legacyBackgroundColor(type ?? StatusBadgeType.neutral);
+  }
+
+  Color _legacyTextColor(StatusBadgeType badgeType) {
+    switch (badgeType) {
+      case StatusBadgeType.success:
+        return AppColors.success;
+      case StatusBadgeType.warning:
+        return AppColors.warning;
+      case StatusBadgeType.info:
+        return AppColors.info;
+      case StatusBadgeType.error:
+        return AppColors.error;
+      case StatusBadgeType.neutral:
+        return AppColors.textSecondary;
+    }
+  }
+
+  Color _legacyBackgroundColor(StatusBadgeType badgeType) {
+    switch (badgeType) {
+      case StatusBadgeType.success:
+        return AppColors.successLight;
+      case StatusBadgeType.warning:
+        return AppColors.warningLight;
+      case StatusBadgeType.info:
+        return AppColors.infoLight;
+      case StatusBadgeType.error:
+        return AppColors.errorLight;
+      case StatusBadgeType.neutral:
+        return AppColors.surfaceVariant;
     }
   }
 }

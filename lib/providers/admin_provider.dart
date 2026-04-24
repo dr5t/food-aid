@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_model.dart';
 import '../../services/firestore_service.dart';
 import '../../services/auth_service.dart';
-import '../../main.dart';
+import '../../config/navigation/navigator_key.dart';
 
 class AdminProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;

@@ -469,6 +469,7 @@ class _VerificationsTab extends StatelessWidget {
       itemCount: pending.length,
       separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
       itemBuilder: (context, index) {
+        final user = pending[index];
         return _VerificationCard(
           user: user,
           isDark: isDark,
@@ -812,6 +813,32 @@ class _TeamTab extends StatelessWidget {
               createdByUid: adminUid,
               phone: phone ?? '',
             ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirm(BuildContext context, AdminProvider admin, UserModel user) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Remove Team Member?'),
+        content: Text('Are you sure you want to remove ${user.name} from the team?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              final ok = await admin.deleteUser(user.uid);
+              if (ok && context.mounted) {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Team member removed')),
+                );
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Remove'),
+          ),
+        ],
       ),
     );
   }

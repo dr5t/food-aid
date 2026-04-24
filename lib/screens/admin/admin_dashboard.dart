@@ -338,6 +338,55 @@ class _OverviewTab extends StatelessWidget {
             color: Colors.indigo,
             isDark: isDark,
           ),
+
+          const SizedBox(height: 32),
+          Text(
+            'Danger Zone',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.redAccent,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          AppCard(
+            child: ListTile(
+              onTap: () => _showFactoryResetConfirm(context, admin, authProvider.user?.uid ?? ''),
+              leading: const Icon(Icons.restart_alt_rounded, color: Colors.redAccent),
+              title: const Text('System Factory Reset', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w600)),
+              subtitle: const Text('Delete all donations, users, and requests'),
+              trailing: const Icon(Icons.chevron_right_rounded, color: Colors.redAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFactoryResetConfirm(BuildContext context, AdminProvider admin, String adminUid) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('🚨 PERMANENT DATA WIPE?'),
+        content: const Text(
+          'This will DELETE ALL USERS (except you), all donations, and all requests. '
+          'This is irreversible and for system testing only.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final ok = await admin.factoryReset(adminUid);
+              if (ok && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('System has been reset to factory defaults')),
+                );
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('WIPE EVERYTHING'),
+          ),
         ],
       ),
     );

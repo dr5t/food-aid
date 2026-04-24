@@ -342,7 +342,6 @@ class _OverviewTab extends StatelessWidget {
       ),
     );
   }
-}
 
   void _showUsersList(BuildContext context, List<UserModel> users) {
     showDialog(
@@ -361,8 +360,8 @@ class _OverviewTab extends StatelessWidget {
                   final u = users[i];
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Colors.emerald.withValues(alpha: 0.1),
-                      child: Text(u.name[0], style: const TextStyle(color: Colors.emerald)),
+                      backgroundColor: const Color(0xFF10B981).withValues(alpha: 0.1),
+                      child: Text(u.name[0], style: const TextStyle(color: Color(0xFF10B981))),
                     ),
                     title: Text(u.name, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
                     subtitle: Text(u.role.name.toUpperCase(), style: const TextStyle(fontSize: 10)),
@@ -383,8 +382,6 @@ class _OverviewTab extends StatelessWidget {
   }
 
   void _showDonationsList(BuildContext context, {bool completedOnly = false}) {
-    // Note: AdminProvider needs to listen to all donations if we want full list here
-    // For now, we'll show a message or use a specialized query if available
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -399,6 +396,11 @@ class _OverviewTab extends StatelessWidget {
 }
 
 class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+  final bool isDark;
   final VoidCallback? onTap;
 
   const _StatCard({

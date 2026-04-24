@@ -46,7 +46,7 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: const AppAppBar(
+      appBar: AppAppBar(
         title: 'Donate Food',
         backgroundColor: Colors.transparent,
       ),

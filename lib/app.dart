@@ -5,6 +5,7 @@ import 'config/theme/app_theme.dart';
 import 'config/routes/app_router.dart';
 import 'providers/auth_provider.dart';
 import 'providers/theme_provider.dart';
+import 'main.dart';
 
 class FoodAidApp extends StatefulWidget {
   const FoodAidApp({super.key});

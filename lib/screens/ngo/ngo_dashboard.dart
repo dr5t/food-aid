@@ -15,6 +15,7 @@ import '../../widgets/common/skeleton_widgets.dart';
 import '../../widgets/common/app_app_bar.dart';
 import '../../widgets/common/app_card.dart';
 import '../../config/theme/app_text_styles.dart';
+import '../../widgets/common/connection_status_indicator.dart';
 
 class NgoDashboard extends StatefulWidget {
   const NgoDashboard({super.key});

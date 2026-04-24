@@ -105,7 +105,7 @@ class _OverviewTab extends StatelessWidget {
     final provider = context.watch<DonationProvider>();
     final isFetching = provider.isFetching;
     final donations = provider.donations;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),

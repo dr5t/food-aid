@@ -295,7 +295,7 @@ class AuthService {
       debugPrint('AuthService: Seeding complete.');
     } catch (e) {
       debugPrint('AuthService: Seeding failed: $e');
-      try { await secondaryApp?.delete(); } catch (_) {}
+      try { await secondaryApp.delete(); } catch (_) {}
     }
   }
 

@@ -84,7 +84,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
         onTap: (i) => setState(() => _currentIndex = i),
         items: const [
           AppBottomNavItem(icon: Icons.grid_view_rounded, label: 'Overview'),
-          AppBottomNavItem(icon: Icons.history_rounded, label: 'History'),
+          AppBottomNavItem(icon: Icons.history_rounded, label: 'Completed'),
           AppBottomNavItem(icon: Icons.warning_amber_rounded, label: 'Alerts'),
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
 import '../../models/emergency_request_model.dart';
+import '../../models/donation_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/donation_provider.dart';
 import '../../providers/emergency_provider.dart';
@@ -755,7 +756,7 @@ class _CompletedTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<DonationProvider>();
-    final completed = provider.ngoDonations.where((d) => d.status == DonationStatus.delivered).toList();
+    final completed = provider.donations.where((d) => d.status == DonationStatus.delivered).toList();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (completed.isEmpty) {

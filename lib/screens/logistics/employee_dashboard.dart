@@ -59,7 +59,7 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
           AppBottomNavItem(
             icon: Icons.history_outlined,
             activeIcon: Icons.history,
-            label: 'History',
+            label: 'Completed',
           ),
         ],
       ),

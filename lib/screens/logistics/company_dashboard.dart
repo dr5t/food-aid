@@ -926,3 +926,34 @@ class _MealTypeOption extends StatelessWidget {
     );
   }
 }
+
+class _CompanyCompletedTab extends StatelessWidget {
+  const _CompanyCompletedTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<LogisticsProvider>();
+    final completed = provider.companyDonations.where((d) => d.status == DonationStatus.delivered).toList();
+
+    if (completed.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.history_rounded, size: 64, color: AppColors.textHint.withValues(alpha: 0.1)),
+            const SizedBox(height: 16),
+            Text('No completed deliveries', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint)),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, 100),
+      itemCount: completed.length,
+      itemBuilder: (context, index) {
+        return _DeliveryTile(donation: completed[index]);
+      },
+    );
+  }
+}

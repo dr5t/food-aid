@@ -7,6 +7,7 @@ import '../../providers/auth_provider.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_input.dart';
 import '../../widgets/animations/fade_slide_transition.dart';
+import '../../widgets/common/app_app_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -52,8 +53,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Profile'),
+      appBar: AppAppBar(
+        title: 'Profile',
         actions: [
           if (!_editing)
             TextButton(onPressed: () => setState(() => _editing = true), child: const Text('Edit')),

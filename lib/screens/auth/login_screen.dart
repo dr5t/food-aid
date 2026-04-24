@@ -129,7 +129,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               onTap: () => setState(() {
                 _selectedRole = UserRole.donor;
                 _selectedDonorType = null;
-                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
               }),
             ),
             _RoleCard(
@@ -139,7 +138,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               color: Colors.teal,
               onTap: () => setState(() {
                 _selectedRole = UserRole.ngo;
-                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
               }),
             ),
             _RoleCard(
@@ -149,7 +147,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               color: Colors.deepOrange,
               onTap: () => setState(() {
                 _selectedRole = UserRole.logisticsEmployee;
-                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
               }),
             ),
             _RoleCard(
@@ -157,12 +154,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               icon: Icons.admin_panel_settings_rounded,
               label: 'Admin',
               color: Colors.deepPurple,
-              onTap: () {
-                setState(() {
-                  _selectedRole = UserRole.admin;
-                  _tabController = TabController(length: 1, vsync: this)..addListener(() => setState(() {}));
-                });
-              },
+              onTap: () => setState(() {
+                _selectedRole = UserRole.admin;
+              }),
             ),
           ],
         ),
@@ -171,7 +165,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   }
 
   Widget _buildAuthForm() {
-    final isRegister = _tabController.index == 1;
+    final hasTabs = _selectedRole != UserRole.admin && _selectedRole != UserRole.superAdmin;
+    final isRegister = hasTabs && _tabController.index == 1;
     final color = _roleColor(_selectedRole!);
 
     return Column(
@@ -185,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               onPressed: () => setState(() {
                 _selectedRole = null;
                 _selectedDonorType = null;
-                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
+                _tabController.index = 0; // Reset to Sign In tab
               }),
             ),
             const SizedBox(width: 8),
@@ -197,16 +192,21 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         Card(
           child: Column(
             children: [
-              TabBar(
-                controller: _tabController,
-                tabs: [
-                  const Tab(text: 'Sign In'),
-                  if (_selectedRole != UserRole.admin && _selectedRole != UserRole.superAdmin)
-                    const Tab(text: 'Register'),
-                ],
-                indicatorColor: color,
-                labelColor: color,
-              ),
+              if (hasTabs)
+                TabBar(
+                  controller: _tabController,
+                  tabs: const [
+                    Tab(text: 'Sign In'),
+                    Tab(text: 'Register'),
+                  ],
+                  indicatorColor: color,
+                  labelColor: color,
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text('Sign In to Account', style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+                ),
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: AnimatedContainer(

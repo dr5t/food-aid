@@ -17,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   UserRole? _selectedRole;
-  late final TabController _tabController;
+  late TabController _tabController;
 
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
@@ -129,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               onTap: () => setState(() {
                 _selectedRole = UserRole.donor;
                 _selectedDonorType = null;
+                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
               }),
             ),
             _RoleCard(
@@ -136,21 +137,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               icon: Icons.diversity_3_rounded,
               label: 'NGO',
               color: Colors.teal,
-              onTap: () => setState(() => _selectedRole = UserRole.ngo),
+              onTap: () => setState(() {
+                _selectedRole = UserRole.ngo;
+                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
+              }),
             ),
             _RoleCard(
               role: UserRole.logisticsEmployee,
               icon: Icons.delivery_dining_rounded,
               label: 'Delivery',
               color: Colors.deepOrange,
-              onTap: () => setState(() => _selectedRole = UserRole.logisticsEmployee),
+              onTap: () => setState(() {
+                _selectedRole = UserRole.logisticsEmployee;
+                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
+              }),
             ),
             _RoleCard(
               role: UserRole.admin,
               icon: Icons.admin_panel_settings_rounded,
               label: 'Admin',
               color: Colors.deepPurple,
-              onTap: () => setState(() => _selectedRole = UserRole.admin),
+              onTap: () {
+                setState(() {
+                  _selectedRole = UserRole.admin;
+                  _tabController = TabController(length: 1, vsync: this)..addListener(() => setState(() {}));
+                });
+              },
             ),
           ],
         ),
@@ -173,6 +185,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               onPressed: () => setState(() {
                 _selectedRole = null;
                 _selectedDonorType = null;
+                _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
               }),
             ),
             const SizedBox(width: 8),
@@ -186,7 +199,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             children: [
               TabBar(
                 controller: _tabController,
-                tabs: const [Tab(text: 'Sign In'), Tab(text: 'Register')],
+                tabs: [
+                  const Tab(text: 'Sign In'),
+                  if (_selectedRole != UserRole.admin && _selectedRole != UserRole.superAdmin)
+                    const Tab(text: 'Register'),
+                ],
                 indicatorColor: color,
                 labelColor: color,
               ),

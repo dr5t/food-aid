@@ -96,6 +96,11 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> reloadUser() async {
+    await _authService.currentUser?.reload();
+    notifyListeners();
+  }
+
   Future<bool> signUp({
     required String name,
     required String email,

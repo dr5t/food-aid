@@ -56,7 +56,24 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       email: _emailCtrl.text.trim(),
       password: _passCtrl.text,
     );
-    if (!ok && mounted) {
+    if (ok && mounted) {
+      final user = auth.user;
+      if (user != null) {
+        // Validate role matches selected category
+        bool roleMatches = false;
+        if (_selectedRole == UserRole.admin) {
+          roleMatches = user.role == UserRole.admin || user.role == UserRole.superAdmin;
+        } else {
+          roleMatches = user.role == _selectedRole;
+        }
+
+        if (!roleMatches) {
+          await auth.signOut();
+          _error('This account is not registered as a ${_selectedRole!.name.toUpperCase()}.');
+          return;
+        }
+      }
+    } else if (!ok && mounted) {
       _error(auth.error ?? 'Login Failed');
     }
   }

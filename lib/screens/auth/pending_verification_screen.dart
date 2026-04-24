@@ -168,6 +168,22 @@ class PendingVerificationScreen extends StatelessWidget {
             onPressed: () => auth.reloadUser(),
             backgroundColor: emeraldGreen,
           ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () async {
+                await auth.resendVerificationEmail();
+              },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide(color: emeraldGreen.withValues(alpha: 0.5)),
+                foregroundColor: emeraldGreen,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: Text('Resend Verification Email', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+            ),
+          ),
           AppSpacing.verticalMd,
         ],
         SizedBox(

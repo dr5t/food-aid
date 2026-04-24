@@ -88,6 +88,10 @@ class AuthService {
     await _auth.signOut();
   }
 
+  Future<void> resendEmailVerification() async {
+    await _auth.currentUser?.sendEmailVerification();
+  }
+
   Future<UserModel?> getCurrentUserModel() async {
     final user = _auth.currentUser;
     if (user == null) return null;

@@ -101,6 +101,10 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> resendVerificationEmail() async {
+    await _authService.resendEmailVerification();
+  }
+
   Future<bool> signUp({
     required String name,
     required String email,

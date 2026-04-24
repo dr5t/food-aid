@@ -268,6 +268,42 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
       },
     );
   }
+
+  void _showCreateEmployeeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final user = context.read<AuthProvider>().user;
+        return CreateEmployeeDialog(
+          title: 'Add New Employee',
+          targetRole: UserRole.logisticsEmployee,
+          onCreateEmployee: ({
+            required String name,
+            required String email,
+            required String password,
+            String? phone,
+          }) async {
+            if (user == null) return;
+            await context.read<AuthProvider>().createLogisticsEmployee(
+                  name: name,
+                  email: email,
+                  password: password,
+                  companyId: user.uid,
+                  companyName: user.organizationName ?? user.name,
+                  phone: phone,
+                );
+          },
+        );
+      },
+    );
+  }
+
+  void _showAssignDialog(BuildContext context, DonationModel donation) {
+    showDialog(
+      context: context,
+      builder: (context) => _AssignDialog(donation: donation),
+    );
+  }
 }
 
 class _OverviewTab extends StatelessWidget {
@@ -806,40 +842,68 @@ void _showAssignDialog(BuildContext context, DonationModel donation) {
                   ),
                 ],
               ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
+                                },
+                                leading: CircleAvatar(
+                                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                                  child: const Icon(Icons.person, size: 18, color: AppColors.primary),
+                                ),
+                                title: Text(employee.name),
+                                subtitle: const Text('Available'),
+                                trailing: const Icon(Icons.chevron_right),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                                  side: BorderSide(color: AppColors.divider.withValues(alpha: 0.1)),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
-void _showCreateEmployeeDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      final user = context.read<AuthProvider>().user;
-      return CreateEmployeeDialog(
-        title: 'Add New Employee',
-        targetRole: UserRole.logisticsEmployee,
-        onCreateEmployee: ({
-          required String name,
-          required String email,
-          required String password,
-          String? phone,
-        }) async {
-          return await context.read<AuthProvider>().createLogisticsEmployee(
-                name: name,
-                email: email,
-                password: password,
-                phone: phone,
-                companyId: user?.uid ?? '',
-                companyName: user?.organizationName ?? 'Logistics Company',
-              );
-        },
-      );
-    },
-  );
+  void _showCreateEmployeeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final user = context.read<AuthProvider>().user;
+        return CreateEmployeeDialog(
+          title: 'Add New Employee',
+          targetRole: UserRole.logisticsEmployee,
+          onCreateEmployee: ({
+            required String name,
+            required String email,
+            required String password,
+            String? phone,
+          }) async {
+            return await context.read<AuthProvider>().createLogisticsEmployee(
+                  name: name,
+                  email: email,
+                  password: password,
+                  phone: phone,
+                  companyId: user?.uid ?? '',
+                  companyName: user?.organizationName ?? 'Logistics Company',
+                );
+          },
+        );
+      },
+    );
+  }
 }
 
 class _MealTypeOption extends StatelessWidget {

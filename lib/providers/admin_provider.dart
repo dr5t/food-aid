@@ -219,21 +219,13 @@ class AdminProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      final data = {
-        'name': name,
-        'email': email,
-        'role': UserRole.admin.name,
-        'verificationStatus': VerificationStatus.approved.name,
-        'isVerified': true,
-        'createdAt': DateTime.now().toIso8601String(),
-        'createdBy': createdByUid,
-        'phone': phone,
-      };
-
-      final user = await _authService.adminCreateUser(
+      final user = await _authService.createUserWithCredentials(
+        name: name,
         email: email,
         password: password,
-        data: data,
+        role: UserRole.admin,
+        createdByUid: createdByUid,
+        phone: phone,
       );
 
       _isLoading = false;

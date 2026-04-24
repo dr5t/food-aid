@@ -110,34 +110,47 @@ class _OverviewTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hello, ${user?.name.split(' ').first ?? 'Donor'}',
-                  style: AppTextStyles.headingMedium,
-                ),
-                Text(
-                  'Your donation overview',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: isDark ? Colors.white70 : Colors.black54,
-                  ),
-                ),
-              ],
+        // Welcome banner (simplified for Donor)
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.7)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            if (!isFetching)
-              const Icon(
-                Icons.verified_user_rounded,
-                color: AppColors.success,
-                size: 28,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              const CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.white24,
+                child: Icon(Icons.favorite_rounded, color: Colors.white, size: 28),
               ),
-          ],
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Hello, ${user?.name.split(' ').first ?? 'Donor'}',
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Your contributions are saving lives.',
+                      style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.85), fontSize: 13)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        const SizedBox(height: AppSpacing.xl),
+        const SizedBox(height: 24),
 
+        // Quick Stats
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,

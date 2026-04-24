@@ -93,22 +93,18 @@ class _NgoDashboardState extends State<NgoDashboard> {
 
   Widget _buildEmergencyFAB() {
     return FloatingActionButton.extended(
-          onPressed: () => _showEmergencyDialog(),
-          backgroundColor: AppColors.error,
-          foregroundColor: Colors.white,
-          icon: const Icon(Icons.emergency_share, size: 24),
-          label: Text(
-            '🚨 SOS EMERGENCY',
-            style: GoogleFonts.orbitron(
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.5,
-              fontSize: 14,
-            ),
-          ),
-        )
-        .animate(onPlay: (controller) => controller.repeat())
-        .shimmer(duration: 2000.ms, color: Colors.white38)
-        .shake(duration: 500.ms, hz: 4);
+      onPressed: () => _showEmergencyDialog(),
+      backgroundColor: Colors.red,
+      foregroundColor: Colors.white,
+      icon: const Icon(Icons.sos_rounded, size: 24),
+      label: const Text(
+        'EMERGENCY SOS',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+      ),
+    );
   }
 
   void _showEmergencyDialog() {
@@ -295,16 +291,45 @@ class _OverviewTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Text(
-          'Welcome, ${user?.organizationName ?? user?.name ?? 'NGO'}',
-          style: AppTextStyles.heading,
-        ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.2),
-        const SizedBox(height: 4),
-        Text(
-          'Everything looks good today.',
-          style: AppTextStyles.bodySmall,
-        ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideX(begin: -0.1),
-        const SizedBox(height: AppSpacing.xl),
+        // Welcome banner
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal, Colors.teal.shade300],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              const CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.white24,
+                child: Icon(Icons.diversity_3_rounded, color: Colors.white, size: 28),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Welcome, ${user?.organizationName ?? user?.name ?? 'NGO'}',
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text(
+                      'NGO Portal — Smart Distribution',
+                      style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.85), fontSize: 13)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
 
         if (isFetching)
           Column(

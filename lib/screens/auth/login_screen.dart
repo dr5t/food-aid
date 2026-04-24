@@ -1,144 +1,95 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../config/theme/app_colors.dart';
-import '../../config/theme/app_spacing.dart';
-import '../../config/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
+import '../../models/user_model.dart';
+import '../../services/location_service.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_input.dart';
-import '../../widgets/common/app_background.dart';
-import '../../widgets/common/app_card.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+  UserRole? _selectedRole;
+  late final TabController _tabController;
+
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _orgNameCtrl = TextEditingController();
+  final _addressCtrl = TextEditingController();
+
   bool _obscure = true;
-  bool _isAuthenticating = false;
+  bool _isLocating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this)..addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
+    _tabController.dispose();
     _emailCtrl.dispose();
     _passCtrl.dispose();
+    _nameCtrl.dispose();
+    _phoneCtrl.dispose();
+    _orgNameCtrl.dispose();
+    _addressCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
-    
-    setState(() => _isAuthenticating = true);
-    
+  // ── Auth Logic ────────────────────────────────────────────────────────────
+
+  Future<void> _signIn() async {
     final auth = context.read<AuthProvider>();
     final ok = await auth.signIn(
       email: _emailCtrl.text.trim(),
       password: _passCtrl.text,
     );
-    
-    if (mounted) setState(() => _isAuthenticating = false);
-
-    if (ok && mounted) {
-      // Navigation handled by AppRouter
-    } else if (!ok && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.error_outline, color: Colors.white),
-              const SizedBox(width: 12),
-              Expanded(child: Text(auth.error ?? 'Access Denied: Invalid Credentials')),
-            ],
-          ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-      );
-    }
+    if (!ok && mounted) _error(auth.error ?? 'Login Failed');
   }
+
+  Future<void> _signUp() async {
+    final auth = context.read<AuthProvider>();
+    final ok = await auth.signUp(
+      name: _nameCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
+      password: _passCtrl.text,
+      role: _selectedRole!,
+      phone: _phoneCtrl.text.trim(),
+      address: _addressCtrl.text.trim(),
+      organizationName: _orgNameCtrl.text.trim(),
+    );
+    if (!ok && mounted) _error(auth.error ?? 'Registration Failed');
+  }
+
+  void _error(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), backgroundColor: AppColors.error));
+  }
+
+  // ── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF050505) : Colors.white,
-      body: AppBackground(
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: AppSpacing.screenPadding,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 450),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildLogoSection(),
-                    
-                    AppSpacing.verticalLg,
-                    
-                    AppCard(
-                      borderRadius: 16,
-                      padding: const EdgeInsets.all(32),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildHeader(isDark),
-                            AppSpacing.verticalXl,
-                            
-                            AppInput(
-                              controller: _emailCtrl,
-                              label: 'Email Address',
-                              hint: 'yourname@example.com',
-                              prefixIcon: Icons.alternate_email_rounded,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (v) {
-                                if (v == null || v.isEmpty) return 'Email address required';
-                                if (!v.contains('@')) return 'Invalid email format';
-                                return null;
-                              },
-                            ),
-                            
-                            AppSpacing.verticalMd,
-                            
-                            AppInput(
-                              controller: _passCtrl,
-                              label: 'Password',
-                              hint: '••••••••',
-                              prefixIcon: Icons.security_rounded,
-                              obscureText: _obscure,
-                              suffix: IconButton(
-                                icon: Icon(
-                                  _obscure ? Icons.visibility_off_rounded : Icons.visibility_rounded,
-                                  size: 18,
-                                ),
-                                onPressed: () => setState(() => _obscure = !_obscure),
-                              ),
-                              validator: (v) => (v == null || v.isEmpty) ? 'Password required' : null,
-                            ),
-                            
-                            AppSpacing.verticalLg,
-                            
-                            _buildSubmitButton(auth, isDark),
-                            
-                            AppSpacing.verticalLg,
-                            
-                            _buildFooter(context),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _selectedRole == null ? _buildRoleSelection() : _buildAuthForm(),
               ),
             ),
           ),
@@ -147,78 +98,207 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLogoSection() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      width: 80,
-      height: 80,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isDark ? Colors.black : Colors.white,
-        border: Border.all(color: AppColors.divider.withValues(alpha: 0.1)),
-      ),
-      child: Image.asset(
-        'assets/images/app_logo.png',
-        fit: BoxFit.contain,
-      ),
-    );
-  }
-
-  Widget _buildHeader(bool isDark) {
+  Widget _buildRoleSelection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      key: const ValueKey('role_selection'),
       children: [
-        Text(
-          'Welcome Back',
-          style: AppTextStyles.headingLarge,
-        ),
-        AppSpacing.verticalXs,
-        Text(
-          'Sign in to your account',
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+        Image.asset('assets/images/app_logo.png', width: 100, height: 100),
+        const SizedBox(height: 16),
+        const Text('Food-Aid', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+        const Text('Select your role to continue', style: TextStyle(color: Colors.grey)),
+        const SizedBox(height: 40),
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          childAspectRatio: 1.3,
+          children: [
+            _RoleCard(
+              role: UserRole.donor,
+              icon: Icons.volunteer_activism_rounded,
+              label: 'Donor',
+              color: Colors.orange,
+              onTap: () => setState(() => _selectedRole = UserRole.donor),
+            ),
+            _RoleCard(
+              role: UserRole.ngo,
+              icon: Icons.diversity_3_rounded,
+              label: 'NGO',
+              color: Colors.teal,
+              onTap: () => setState(() => _selectedRole = UserRole.ngo),
+            ),
+            _RoleCard(
+              role: UserRole.logisticsEmployee,
+              icon: Icons.delivery_dining_rounded,
+              label: 'Delivery',
+              color: Colors.deepOrange,
+              onTap: () => setState(() => _selectedRole = UserRole.logisticsEmployee),
+            ),
+            _RoleCard(
+              role: UserRole.admin,
+              icon: Icons.admin_panel_settings_rounded,
+              label: 'Admin',
+              color: Colors.deepPurple,
+              onTap: () => setState(() => _selectedRole = UserRole.admin),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildSubmitButton(AuthProvider auth, bool isDark) {
-    return SizedBox(
-      width: double.infinity,
-      child: AppButton(
-        label: _isAuthenticating ? 'Signing In...' : 'Sign In',
-        onPressed: _login,
-        isLoading: auth.isLoading,
-      ),
-    );
-  }
+  Widget _buildAuthForm() {
+    final isRegister = _tabController.index == 1;
+    final color = _roleColor(_selectedRole!);
 
-  Widget _buildFooter(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      key: ValueKey(_selectedRole),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back_rounded),
+              onPressed: () => setState(() => _selectedRole = null),
+            ),
+            const SizedBox(width: 8),
+            Text(_selectedRole!.name.toUpperCase(), 
+                style: TextStyle(color: color, fontWeight: FontWeight.bold, letterSpacing: 1)),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Card(
+          child: Column(
             children: [
-              Text(
-                "Don't have an account? ",
-                style: AppTextStyles.bodySmall,
+              TabBar(
+                controller: _tabController,
+                tabs: const [Tab(text: 'Sign In'), Tab(text: 'Register')],
+                indicatorColor: color,
+                labelColor: color,
               ),
-              TextButton(
-                onPressed: () => context.go('/signup'),
-                child: Text(
-                  'Sign Up',
-                  style: AppTextStyles.buttonSmall.copyWith(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  child: isRegister ? _buildRegisterFields() : _buildLoginFields(),
                 ),
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoginFields() {
+    return Column(
+      children: [
+        AppInput(label: 'Email', controller: _emailCtrl, prefixIcon: Icons.email_outlined),
+        const SizedBox(height: 16),
+        AppInput(label: 'Password', controller: _passCtrl, prefixIcon: Icons.lock_outline, obscureText: _obscure),
+        const SizedBox(height: 24),
+        AppButton(label: 'Sign In', onPressed: _signIn, backgroundColor: _roleColor(_selectedRole!)),
+      ],
+    );
+  }
+
+  Widget _buildRegisterFields() {
+    return Column(
+      children: [
+        AppInput(label: 'Full Name', controller: _nameCtrl, prefixIcon: Icons.person_outline),
+        const SizedBox(height: 16),
+        AppInput(label: 'Email', controller: _emailCtrl, prefixIcon: Icons.email_outlined),
+        const SizedBox(height: 16),
+        AppInput(label: 'Password', controller: _passCtrl, prefixIcon: Icons.lock_outline, obscureText: _obscure),
+        const SizedBox(height: 16),
+        if (_selectedRole == UserRole.donor) ...[
+          const Text('Donor Category', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: DonorType.values.map((t) => ChoiceChip(
+              label: Text(t.name.toUpperCase()),
+              selected: false, // For simplicity in this UI migration
+              onSelected: (_) {},
+            )).toList(),
+          ),
+          const SizedBox(height: 16),
         ],
+        if (_selectedRole == UserRole.ngo) ...[
+          AppInput(label: 'Organization Name', controller: _orgNameCtrl, prefixIcon: Icons.business),
+          const SizedBox(height: 16),
+        ],
+        Row(
+          children: [
+            Expanded(child: AppButton(
+              label: _isLocating ? '...' : 'GPS', 
+              onPressed: _isLocating ? null : _detectLocation,
+              backgroundColor: Colors.grey[200],
+              foregroundColor: Colors.black,
+            )),
+            const SizedBox(width: 8),
+            Expanded(child: AppInput(label: 'Address', controller: _addressCtrl)),
+          ],
+        ),
+        const SizedBox(height: 24),
+        AppButton(label: 'Register', onPressed: _signUp, backgroundColor: _roleColor(_selectedRole!)),
+      ],
+    );
+  }
+
+  Future<void> _detectLocation() async {
+    setState(() => _isLocating = true);
+    final loc = LocationService();
+    final pos = await loc.getCurrentPosition();
+    if (pos != null) {
+      final addr = await loc.reverseGeocode(GeoPoint(pos.latitude, pos.longitude));
+      if (mounted) setState(() => _addressCtrl.text = addr ?? '${pos.latitude}, ${pos.longitude}');
+    }
+    setState(() => _isLocating = false);
+  }
+
+  Color _roleColor(UserRole role) {
+    switch (role) {
+      case UserRole.admin: return Colors.deepPurple;
+      case UserRole.ngo: return Colors.teal;
+      case UserRole.donor: return Colors.orange;
+      case UserRole.logisticsEmployee: return Colors.deepOrange;
+      default: return AppColors.primary;
+    }
+  }
+}
+
+class _RoleCard extends StatelessWidget {
+  final UserRole role;
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _RoleCard({required this.role, required this.icon, required this.label, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: color),
+            const SizedBox(height: 8),
+            Text(label, style: TextStyle(fontWeight: FontWeight.bold, color: color)),
+          ],
+        ),
       ),
     );
   }
 }
-

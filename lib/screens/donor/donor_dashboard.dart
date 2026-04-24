@@ -46,7 +46,7 @@ class _DonorDashboardState extends State<DonorDashboard> {
       appBar: AppAppBar(
         title: 'Food Aid',
         actions: [
-          const ConnectionStatusIndicator(),
+          ConnectionStatusIndicator(),
           IconButton(
             icon: const Icon(Icons.logout, size: 20),
             onPressed: () => context.read<AuthProvider>().signOut(),

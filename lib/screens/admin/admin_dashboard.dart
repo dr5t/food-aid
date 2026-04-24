@@ -609,11 +609,11 @@ class _VerificationsTab extends StatelessWidget {
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
           TextButton(
             onPressed: () async {
+              Navigator.pop(ctx); // Close immediately
               final ok = await admin.deleteUser(user.uid);
               if (ok && context.mounted) {
-                Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Request deleted')),
+                  const SnackBar(content: Text('Request deleted successfully')),
                 );
               }
             },

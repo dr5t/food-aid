@@ -1,47 +1,46 @@
 import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import '../models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  User? get currentUser => _auth.currentUser;
-
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
+  Future<UserModel?> get currentUserModel async {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    if (!doc.exists) return null;
+    return UserModel.fromFirestore(doc);
+  }
+
+  Stream<UserModel?> userStream(String uid) {
+    return _firestore.collection('users').doc(uid).snapshots().map((doc) {
+      if (!doc.exists) return null;
+      return UserModel.fromFirestore(doc);
+    });
+  }
+
   Future<UserModel> signUp({
-    required String name,
     required String email,
     required String password,
+    required String name,
     required UserRole role,
-    String phone = '',
-    DonorType? donorType,
     String? organizationName,
-    String? organizationDescription,
     String? companyId,
-    String? address,
-    GeoPoint? location,
+    String phone = '',
   }) async {
     final credential = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
 
-    // Send verification email
-    await credential.user?.sendEmailVerification();
-
     await credential.user?.updateDisplayName(name);
-
-    final verificationStatus = (role == UserRole.ngo ||
-            role == UserRole.logisticsCompany)
-        ? VerificationStatus.pending
-        : VerificationStatus.approved;
-
-    final isVerified = verificationStatus == VerificationStatus.approved;
 
     final user = UserModel(
       uid: credential.user!.uid,
@@ -50,18 +49,13 @@ class AuthService {
       role: role,
       phone: phone,
       createdAt: DateTime.now(),
-      donorType: donorType,
+      isVerified: false,
+      verificationStatus: VerificationStatus.pending,
       organizationName: organizationName,
-      organizationDescription: organizationDescription,
       companyId: companyId,
-      address: address,
-      location: location,
-      isVerified: isVerified,
-      verificationStatus: verificationStatus,
     );
 
     await _firestore.collection('users').doc(user.uid).set(user.toMap());
-
     return user;
   }
 
@@ -99,47 +93,9 @@ class AuthService {
     await _auth.currentUser?.sendEmailVerification();
   }
 
-  Future<UserModel?> getCurrentUserModel() async {
-    final user = _auth.currentUser;
-    if (user == null) return null;
-
-    final doc = await _firestore.collection('users').doc(user.uid).get();
-    if (!doc.exists) return null;
-
-    return UserModel.fromFirestore(doc);
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
   }
-
-  Stream<UserModel?> userStream(String uid) {
-    return _firestore.collection('users').doc(uid).snapshots().map((doc) {
-      if (!doc.exists) return null;
-      return UserModel.fromFirestore(doc);
-    });
-  }
-
-  Future<void> updateProfile({
-    required String uid,
-    String? name,
-    String? phone,
-    String? avatarUrl,
-    String? address,
-    GeoPoint? location,
-  }) async {
-    final updates = <String, dynamic>{};
-    if (name != null) updates['name'] = name;
-    if (phone != null) updates['phone'] = phone;
-    if (avatarUrl != null) updates['avatarUrl'] = avatarUrl;
-    if (address != null) updates['address'] = address;
-    if (location != null) updates['location'] = location;
-
-    if (updates.isNotEmpty) {
-      await _firestore.collection('users').doc(uid).update(updates);
-    }
-
-    if (name != null) {
-      await _auth.currentUser?.updateDisplayName(name);
-    }
-  }
-
 
   Future<UserModel> createUserWithCredentials({
     required String name,
@@ -248,41 +204,27 @@ class AuthService {
               password: password,
             );
             uid = credential.user!.uid;
-            debugPrint('AuthService: Signed in to super admin via secondary app.');
-          } catch (signInErr) {
-            debugPrint('AuthService: Seeding sign-in failed: $signInErr');
+          } catch (signInError) {
+            debugPrint('AuthService: Super admin sign-in failed: $signInError');
+            rethrow;
           }
         } else {
           rethrow;
         }
       }
 
-      // 2. Cleanup & Sync Firestore
+      // 2. Synchronize Firestore profile
       if (uid != null) {
-        // Find and remove any other docs with this email (shadow accounts)
-        final duplicates = await secondaryFirestore
-            .collection('users')
-            .where('email', isEqualTo: email)
-            .get();
-        
-        for (final doc in duplicates.docs) {
-          if (doc.id != uid) {
-            await secondaryFirestore.collection('users').doc(doc.id).delete();
-            debugPrint('AuthService: Deleted shadow admin doc: ${doc.id}');
-          }
-        }
-
         final user = UserModel(
           uid: uid,
           name: adminName,
           email: email,
           role: UserRole.superAdmin,
-          createdAt: DateTime.now(),
           isVerified: true,
           verificationStatus: VerificationStatus.approved,
+          createdAt: DateTime.now(),
         );
 
-        // We use the secondary Firestore instance to match the secondary Auth session
         await secondaryFirestore.collection('users').doc(uid).set(user.toMap(), SetOptions(merge: true));
         debugPrint('AuthService: Super admin Firestore profile synchronized for UID: $uid');
       }
@@ -292,21 +234,6 @@ class AuthService {
     } catch (e) {
       debugPrint('AuthService: Seeding failed: $e');
     }
-  }
-
-  Future<void> adminApproveUser(String uid) async {
-    await _adminBypassUpdate(uid, {
-      'verificationStatus': VerificationStatus.approved.name,
-      'isVerified': true,
-    });
-  }
-
-  Future<void> adminRejectUser(String uid, String reason) async {
-    await _adminBypassUpdate(uid, {
-      'verificationStatus': VerificationStatus.rejected.name,
-      'isVerified': false,
-      'rejectionReason': reason,
-    });
   }
 
   Future<void> adminDeleteUser(String uid) async {
@@ -336,6 +263,23 @@ class AuthService {
     }
   }
 
+  Future<void> adminApproveUser(String uid) async {
+    await _adminBypassUpdate(uid, {
+      'verificationStatus': VerificationStatus.approved.name,
+      'isVerified': true,
+      'updatedAt': Timestamp.now(),
+    });
+  }
+
+  Future<void> adminRejectUser(String uid, String reason) async {
+    await _adminBypassUpdate(uid, {
+      'verificationStatus': VerificationStatus.rejected.name,
+      'isVerified': false,
+      'rejectionReason': reason,
+      'updatedAt': Timestamp.now(),
+    });
+  }
+
   Future<void> _adminBypassUpdate(String targetUid, Map<String, dynamic> data) async {
     const email = 'tiwarishaurya395@gmail.com';
     const password = '123456';
@@ -359,6 +303,46 @@ class AuthService {
       await secondaryAuth.signOut();
     } catch (e) {
       debugPrint('AuthService: AdminBypass failed: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> adminWipeData(String adminUid) async {
+    const email = 'tiwarishaurya395@gmail.com';
+    const password = '123456';
+    
+    FirebaseApp? secondaryApp;
+    try {
+      secondaryApp = Firebase.app('WipeApp');
+    } catch (_) {
+      secondaryApp = await Firebase.initializeApp(
+        name: 'WipeApp',
+        options: Firebase.app().options,
+      );
+    }
+    
+    final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
+    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
+    
+    try {
+      await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
+      
+      final batch = secondaryFirestore.batch();
+      
+      // Clear major collections
+      final collections = ['donations', 'emergencyRequests', 'notifications', 'users'];
+      for (final coll in collections) {
+        final docs = await secondaryFirestore.collection(coll).get(const GetOptions(source: Source.server));
+        for (final doc in docs.docs) {
+          if (coll == 'users' && doc.id == adminUid) continue; // Preserve admin
+          batch.delete(doc.reference);
+        }
+      }
+      
+      await batch.commit();
+      await secondaryAuth.signOut();
+    } catch (e) {
+      debugPrint('AuthService: Wipe failed: $e');
       rethrow;
     }
   }

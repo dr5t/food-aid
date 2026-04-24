@@ -7,6 +7,7 @@ import '../../config/theme/app_spacing.dart';
 import '../../providers/donation_provider.dart';
 import '../../widgets/dashboard/donation_list_tile.dart';
 import '../../widgets/common/empty_state.dart';
+import '../../widgets/common/app_app_bar.dart';
 
 class DonationHistoryScreen extends StatelessWidget {
   const DonationHistoryScreen({super.key});
@@ -16,7 +17,7 @@ class DonationHistoryScreen extends StatelessWidget {
     final dp = context.watch<DonationProvider>();
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Donation History')),
+      appBar: const AppAppBar(title: 'Donation History'),
       body: dp.donations.isEmpty
           ? const EmptyState(icon: Icons.history, title: 'No donations yet', subtitle: 'Your donation history will appear here')
           : ListView.separated(

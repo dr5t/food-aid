@@ -106,19 +106,28 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 440),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: _selectedRole == null ? _buildRoleSelection() : _buildAuthForm(),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 440),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: _selectedRole == null ? _buildRoleSelection() : _buildAuthForm(),
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+          const Positioned(
+            top: 10,
+            right: 10,
+            child: SafeArea(child: ThemeToggleButton()),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../config/theme/app_text_styles.dart';
 
+import './theme_toggle_button.dart';
+
 class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
@@ -25,7 +27,11 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title, style: AppTextStyles.titleMedium),
       leading: leading,
       centerTitle: centerTitle,
-      actions: [if (actions != null) ...actions!, const SizedBox(width: 8)],
+      actions: [
+        if (actions != null) ...actions!,
+        const ThemeToggleButton(),
+        const SizedBox(width: 8),
+      ],
       bottom: showBottomBorder
           ? PreferredSize(
               preferredSize: const Size.fromHeight(1),

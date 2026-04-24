@@ -43,19 +43,26 @@ class _AdminDashboardState extends State<AdminDashboard>
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Ann Seva Style
+    const emeraldGreen = Color(0xFF10B981);
+    final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
 
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppAppBar(
+        backgroundColor: bgColor,
         title: authProvider.user?.role == UserRole.superAdmin
-            ? 'Super Admin Dashboard'
-            : 'Admin Dashboard',
+            ? 'Super Admin'
+            : 'Admin Console',
         actions: [
           IconButton(
             onPressed: () => context.read<AdminProvider>().refreshStats(),
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const Icon(Icons.refresh_rounded, color: Color(0xFF64748B)),
             tooltip: 'Refresh',
           ),
           PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert_rounded, color: Color(0xFF64748B)),
             onSelected: (value) {
               if (value == 'logout') authProvider.signOut();
             },
@@ -64,9 +71,9 @@ class _AdminDashboardState extends State<AdminDashboard>
                 value: 'logout',
                 child: Row(
                   children: [
-                    const Icon(Icons.logout_rounded, size: 20),
+                    const Icon(Icons.logout_rounded, size: 20, color: Colors.redAccent),
                     const SizedBox(width: 8),
-                    Text('Sign Out', style: AppTextStyles.label),
+                    Text('Sign Out', style: GoogleFonts.inter(color: Colors.redAccent)),
                   ],
                 ),
               ),
@@ -77,16 +84,28 @@ class _AdminDashboardState extends State<AdminDashboard>
       body: Column(
         children: [
           Container(
-            color: isDark ? Colors.black : Colors.white,
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+            ),
             child: TabBar(
               controller: _tabController,
-              labelStyle: AppTextStyles.label.copyWith(
-                fontWeight: FontWeight.bold,
+              labelStyle: GoogleFonts.inter(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
               ),
-              unselectedLabelStyle: AppTextStyles.label,
-              indicatorColor: AppColors.primary,
-              labelColor: AppColors.primary,
-              indicatorSize: TabBarIndicatorSize.tab,
+              unselectedLabelStyle: GoogleFonts.inter(
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+              indicatorColor: emeraldGreen,
+              labelColor: emeraldGreen,
+              unselectedLabelColor: const Color(0xFF64748B),
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorPadding: const EdgeInsets.symmetric(vertical: 8),
+              dividerColor: Colors.transparent,
               tabs: [
                 const Tab(text: 'Overview'),
                 Tab(
@@ -96,13 +115,13 @@ class _AdminDashboardState extends State<AdminDashboard>
                       return Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('Verifications'),
+                          const Text('Requests'),
                           if (count > 0) ...[
                             const SizedBox(width: 6),
                             Container(
                               padding: const EdgeInsets.all(4),
                               decoration: const BoxDecoration(
-                                color: Colors.orange,
+                                color: Colors.redAccent,
                                 shape: BoxShape.circle,
                               ),
                               constraints: const BoxConstraints(
@@ -157,6 +176,7 @@ class _OverviewTab extends StatelessWidget {
     final admin = context.watch<AdminProvider>();
     final authProvider = context.watch<AuthProvider>();
     final stats = admin.platformStats;
+    const emeraldGreen = Color(0xFF10B981);
 
     if (admin.isLoading && stats.isEmpty) {
       return const Center(child: AppLoader(text: 'Updating statistics...'));
@@ -165,90 +185,59 @@ class _OverviewTab extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () => admin.refreshStats(),
       child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.fromLTRB(AppSpacing.md, 0, AppSpacing.md, AppSpacing.xl),
         children: [
-          Text(
-            authProvider.user?.role == UserRole.superAdmin
-                ? 'Administrator Console'
-                : 'System Overview',
-            style: AppTextStyles.heading,
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Platform Management & Monitoring',
-            style: AppTextStyles.bodySmall,
-          ),
-          const SizedBox(height: AppSpacing.md),
           if (authProvider.user?.role == UserRole.superAdmin)
             Container(
               width: double.infinity,
               margin: const EdgeInsets.only(bottom: AppSpacing.md),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.primary,
-                    AppColors.primary.withValues(alpha: 0.7),
-                  ],
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF10B981), Color(0xFF059669)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    color: emeraldGreen.withValues(alpha: 0.2),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.security_rounded,
-                    color: Colors.white,
-                    size: 28,
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Icon(Icons.shield_rounded, color: Colors.white, size: 28),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'SUPER ADMIN SESSION',
-                          style: TextStyle(
+                        Text(
+                          'Super Admin Session',
+                          style: GoogleFonts.inter(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                            fontSize: 12,
+                            fontSize: 16,
                           ),
                         ),
                         Text(
-                          'Root access active for ${authProvider.user?.name}',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: 14,
+                          'Full system access active',
+                          style: GoogleFonts.inter(
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontSize: 13,
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      'ROOT',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10,
-                      ),
                     ),
                   ),
                 ],
@@ -260,41 +249,41 @@ class _OverviewTab extends StatelessWidget {
             crossAxisCount: 2,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: AppSpacing.sm,
-            mainAxisSpacing: AppSpacing.sm,
-            childAspectRatio: 1.55,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1.4,
             children: [
               _StatCard(
                 icon: Icons.people_rounded,
                 label: 'Total Users',
                 value: '${stats['totalUsers'] ?? 0}',
-                color: Colors.blue,
+                color: emeraldGreen,
                 isDark: isDark,
               ),
               _StatCard(
                 icon: Icons.pending_actions_rounded,
-                label: 'Pending',
+                label: 'New Requests',
                 value: '${stats['pendingVerifications'] ?? 0}',
-                color: Colors.orange,
+                color: const Color(0xFFF59E0B), // Amber for pending
                 isDark: isDark,
               ),
               _StatCard(
                 icon: Icons.volunteer_activism_rounded,
                 label: 'Donations',
                 value: '${stats['totalDonations'] ?? 0}',
-                color: AppColors.primary,
+                color: const Color(0xFF6366F1), // Indigo
                 isDark: isDark,
               ),
               _StatCard(
                 icon: Icons.check_circle_rounded,
-                label: 'Delivered',
+                label: 'Success Rate',
                 value: '${stats['completedDonations'] ?? 0}',
-                color: Colors.teal,
+                color: const Color(0xFF06B6D4), // Cyan
                 isDark: isDark,
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.lg),
+          const SizedBox(height: 24),
 
           Text(
             'User Breakdown',
@@ -363,17 +352,42 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      color: color.withValues(alpha: 0.05),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: color, size: 24),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
           const Spacer(),
-          Text(value, style: AppTextStyles.heading),
-          Text(label, style: AppTextStyles.caption),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF1E293B),
+            ),
+          ),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: const Color(0xFF64748B),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );

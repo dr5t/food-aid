@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_spacing.dart';
-import '../../config/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/app_button.dart';
@@ -165,7 +164,7 @@ class PendingVerificationScreen extends StatelessWidget {
       children: [
         if (!isEmailVerified) ...[
           AppButton(
-            text: 'I have verified my email',
+            label: 'I have verified my email',
             onPressed: () => auth.reloadUser(),
             backgroundColor: emeraldGreen,
           ),

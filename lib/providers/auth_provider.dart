@@ -179,15 +179,17 @@ class AuthProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       _isProcessingAuth = false;
       
-      // Auto-seed if it's the super admin and not found
-      if (e.code == 'user-not-found' && email == 'tiwarishaurya395@gmail.com') {
-        debugPrint('AuthProvider: Super Admin not found in Auth. Attempting auto-seed...');
+      // Auto-seed if it's the super admin and we haven't tried yet this call
+      if (email == 'tiwarishaurya395@gmail.com' && !_isInitialized) {
+        debugPrint('AuthProvider: Super Admin auth error (${e.code}). Attempting auto-seed...');
         await _authService.seedSuperAdmin();
-        // Retry sign in
-        return signIn(email: email, password: password);
+        _isInitialized = true; // Temporary flag to prevent loop
+        final result = await signIn(email: email, password: password);
+        _isInitialized = false;
+        return result;
       }
 
-      _setError(_mapAuthError(e.code));
+      _setError('${_mapAuthError(e.code)} (Code: ${e.code})');
       debugPrint('AuthProvider: signIn FirebaseAuthException: ${e.code}');
       _setLoading(false);
       return false;

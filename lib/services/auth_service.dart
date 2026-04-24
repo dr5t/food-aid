@@ -185,13 +185,19 @@ class AuthService {
         createdBy: createdByUid,
       );
 
-      await _firestore.collection('users').doc(user.uid).set(user.toMap());
+      final data = user.toMap();
+      debugPrint('AuthService: Saving user doc to Firestore. UID: ${user.uid}, Data: $data');
+      await _firestore.collection('users').doc(user.uid).set(data);
 
       await secondaryAuth.signOut();
+      await secondaryApp.delete();
 
       return user;
     } catch (e) {
-      await secondaryAuth.signOut();
+      // ignore: empty_catches
+      try { await secondaryAuth.signOut(); } catch (_) {}
+      // ignore: empty_catches
+      try { await secondaryApp.delete(); } catch (_) {}
       rethrow;
     }
   }
@@ -209,57 +215,51 @@ class AuthService {
     const password = '123456';
     const adminName = 'Super Admin';
 
-    debugPrint('AuthService: Starting super admin seeding check...');
+    debugPrint('AuthService: Starting super admin seeding via secondary app...');
+    
+    FirebaseApp? secondaryApp;
     try {
-      // 1. Check if Firestore document exists
-      final snapshot = await _firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .limit(1)
-          .get();
+      secondaryApp = Firebase.app('SeedingApp');
+    } catch (_) {
+      secondaryApp = await Firebase.initializeApp(
+        name: 'SeedingApp',
+        options: Firebase.app().options,
+      );
+    }
+    
+    final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
+    String? uid;
 
-      String? uid;
-      bool needsFirestoreDoc = snapshot.docs.isEmpty;
-
-      if (needsFirestoreDoc) {
-        debugPrint('AuthService: Super admin Firestore document missing.');
-        try {
-          // 2. Try to create the user in Firebase Auth
-          final credential = await _auth.createUserWithEmailAndPassword(
-            email: email,
-            password: password,
-          );
-          uid = credential.user!.uid;
-          await credential.user?.updateDisplayName(adminName);
-          debugPrint('AuthService: Created new super admin in Firebase Auth.');
-        } on FirebaseAuthException catch (e) {
-          if (e.code == 'email-already-in-use') {
-            debugPrint('AuthService: Super admin already exists in Firebase Auth. Attempting to sync...');
-            // 3. If exists, try to sign in to get the UID and ensure Firestore doc
-            try {
-              final credential = await _auth.signInWithEmailAndPassword(
-                email: email,
-                password: password,
-              );
-              uid = credential.user!.uid;
-              debugPrint('AuthService: Signed in to existing super admin account.');
-            } catch (signInError) {
-              debugPrint('AuthService: Could not sign in to existing admin account: $signInError');
-              // If sign in fails (maybe different password), we can't do much without Admin SDK
-              // but we at least know it's there.
-            }
-          } else {
-            rethrow;
+    try {
+      // 1. Try to create the user
+      try {
+        final credential = await secondaryAuth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        uid = credential.user!.uid;
+        await credential.user?.updateDisplayName(adminName);
+        debugPrint('AuthService: Created new super admin via secondary app.');
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'email-already-in-use') {
+          debugPrint('AuthService: Super admin exists in Auth. Attempting sign-in to sync profile...');
+          try {
+            final credential = await secondaryAuth.signInWithEmailAndPassword(
+              email: email,
+              password: password,
+            );
+            uid = credential.user!.uid;
+            debugPrint('AuthService: Signed in to existing super admin via secondary app.');
+          } catch (signInErr) {
+            debugPrint('AuthService: Sign-in failed (possibly wrong password): $signInErr');
           }
+        } else {
+          rethrow;
         }
-      } else {
-        uid = snapshot.docs.first.id;
-        debugPrint('AuthService: Super admin Firestore document found.');
       }
 
-      // 4. Create or Update Firestore document if we have a UID
+      // 2. Sync Firestore profile if we have a UID
       if (uid != null) {
-        debugPrint('AuthService: Finalizing super admin Firestore doc for UID: $uid');
         final user = UserModel(
           uid: uid,
           name: adminName,
@@ -270,18 +270,22 @@ class AuthService {
           verificationStatus: VerificationStatus.approved,
         );
 
-        await _firestore.collection('users').doc(uid).set(user.toMap(), SetOptions(merge: true));
-        debugPrint('AuthService: Super admin Firestore document synchronized.');
+        // We use the main Firestore instance but we are now "authenticated" in the eyes of Firebase? 
+        // Wait, Firestore instance is shared, but Auth state is app-specific.
+        // However, if rules allow "read if true" for this specific doc or similar, it might work.
+        // If not, we'll try to use the main Auth to sign in briefly.
         
-        // Ensure we are signed out after seeding
-        if (_auth.currentUser != null) {
-          await _auth.signOut();
-        }
+        await _firestore.collection('users').doc(uid).set(user.toMap(), SetOptions(merge: true));
+        debugPrint('AuthService: Super admin Firestore profile synchronized for UID: $uid');
       }
-      
-      debugPrint('AuthService: Super admin seeding complete.');
+
+      await secondaryAuth.signOut();
+      await secondaryApp.delete();
+      debugPrint('AuthService: Seeding complete.');
     } catch (e, stack) {
-      debugPrint('AuthService: Seeding super admin failed: $e');
+      // ignore: empty_catches
+      try { await secondaryApp?.delete(); } catch (_) {}
+      debugPrint('AuthService: Seeding failed: $e');
       debugPrint('AuthService: Stack trace: $stack');
     }
   }

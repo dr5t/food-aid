@@ -47,10 +47,6 @@ class _DonorDashboardState extends State<DonorDashboard> {
         actions: [
           const ConnectionStatusIndicator(),
           IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 20),
-            onPressed: () => context.read<ThemeProvider>().toggleTheme(),
-          ),
-          IconButton(
             icon: const Icon(Icons.logout, size: 20),
             onPressed: () => context.read<AuthProvider>().signOut(),
           ),

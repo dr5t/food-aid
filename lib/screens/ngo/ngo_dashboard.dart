@@ -43,12 +43,9 @@ class _NgoDashboardState extends State<NgoDashboard> {
 
     return Scaffold(
       appBar: AppAppBar(
-        title: 'NGO Dashboard',
+        title: 'Food Aid',
         actions: [
-          IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 20),
-            onPressed: () => context.read<ThemeProvider>().toggleTheme(),
-          ),
+          const ConnectionStatusIndicator(),
           IconButton(
             icon: const Icon(Icons.logout, size: 20),
             onPressed: () => context.read<AuthProvider>().signOut(),

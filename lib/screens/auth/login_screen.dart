@@ -303,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   Color _roleColor(UserRole role) {
     switch (role) {
-      case UserRole.admin: return Colors.deepPurple;
+      case UserRole.admin: return const Color(0xFF10B981);
       case UserRole.ngo: return Colors.teal;
       case UserRole.donor: return Colors.orange;
       case UserRole.logisticsEmployee: return Colors.deepOrange;

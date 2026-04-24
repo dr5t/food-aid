@@ -301,7 +301,93 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
   void _showAssignDialog(BuildContext context, DonationModel donation) {
     showDialog(
       context: context,
-      builder: (context) => _AssignDialog(donation: donation),
+      builder: (context) {
+        return Consumer<LogisticsProvider>(
+          builder: (context, provider, _) {
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Assign Employee',
+                      style: AppTextStyles.titleLarge,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Select an employee for task #${donation.id.substring(0, 8).toUpperCase()}',
+                      style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    if (provider.employees.isEmpty)
+                      Center(
+                        child: Text(
+                          'No employees available',
+                          style: AppTextStyles.bodySmall,
+                        ),
+                      )
+                    else
+                      Flexible(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: provider.employees.length,
+                          itemBuilder: (context, index) {
+                            final employee = provider.employees[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                              child: ListTile(
+                                onTap: () {
+                                  final user = context.read<AuthProvider>().user;
+                                  if (user != null) {
+                                    provider.assignEmployee(
+                                      donation.id,
+                                      user.uid,
+                                      user.organizationName ?? 'Company',
+                                      employee.uid,
+                                      employee.name,
+                                    );
+                                  }
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Task assigned to ${employee.name}'),
+                                    ),
+                                  );
+                                },
+                                leading: CircleAvatar(
+                                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                                  child: const Icon(Icons.person, size: 18, color: AppColors.primary),
+                                ),
+                                title: Text(employee.name),
+                                subtitle: const Text('Available'),
+                                trailing: const Icon(Icons.chevron_right),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                                  side: BorderSide(color: AppColors.divider.withValues(alpha: 0.1)),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    const SizedBox(height: AppSpacing.lg),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -441,7 +527,11 @@ class _UnassignedTab extends StatelessWidget {
         ),
         Expanded(
           child: provider.unassignedDonations.isEmpty
-              ? _buildEmptyState('No pending tasks available')
+              ? const EmptyState(
+                  title: 'All caught up!',
+                  message: 'No unassigned donations at the moment.',
+                  icon: Icons.task_alt,
+                )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                   itemCount: provider.unassignedDonations.length,
@@ -454,22 +544,6 @@ class _UnassignedTab extends StatelessWidget {
                 ),
         ),
       ],
-    );
-  }
-
-  Widget _buildEmptyState(String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.assignment_turned_in_outlined, size: 48, color: AppColors.textHint.withValues(alpha: 0.3)),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            message,
-            style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -520,6 +594,13 @@ class _EmployeesTab extends StatelessWidget {
     );
   }
 
+  void _showCreateEmployeeDialog(BuildContext context) {
+    final state = context.findAncestorStateOfType<_CompanyDashboardState>();
+    if (state != null) {
+      state._showCreateEmployeeDialog(context);
+    }
+  }
+
   Widget _buildEmptyState(String message) {
     return Center(
       child: Column(
@@ -533,6 +614,37 @@ class _EmployeesTab extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _CompanyCompletedTab extends StatelessWidget {
+  const _CompanyCompletedTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<LogisticsProvider>();
+    final completed = provider.companyDonations.where((d) => d.status == DonationStatus.delivered).toList();
+
+    if (completed.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.history_rounded, size: 64, color: AppColors.textHint.withValues(alpha: 0.1)),
+            const SizedBox(height: 16),
+            Text('No completed deliveries', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint)),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, 100),
+      itemCount: completed.length,
+      itemBuilder: (context, index) {
+        return _DeliveryTile(donation: completed[index]);
+      },
     );
   }
 }
@@ -632,16 +744,16 @@ class _DeliveryTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceVariant,
+                  color: Theme.of(context).cardColor.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.person_outline, size: 16, color: AppColors.primary),
-                    const SizedBox(width: AppSpacing.sm),
+                    const Icon(Icons.person_outline, size: 14),
+                    const SizedBox(width: 8),
                     Text(
-                      'Assigned to: ${donation.employeeName}',
-                      style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
+                      'Assigned to ${donation.employeeName}',
+                      style: AppTextStyles.bodySmall,
                     ),
                   ],
                 ),
@@ -652,17 +764,24 @@ class _DeliveryTile extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String text) {
+  void _showAssignDialog(BuildContext context, DonationModel donation) {
+    final state = context.findAncestorStateOfType<_CompanyDashboardState>();
+    if (state != null) {
+      state._showAssignDialog(context, donation);
+    }
+  }
+
+  Widget _buildInfoRow(IconData icon, String label) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Row(
         children: [
           Icon(icon, size: 14, color: AppColors.textHint),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              text,
-              style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+              label,
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -674,23 +793,21 @@ class _DeliveryTile extends StatelessWidget {
 
   Color _getStatusColor(DonationStatus status) {
     switch (status) {
-      case DonationStatus.pending:
-        return AppColors.statusPending;
+      case DonationStatus.pending: return Colors.orange;
+      case DonationStatus.accepted: return AppColors.primary;
       case DonationStatus.assigned:
-        return AppColors.statusAssigned;
       case DonationStatus.picked:
-        return AppColors.statusPicked;
-      case DonationStatus.delivered:
-        return AppColors.statusDelivered;
-      default:
-        return AppColors.textHint;
+      case DonationStatus.inTransit:
+      case DonationStatus.nearLocation: return Colors.blue;
+      case DonationStatus.delivered: return AppColors.success;
+      case DonationStatus.rejected:
+      case DonationStatus.expired: return Colors.red;
     }
   }
 }
 
 class _EmployeeTile extends StatelessWidget {
   final UserModel employee;
-
   const _EmployeeTile({required this.employee});
 
   @override
@@ -698,210 +815,45 @@ class _EmployeeTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: AppCard(
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-              child: const Icon(Icons.person, color: AppColors.primary),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    employee.name,
-                    style: AppTextStyles.titleSmall,
-                  ),
-                  Text(
-                    employee.email,
-                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
-                  ),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
-              onPressed: () => _showDeleteConfirm(context, employee),
-            ),
-          ],
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+            child: const Icon(Icons.person, color: AppColors.primary, size: 20),
+          ),
+          title: Text(employee.name, style: AppTextStyles.bodyMedium),
+          subtitle: Text(employee.email, style: AppTextStyles.bodySmall),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+            onPressed: () => _confirmDeleteEmployee(context, employee),
+          ),
         ),
       ),
     );
   }
-}
 
-void _showDeleteConfirm(BuildContext context, UserModel employee) {
-  showDialog(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Remove Employee?'),
-      content: Text('Are you sure you want to remove ${employee.name}?'),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-        TextButton(
-          onPressed: () async {
-            final ok = await context.read<LogisticsProvider>().deleteEmployee(employee.uid);
-            if (ok && context.mounted) {
-              Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Employee removed')),
-              );
-            }
-          },
-          style: TextButton.styleFrom(foregroundColor: Colors.red),
-          child: const Text('Remove'),
-        ),
-      ],
-    ),
-  );
-}
-
-void _showAssignDialog(BuildContext context, DonationModel donation) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Consumer<LogisticsProvider>(
-        builder: (context, provider, _) {
-          return Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusLg)),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Assign Employee',
-                    style: AppTextStyles.titleLarge,
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    'Select an employee for task #${donation.id.substring(0, 8).toUpperCase()}',
-                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
-                  if (provider.employees.isEmpty)
-                    Center(
-                      child: Text(
-                        'No employees available',
-                        style: AppTextStyles.bodySmall,
-                      ),
-                    )
-                  else
-                    Flexible(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: provider.employees.length,
-                        itemBuilder: (context, index) {
-                          final employee = provider.employees[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                            child: ListTile(
-                              onTap: () {
-                                final user = context.read<AuthProvider>().user;
-                                if (user != null) {
-                                  provider.assignEmployee(
-                                    donation.id,
-                                    user.uid,
-                                    user.organizationName ?? 'Company',
-                                    employee.uid,
-                                    employee.name,
-                                  );
-                                }
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Task assigned to ${employee.name}'),
-                                  ),
-                                );
-                              },
-                              leading: CircleAvatar(
-                                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                                child: const Icon(Icons.person, size: 18, color: AppColors.primary),
-                              ),
-                              title: Text(employee.name),
-                              subtitle: const Text('Available'),
-                              trailing: const Icon(Icons.chevron_right),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                                side: BorderSide(color: AppColors.divider.withValues(alpha: 0.1)),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  const SizedBox(height: AppSpacing.lg),
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
-                    ),
-                  ),
-                ],
-              ),
-                                },
-                                leading: CircleAvatar(
-                                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                                  child: const Icon(Icons.person, size: 18, color: AppColors.primary),
-                                ),
-                                title: Text(employee.name),
-                                subtitle: const Text('Available'),
-                                trailing: const Icon(Icons.chevron_right),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                                  side: BorderSide(color: AppColors.divider.withValues(alpha: 0.1)),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    const SizedBox(height: AppSpacing.lg),
-                    SizedBox(
-                      width: double.infinity,
-                      child: TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _showCreateEmployeeDialog(BuildContext context) {
+  void _confirmDeleteEmployee(BuildContext context, UserModel employee) {
     showDialog(
       context: context,
-      builder: (context) {
-        final user = context.read<AuthProvider>().user;
-        return CreateEmployeeDialog(
-          title: 'Add New Employee',
-          targetRole: UserRole.logisticsEmployee,
-          onCreateEmployee: ({
-            required String name,
-            required String email,
-            required String password,
-            String? phone,
-          }) async {
-            return await context.read<AuthProvider>().createLogisticsEmployee(
-                  name: name,
-                  email: email,
-                  password: password,
-                  phone: phone,
-                  companyId: user?.uid ?? '',
-                  companyName: user?.organizationName ?? 'Logistics Company',
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Employee?'),
+        content: Text('Remove ${employee.name} from your fleet?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final ok = await context.read<LogisticsProvider>().deleteEmployee(employee.uid);
+              if (ok && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Employee removed')),
                 );
-          },
-        );
-      },
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -925,73 +877,30 @@ class _MealTypeOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(AppSpacing.md),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected
-              ? color.withValues(alpha: 0.1)
-              : Colors.white.withValues(alpha: 0.02),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? color : Colors.white12,
-            width: isSelected ? 2 : 1,
+            color: isSelected ? color : AppColors.divider.withValues(alpha: 0.2),
+            width: 1.5,
           ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    spreadRadius: 1,
-                  ),
-                ]
-              : null,
         ),
         child: Column(
           children: [
-            Icon(icon, color: isSelected ? color : Colors.white38),
-            const SizedBox(height: 8),
+            Icon(icon, color: isSelected ? color : AppColors.textHint, size: 20),
+            const SizedBox(height: 4),
             Text(
               label,
-              style: AppTextStyles.label.copyWith(
+              style: AppTextStyles.overline.copyWith(
+                color: isSelected ? color : AppColors.textHint,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? color : Colors.grey,
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _CompanyCompletedTab extends StatelessWidget {
-  const _CompanyCompletedTab();
-
-  @override
-  Widget build(BuildContext context) {
-    final provider = context.watch<LogisticsProvider>();
-    final completed = provider.companyDonations.where((d) => d.status == DonationStatus.delivered).toList();
-
-    if (completed.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.history_rounded, size: 64, color: AppColors.textHint.withValues(alpha: 0.1)),
-            const SizedBox(height: 16),
-            Text('No completed deliveries', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint)),
-          ],
-        ),
-      );
-    }
-
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, 100),
-      itemCount: completed.length,
-      itemBuilder: (context, index) {
-        return _DeliveryTile(donation: completed[index]);
-      },
     );
   }
 }

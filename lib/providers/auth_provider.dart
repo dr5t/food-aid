@@ -52,6 +52,13 @@ class AuthProvider extends ChangeNotifier {
         // Start listening to the user document for real-time updates
         _userSubscription = _authService.userStream(firebaseUser.uid).listen((userModel) {
           debugPrint('AuthProvider: Received real-time user update for ${firebaseUser.uid}');
+          
+          if (userModel == null && _user != null) {
+            debugPrint('AuthProvider: User document deleted from Firestore! Forcing logout.');
+            signOut();
+            return;
+          }
+
           _user = userModel;
           _isInitialized = true;
           notifyListeners();

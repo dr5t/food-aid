@@ -976,7 +976,20 @@ class _RotatingRefreshIconState extends State<_RotatingRefreshIcon>
   Widget build(BuildContext context) {
     return RotationTransition(
       turns: _controller,
-      child: const Icon(Icons.refresh_rounded, color: Color(0xFF64748B)),
+      child: TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 300),
+        tween: Tween(begin: 1.0, end: widget.isLoading ? 1.2 : 1.0),
+        builder: (context, scale, child) {
+          return Transform.scale(
+            scale: scale,
+            child: Icon(
+              Icons.refresh_rounded,
+              color: widget.isLoading ? AppColors.primary : const Color(0xFF64748B),
+              size: 20,
+            ),
+          );
+        },
+      ),
     );
   }
 }

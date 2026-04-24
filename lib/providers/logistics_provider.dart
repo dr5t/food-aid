@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../models/donation_model.dart';
 import '../models/user_model.dart';
 import '../services/firestore_service.dart';
+import '../services/auth_service.dart';
 
 class LogisticsProvider extends ChangeNotifier {
   final FirestoreService _firestoreService;
+  final AuthService _authService = AuthService();
 
   LogisticsProvider(this._firestoreService);
 
@@ -142,7 +144,12 @@ class LogisticsProvider extends ChangeNotifier {
 
   Future<bool> deleteEmployee(String uid) async {
     try {
-      await _firestoreService.deleteUser(uid);
+      try {
+        await _firestoreService.deleteUser(uid);
+      } catch (e) {
+        debugPrint('LogisticsProvider: Direct deletion failed, trying bypass: $e');
+        await _authService.adminDeleteUser(uid);
+      }
       return true;
     } catch (e) {
       _error = 'Failed to delete employee: $e';

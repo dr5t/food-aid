@@ -10,8 +10,9 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
+  User? get currentUser => _auth.currentUser;
 
-  Future<UserModel?> get currentUserModel async {
+  Future<UserModel?> getCurrentUserModel() async {
     final user = _auth.currentUser;
     if (user == null) return null;
     final doc = await _firestore.collection('users').doc(user.uid).get();
@@ -32,7 +33,11 @@ class AuthService {
     required String name,
     required UserRole role,
     String? organizationName,
+    String? organizationDescription,
     String? companyId,
+    String? address,
+    GeoPoint? location,
+    DonorType? donorType,
     String phone = '',
   }) async {
     final credential = await _auth.createUserWithEmailAndPassword(
@@ -52,7 +57,11 @@ class AuthService {
       isVerified: false,
       verificationStatus: VerificationStatus.pending,
       organizationName: organizationName,
+      organizationDescription: organizationDescription,
       companyId: companyId,
+      address: address,
+      location: location,
+      donorType: donorType,
     );
 
     await _firestore.collection('users').doc(user.uid).set(user.toMap());
@@ -75,7 +84,6 @@ class AuthService {
       if (email == 'tiwarishaurya395@gmail.com') {
         debugPrint('AuthService: Super Admin profile missing in Firestore. Syncing...');
         await seedSuperAdmin();
-        // Re-fetch doc
         final retryDoc = await _firestore.collection('users').doc(credential.user!.uid).get();
         if (retryDoc.exists) return UserModel.fromFirestore(retryDoc);
       }
@@ -87,6 +95,26 @@ class AuthService {
 
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  Future<void> updateProfile({
+    required String uid,
+    String? name,
+    String? phone,
+    String? avatarUrl,
+    String? address,
+    GeoPoint? location,
+  }) async {
+    final Map<String, dynamic> data = {};
+    if (name != null) data['name'] = name;
+    if (phone != null) data['phone'] = phone;
+    if (avatarUrl != null) data['avatarUrl'] = avatarUrl;
+    if (address != null) data['address'] = address;
+    if (location != null) data['location'] = location;
+    
+    if (data.isNotEmpty) {
+      await _firestore.collection('users').doc(uid).update(data);
+    }
   }
 
   Future<void> resendEmailVerification() async {
@@ -143,11 +171,8 @@ class AuthService {
       );
 
       final data = user.toMap();
-      debugPrint('AuthService: Saving user doc to Firestore (Secondary). UID: ${user.uid}, Data: $data');
       await secondaryFirestore.collection('users').doc(user.uid).set(data);
-
       await secondaryAuth.signOut();
-      // Keep app alive for reuse
       return user;
     } catch (e) {
       // ignore: empty_catches
@@ -169,8 +194,6 @@ class AuthService {
     const password = '123456';
     const adminName = 'Super Admin';
 
-    debugPrint('AuthService: Starting super admin seeding via secondary app...');
-    
     FirebaseApp? secondaryApp;
     try {
       secondaryApp = Firebase.app('SeedingApp');
@@ -186,7 +209,6 @@ class AuthService {
     String? uid;
 
     try {
-      // 1. Try to create the user
       try {
         final credential = await secondaryAuth.createUserWithEmailAndPassword(
           email: email,
@@ -194,18 +216,15 @@ class AuthService {
         );
         uid = credential.user!.uid;
         await credential.user?.updateDisplayName(adminName);
-        debugPrint('AuthService: Created new super admin via secondary app.');
       } on FirebaseAuthException catch (e) {
         if (e.code == 'email-already-in-use') {
-          debugPrint('AuthService: Super admin exists in Auth. Attempting sign-in...');
           try {
             final credential = await secondaryAuth.signInWithEmailAndPassword(
               email: email,
               password: password,
             );
             uid = credential.user!.uid;
-          } catch (signInError) {
-            debugPrint('AuthService: Super admin sign-in failed: $signInError');
+          } catch (_) {
             rethrow;
           }
         } else {
@@ -213,7 +232,6 @@ class AuthService {
         }
       }
 
-      // 2. Synchronize Firestore profile
       if (uid != null) {
         final user = UserModel(
           uid: uid,
@@ -226,11 +244,9 @@ class AuthService {
         );
 
         await secondaryFirestore.collection('users').doc(uid).set(user.toMap(), SetOptions(merge: true));
-        debugPrint('AuthService: Super admin Firestore profile synchronized for UID: $uid');
       }
 
       await secondaryAuth.signOut();
-      debugPrint('AuthService: Seeding complete.');
     } catch (e) {
       debugPrint('AuthService: Seeding failed: $e');
     }
@@ -258,7 +274,6 @@ class AuthService {
       await secondaryFirestore.collection('users').doc(uid).delete();
       await secondaryAuth.signOut();
     } catch (e) {
-      debugPrint('AuthService: AdminDelete failed: $e');
       rethrow;
     }
   }
@@ -302,7 +317,6 @@ class AuthService {
       await secondaryFirestore.collection('users').doc(targetUid).update(data);
       await secondaryAuth.signOut();
     } catch (e) {
-      debugPrint('AuthService: AdminBypass failed: $e');
       rethrow;
     }
   }
@@ -328,13 +342,11 @@ class AuthService {
       await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
       
       final batch = secondaryFirestore.batch();
-      
-      // Clear major collections
       final collections = ['donations', 'emergencyRequests', 'notifications', 'users'];
       for (final coll in collections) {
         final docs = await secondaryFirestore.collection(coll).get(const GetOptions(source: Source.server));
         for (final doc in docs.docs) {
-          if (coll == 'users' && doc.id == adminUid) continue; // Preserve admin
+          if (coll == 'users' && doc.id == adminUid) continue; 
           batch.delete(doc.reference);
         }
       }
@@ -342,7 +354,6 @@ class AuthService {
       await batch.commit();
       await secondaryAuth.signOut();
     } catch (e) {
-      debugPrint('AuthService: Wipe failed: $e');
       rethrow;
     }
   }

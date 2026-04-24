@@ -16,13 +16,12 @@ class AdminProvider extends ChangeNotifier {
   Map<String, int> _platformStats = {};
   bool _isLoading = false;
   String? _error;
-  final Set<String> _localHiddenUids = {}; // Local blacklist to hide "ghost" records immediately
+  final Set<String> _localHiddenUids = {}; 
 
   StreamSubscription? _pendingSub;
   StreamSubscription? _usersSub;
   StreamSubscription? _employeesSub;
   StreamSubscription? _statsSub;
-
 
   List<UserModel> get pendingVerifications => 
       _pendingVerifications.where((u) => !_localHiddenUids.contains(u.uid)).toList();
@@ -37,7 +36,6 @@ class AdminProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   int get pendingCount => pendingVerifications.length;
-
 
   void startListening() {
     _isLoading = true;
@@ -81,7 +79,6 @@ class AdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   Future<bool> approveUser(String uid) async {
     try {
       _isLoading = true;
@@ -91,7 +88,6 @@ class AdminProvider extends ChangeNotifier {
       try {
         await _firestoreService.approveUser(uid);
       } catch (e) {
-        debugPrint('AdminProvider: Direct approval failed, trying bypass: $e');
         await _authService.adminApproveUser(uid);
       }
 
@@ -100,7 +96,6 @@ class AdminProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      debugPrint('AdminProvider: approveUser error: $e');
       _error = 'Failed to approve user: $e';
       _isLoading = false;
       notifyListeners();
@@ -117,7 +112,6 @@ class AdminProvider extends ChangeNotifier {
       try {
         await _firestoreService.rejectUser(uid, reason);
       } catch (e) {
-        debugPrint('AdminProvider: Direct rejection failed, trying bypass: $e');
         await _authService.adminRejectUser(uid, reason);
       }
 
@@ -126,7 +120,6 @@ class AdminProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      debugPrint('AdminProvider: rejectUser error: $e');
       _error = 'Failed to reject user: $e';
       _isLoading = false;
       notifyListeners();
@@ -143,7 +136,6 @@ class AdminProvider extends ChangeNotifier {
       try {
         await _firestoreService.deleteUser(uid);
       } catch (e) {
-        debugPrint('AdminProvider: Direct deletion failed, trying bypass: $e');
         await _authService.adminDeleteUser(uid);
       }
       
@@ -191,11 +183,8 @@ class AdminProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
       
-      // 1. Clear local UI state
       _localHiddenUids.clear();
-      
-      // 2. Perform server-side total wipe
-      await _firestoreService.factoryReset(adminUid);
+      await _authService.adminWipeData(adminUid);
       
       _isLoading = false;
       notifyListeners();

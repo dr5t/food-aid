@@ -1,95 +1,40 @@
 import 'package:flutter/material.dart';
-import '../../config/theme/app_colors.dart';
-
-enum AppButtonVariant { primary, secondary, outlined, text }
 
 class AppButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
-  final AppButtonVariant variant;
-  final IconData? icon;
   final bool isLoading;
-  final bool isFullWidth;
-  final double? height;
-  final TextStyle? textStyle;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
 
   const AppButton({
     super.key,
     required this.label,
     this.onPressed,
-    this.variant = AppButtonVariant.primary,
-    this.icon,
     this.isLoading = false,
-    this.isFullWidth = true,
-    this.height,
-    this.textStyle,
+    this.backgroundColor,
+    this.foregroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    final child = _buildButton();
-
-    if (isFullWidth) {
-      return SizedBox(
-        width: double.infinity,
-        height: height ?? 52,
-        child: child,
-      );
-    }
-
-    return SizedBox(height: height ?? 52, child: child);
-  }
-
-  Widget _buildButton() {
-    final buttonChild = isLoading
-        ? const SizedBox(
-            height: 24,
-            width: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.5,
-              color: Colors.white,
-            ),
-          )
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 20),
-                const SizedBox(width: 8),
-              ],
-              Text(label, style: textStyle),
-            ],
-          );
-
-    switch (variant) {
-      case AppButtonVariant.primary:
-        return ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          child: buttonChild,
-        );
-      case AppButtonVariant.secondary:
-        return ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.secondary),
-          child: buttonChild,
-        );
-      case AppButtonVariant.outlined:
-        return OutlinedButton(
-          onPressed: isLoading ? null : onPressed,
-          child: buttonChild,
-        );
-      case AppButtonVariant.text:
-        return TextButton(
-          onPressed: isLoading ? null : onPressed,
-          style: TextButton.styleFrom(
-            foregroundColor: AppColors.primary,
-            textStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
-          ),
-          child: buttonChild,
-        );
-    }
+    return SizedBox(
+      height: 54,
+      child: FilledButton(
+        onPressed: isLoading ? null : onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: backgroundColor,
+          foregroundColor: foregroundColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              )
+            : Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+      ),
+    );
   }
 }

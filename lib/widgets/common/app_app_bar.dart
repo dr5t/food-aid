@@ -7,6 +7,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final bool showBottomBorder;
   final bool centerTitle;
+  final Color? backgroundColor;
 
   const AppAppBar({
     super.key,
@@ -15,6 +16,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.showBottomBorder = true,
     this.centerTitle = true,
+    this.backgroundColor,
   });
 
   @override
@@ -33,7 +35,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             )
           : null,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       elevation: 0,
     );
   }

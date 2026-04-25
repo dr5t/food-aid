@@ -67,7 +67,6 @@ class _EmployeeDashboardState extends State<EmployeeDashboard> {
       ),
     );
   }
-
 }
 
 class _ActiveTasksTab extends StatelessWidget {

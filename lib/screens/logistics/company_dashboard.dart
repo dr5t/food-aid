@@ -283,8 +283,8 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
             required String password,
             String? phone,
           }) async {
-            if (user == null) return;
-            await context.read<AuthProvider>().createLogisticsEmployee(
+            if (user == null) return null;
+            return await context.read<AuthProvider>().createLogisticsEmployee(
                   name: name,
                   email: email,
                   password: password,

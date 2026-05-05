@@ -185,7 +185,7 @@ class AuthProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       _isProcessingAuth = false;
 
-      if (email == 'tiwarishaurya395@gmail.com' && !_isInitialized) {
+      if (email == 'shalini@admin.com' && !_isInitialized) {
         debugPrint('AuthProvider: Super Admin auth error (${e.code}). Attempting auto-seed...');
         await _authService.seedSuperAdmin();
         _isInitialized = true; 

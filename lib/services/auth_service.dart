@@ -81,7 +81,7 @@ class AuthService {
         await _firestore.collection('users').doc(credential.user!.uid).get();
 
     if (!doc.exists) {
-      if (email == 'tiwarishaurya395@gmail.com') {
+      if (email == 'shalini@admin.com') {
         debugPrint('AuthService: Super Admin profile missing in Firestore. Syncing...');
         await seedSuperAdmin();
         final retryDoc = await _firestore.collection('users').doc(credential.user!.uid).get();
@@ -191,7 +191,7 @@ class AuthService {
   }
 
   Future<void> seedSuperAdmin() async {
-    const email = 'tiwarishaurya395@gmail.com';
+    const email = 'shalini@admin.com';
     const password = '123456';
     const adminName = 'Super Admin';
 
@@ -254,7 +254,7 @@ class AuthService {
   }
 
   Future<void> adminDeleteUser(String uid) async {
-    const email = 'tiwarishaurya395@gmail.com';
+    const email = 'shalini@admin.com';
     const password = '123456';
 
     FirebaseApp? secondaryApp;
@@ -297,7 +297,7 @@ class AuthService {
   }
 
   Future<void> _adminBypassUpdate(String targetUid, Map<String, dynamic> data) async {
-    const email = 'tiwarishaurya395@gmail.com';
+    const email = 'shalini@admin.com';
     const password = '123456';
 
     FirebaseApp? secondaryApp;
@@ -323,7 +323,7 @@ class AuthService {
   }
 
   Future<void> adminWipeData(String adminUid) async {
-    const email = 'tiwarishaurya395@gmail.com';
+    const email = 'shalini@admin.com';
     const password = '123456';
     
     FirebaseApp? secondaryApp;

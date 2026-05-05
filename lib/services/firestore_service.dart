@@ -372,7 +372,7 @@ class FirestoreService {
 
   Stream<List<UserModel>> getAdminEmployees() {
     return _users
-        .where('role', isEqualTo: 'admin')
+        .where('role', whereIn: ['admin', 'staff', 'superAdmin'])
         .snapshots()
         .map((s) =>
             s.docs.map((d) => UserModel.fromFirestore(d)).toList());
@@ -408,6 +408,7 @@ class FirestoreService {
               break;
             case 'admin':
             case 'superAdmin':
+            case 'staff':
               admins++;
               break;
           }

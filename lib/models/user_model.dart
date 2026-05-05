@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum UserRole { donor, ngo, logisticsCompany, logisticsEmployee, admin, superAdmin }
+enum UserRole { donor, ngo, logisticsCompany, logisticsEmployee, admin, superAdmin, staff }
 
 enum DonorType { hotel, restaurant, wedding, home, resort, catering, other }
 
@@ -176,8 +176,11 @@ class UserModel {
         return 'Admin';
       case UserRole.superAdmin:
         return 'Super Admin';
+      case UserRole.staff:
+        return 'Staff Member';
     }
   }
+
 
   String get verificationLabel {
     switch (verificationStatus) {

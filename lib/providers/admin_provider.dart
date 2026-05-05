@@ -92,7 +92,7 @@ class AdminProvider extends ChangeNotifier {
       _allUsers.where((u) => !_localHiddenUids.contains(u.uid) && !_persistentDeletedUids.contains(u.uid)).toList();
   
   List<UserModel> get adminEmployees => 
-      _adminEmployees.where((u) => !_localHiddenUids.contains(u.uid) && !_persistentDeletedUids.contains(u.uid)).toList();
+      allUsers.where((u) => u.role == UserRole.admin || u.role == UserRole.staff).toList();
 
   int get pendingCount => pendingVerifications.length;
   int get userCount => allUsers.length;
@@ -216,7 +216,6 @@ class AdminProvider extends ChangeNotifier {
       _localHiddenUids.clear();
       _pendingVerifications = [];
       _allUsers = [];
-      _adminEmployees = [];
       _platformStats = {};
       notifyListeners();
 
@@ -238,6 +237,7 @@ class AdminProvider extends ChangeNotifier {
     required String email,
     required String password,
     required String createdByUid,
+    UserRole role = UserRole.staff,
     String phone = '',
   }) async {
     try {
@@ -249,12 +249,11 @@ class AdminProvider extends ChangeNotifier {
         name: name,
         email: email,
         password: password,
-        role: UserRole.admin,
+        role: role,
         createdByUid: createdByUid,
         phone: phone,
       );
 
-      _adminEmployees.insert(0, newUser);
       _isLoading = false;
       notifyListeners();
       return newUser;
@@ -265,6 +264,7 @@ class AdminProvider extends ChangeNotifier {
       return null;
     }
   }
+
 
   @override
   void dispose() {

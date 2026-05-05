@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         
         bool roleMatches = false;
         if (_selectedRole == UserRole.admin) {
-          roleMatches = user.role == UserRole.admin || user.role == UserRole.superAdmin;
+          roleMatches = user.role == UserRole.admin || user.role == UserRole.superAdmin || user.role == UserRole.staff;
         } else {
           roleMatches = user.role == _selectedRole;
         }

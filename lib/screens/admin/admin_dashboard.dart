@@ -1006,8 +1006,8 @@ class _TeamTab extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => CreateEmployeeDialog(
-        title: 'Create Admin Employee',
-        targetRole: UserRole.admin,
+        title: 'Add Team Member',
+        targetRole: UserRole.staff,
         onCreateEmployee:
             ({
               required String name,

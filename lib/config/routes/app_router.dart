@@ -233,8 +233,8 @@ class AppRouter {
       case UserRole.superAdmin:
       case UserRole.staff:
         return '/admin';
-      case null:
-        return '/donor';
+      default:
+        return '/login';
     }
   }
 

@@ -1,0 +1,87 @@
+{"users": [
+{
+  "localId": "A4Ab9axLrbQsyK69VwX9RHSedY62",
+  "email": "admin@foodaid.com",
+  "emailVerified": false,
+  "passwordHash": "HoHeczXBeh1FCNJplyGFo5Xe1tX2+/6BN6SW8ju6themvTSkOogDOLBOkvSQNAs/QjbOsLSyim6raqEJafgnZw==",
+  "salt": "pDP8ZTtdZD3HXw==",
+  "lastSignedInAt": "1778004836309",
+  "createdAt": "1778004836309",
+  "providerUserInfo": []
+},
+{
+  "localId": "Af4Ghpe91eVeKXoR0lor3K34lZy2",
+  "email": "shalu1234@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "R+0bo9zlA6rf1I5mQ+HcSWWN2i3472xqT64mQG63nxhYqlZgf/8sdMhb/P1nR6tGJq+lHrXtkJJ6Bp99IOiAGw==",
+  "salt": "QzwdEHgjJHZ2KQ==",
+  "displayName": "Shalini",
+  "lastSignedInAt": "1778005209931",
+  "createdAt": "1778005209931",
+  "providerUserInfo": []
+},
+{
+  "localId": "MdnqPG7w23dVtRG3WQ7tc9taJax2",
+  "email": "tiwarishaurya144@gmail.com",
+  "emailVerified": true,
+  "passwordHash": "1UkNJXcxKSz9VxGpAGIzRiaOyRf4AWvzUM5YLJdQeP55pEVxS5GSx6z2G39B5C8HvLPl6KV22RIb2Tcb/B+yGw==",
+  "salt": "77XAL8WiS6rBQQ==",
+  "displayName": "harsh",
+  "lastSignedInAt": "1777058692386",
+  "createdAt": "1777058692386",
+  "providerUserInfo": []
+},
+{
+  "localId": "PxEqDPRQb4egLvp0AAZKT2r7iwF2",
+  "email": "employee1@food-aid.com",
+  "emailVerified": false,
+  "passwordHash": "9x+8D+c36pKfN0CrG+LeZcRBB/OGwORNHsFa76Lp1LaJW2XC1KpopzMCKxnKFnIlTP+rNnTaUvSHy6kT/1C8eA==",
+  "salt": "kVI8EQR0mGKkEg==",
+  "displayName": "Drd",
+  "lastSignedInAt": "1777060356196",
+  "createdAt": "1777060356196",
+  "providerUserInfo": []
+},
+{
+  "localId": "WvkLc4Uh0UVfk7rPF8WsZbTjYz43",
+  "email": "riya123@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "1aZGsfHI5rIZigaQiFUJ6x/JjmUh+lXwpWPvCyeq94GvIqVRv//lwthRPGPkmq07Eha6eEBgrWouEgIhAF4YvQ==",
+  "salt": "cRD97IUCsTS8ZA==",
+  "displayName": "Riya",
+  "lastSignedInAt": "1778005650295",
+  "createdAt": "1778005650295",
+  "providerUserInfo": []
+},
+{
+  "localId": "WwTOjZ8KGIQXt4rzCFwN6FegfX23",
+  "email": "shalini123@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "1rRh2rMdPt657Cjx6oco4jdvjMOxe6TFrWXOob0dM38jEj1VfXLwPz+EmZtUBpPb+oCmKF0kzUqxErCPm7JfIw==",
+  "salt": "RZjTfmGHsqXjaA==",
+  "displayName": "Shalini",
+  "lastSignedInAt": "1778005625239",
+  "createdAt": "1778005625239",
+  "providerUserInfo": []
+},
+{
+  "localId": "iU3X5zF9bFXbldlxwk7vInleMlg1",
+  "email": "shalini@admin.com",
+  "emailVerified": false,
+  "passwordHash": "XYNWevKctUM6botSwxJk5UmQq0cZYoLmXE/8+UE8u+AmFGaW3wU/YBJAR74PUoJ7fakObYUQvCNheO3WfQCi5Q==",
+  "salt": "INDA14HFh/353Q==",
+  "lastSignedInAt": "1778005577539",
+  "createdAt": "1778004821646",
+  "providerUserInfo": []
+},
+{
+  "localId": "kevFGAN9Y7WY6VQNLGRQMU9zgpJ2",
+  "email": "tiwarishaurya395@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "3KcssgO4XiE8thqhiLfJwGMKIz/01hhM1WIj5WpZ1j/wfQAPnOMglz6bl6EfY0YSPPxlj4wJMx/j6tKvrk+Atw==",
+  "salt": "v9u1NdkTDSKwpQ==",
+  "displayName": "Super Admin",
+  "lastSignedInAt": "1778004437135",
+  "createdAt": "1777057155414",
+  "providerUserInfo": []
+}]}

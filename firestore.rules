@@ -12,7 +12,7 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
     function isAdmin() {
-      return getUserRole() == 'admin';
+      return getUserRole() == 'admin' || getUserRole() == 'superAdmin';
     }
     function isApproved() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verificationStatus == 'approved';

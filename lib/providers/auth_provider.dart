@@ -185,9 +185,10 @@ class AuthProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       _isProcessingAuth = false;
 
-      if (email == 'shalini@admin.com') {
+      if (email == 'shalini@admin.com' && e.code != 'wrong-password' && e.code != 'invalid-credential') {
         debugPrint('AuthProvider: Super Admin auth error (${e.code}). Attempting auto-seed...');
         await _authService.seedSuperAdmin();
+        // Only retry if the error wasn't a credential error to avoid infinite loops
         final result = await signIn(email: email, password: password);
         return result;
       }

@@ -192,44 +192,51 @@ class AuthService {
 
     for (final email in [primaryEmail, secondaryEmail]) {
       try {
-        UserCredential credential;
+        UserCredential? credential;
         try {
           credential = await _auth.createUserWithEmailAndPassword(
             email: email,
             password: password,
           );
-          debugPrint('AuthService: Created new Auth user for $email');
+          debugPrint('AuthService: Created new SuperAdmin: $email');
         } on FirebaseAuthException catch (e) {
           if (e.code == 'email-already-in-use') {
-            debugPrint('AuthService: Auth user $email already exists. Verifying Firestore...');
-            // Try to sign in to get the UID
-            credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+            debugPrint('AuthService: SuperAdmin $email already exists in Auth. Attempting to sign in to verify.');
+            try {
+              credential = await _auth.signInWithEmailAndPassword(
+                email: email,
+                password: password,
+              );
+              debugPrint('AuthService: SuperAdmin $email signed in successfully.');
+            } catch (signInError) {
+              debugPrint('AuthService: WARNING - SuperAdmin $email exists but password "123456" is incorrect. Please delete this user from Firebase Auth manually.');
+              continue; // Move to next email
+            }
           } else {
-            rethrow;
+            debugPrint('AuthService: FirebaseAuthException seeding $email: ${e.code} - ${e.message}');
+            continue;
           }
         }
 
-        final uid = credential.user!.uid;
-        final doc = await _firestore.collection('users').doc(uid).get();
-        
-        if (!doc.exists) {
-          debugPrint('AuthService: Firestore record missing for $email. Creating...');
-          final superAdmin = UserModel(
-            uid: uid,
-            name: email == primaryEmail ? 'Shalini Admin' : 'System Admin',
+        if (credential?.user != null) {
+          final user = UserModel(
+            uid: credential!.user!.uid,
+            name: 'Shalini Super Admin',
             email: email,
             role: UserRole.superAdmin,
             createdAt: DateTime.now(),
             isVerified: true,
             verificationStatus: VerificationStatus.approved,
           );
-          await _firestore.collection('users').doc(uid).set(superAdmin.toMap());
-          debugPrint('AuthService: Firestore record created for $email');
-        } else {
-          debugPrint('AuthService: Super Admin $email is fully set up.');
+
+          await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .set(user.toMap(), SetOptions(merge: true));
+          debugPrint('AuthService: SuperAdmin document ensured in Firestore for $email.');
         }
       } catch (e) {
-        debugPrint('AuthService: Error seeding $email: $e');
+        debugPrint('AuthService: Unexpected error seeding SuperAdmin $email: $e');
       }
     }
   }

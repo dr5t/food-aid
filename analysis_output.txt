@@ -1,0 +1,63 @@
+Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.59 (1.3.69 available)
+  cli_util 0.4.2 (0.5.0 available)
+  cloud_firestore 5.6.12 (6.3.0 available)
+  cloud_firestore_platform_interface 6.6.12 (7.2.0 available)
+  cloud_firestore_web 4.4.12 (5.3.0 available)
+  firebase_auth 5.7.0 (6.4.0 available)
+  firebase_auth_platform_interface 7.7.3 (8.1.9 available)
+  firebase_auth_web 5.15.3 (6.1.5 available)
+  firebase_core 3.15.2 (4.7.0 available)
+  firebase_core_web 2.24.1 (3.6.0 available)
+  flutter_launcher_icons 0.13.1 (0.14.4 available)
+  flutter_map 7.0.2 (8.3.0 available)
+  geocoding 3.0.0 (4.0.0 available)
+  geocoding_android 3.3.1 (5.0.1 available)
+  geocoding_platform_interface 3.2.0 (5.0.0 available)
+  geolocator 13.0.4 (14.0.2 available)
+  geolocator_android 4.6.2 (5.0.2 available)
+  go_router 14.8.1 (17.2.3 available)
+  google_fonts 6.3.3 (8.1.0 available)
+  intl 0.19.0 (0.20.2 available)
+  latlong2 0.9.1 (0.10.1 available)
+  matcher 0.12.18 (0.12.20 available)
+  meta 1.17.0 (1.18.2 available)
+  mgrs_dart 2.0.0 (3.0.0 available)
+  native_toolchain_c 0.17.6 (0.18.0 available)
+  proj4dart 2.1.0 (3.0.0 available)
+  test_api 0.7.9 (0.7.12 available)
+  unicode 0.3.1 (1.1.9 available)
+  vector_graphics 1.1.21 (1.2.0 available)
+  vector_math 2.2.0 (2.3.0 available)
+  vm_service 15.1.0 (15.2.0 available)
+  xml 6.6.1 (7.0.1 available)
+Got dependencies!
+32 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing food aid...                                           
+
+warning • Unused import: 'config/navigation/navigator_key.dart' • lib/app.dart:8:8 • unused_import
+warning • Unused import: 'config/navigation/navigator_key.dart' • lib/main.dart:13:8 • unused_import
+   info • The private field _adminEmployees could be 'final' • lib/providers/admin_provider.dart:15:19 • prefer_final_fields
+warning • The value of the field '_adminEmployees' isn't used • lib/providers/admin_provider.dart:15:19 • unused_field
+   info • The private field _localHiddenUids could be 'final' • lib/providers/admin_provider.dart:24:16 • prefer_final_fields
+   info • Statements in a for should be enclosed in a block • lib/providers/admin_provider.dart:213:44 • curly_braces_in_flow_control_structures
+   info • Statements in a for should be enclosed in a block • lib/providers/admin_provider.dart:214:32 • curly_braces_in_flow_control_structures
+warning • Unused import: '../../providers/theme_provider.dart' • lib/screens/donor/donor_dashboard.dart:11:8 • unused_import
+warning • The value of the local variable 'isDark' isn't used • lib/screens/donor/donor_dashboard.dart:43:11 • unused_local_variable
+warning • The value of the local variable 'isDark' isn't used • lib/screens/donor/sos_requests_screen.dart:88:11 • unused_local_variable
+warning • Unused import: '../../widgets/common/app_loader.dart' • lib/screens/logistics/company_dashboard.dart:19:8 • unused_import
+warning • Unused import: 'package:google_fonts/google_fonts.dart' • lib/screens/ngo/ngo_dashboard.dart:3:8 • unused_import
+warning • Unused import: 'package:flutter_animate/flutter_animate.dart' • lib/screens/ngo/ngo_dashboard.dart:4:8 • unused_import
+warning • Unused import: '../../models/user_model.dart' • lib/screens/ngo/ngo_dashboard.dart:11:8 • unused_import
+   info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/screens/ngo/ngo_dashboard.dart:122:21 • deprecated_member_use
+   info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/screens/ngo/ngo_dashboard.dart:123:21 • deprecated_member_use
+   info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/screens/ngo/ngo_dashboard.dart:128:21 • deprecated_member_use
+   info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/screens/ngo/ngo_dashboard.dart:129:21 • deprecated_member_use
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/services/auth_service.dart:222:23 • invalid_null_aware_operator
+warning • The '!' will have no effect because the receiver can't be null • lib/services/auth_service.dart:224:28 • unnecessary_non_null_assertion
+   info • 'dart:html' is deprecated and shouldn't be used. Use package:web and dart:js_interop instead • lib/utils/web_helper_web.dart:2:1 • deprecated_member_use
+   info • Don't use web-only libraries outside Flutter web plugins • lib/utils/web_helper_web.dart:2:1 • avoid_web_libraries_in_flutter
+
+22 issues found. (ran in 4.9s)

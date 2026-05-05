@@ -231,6 +231,7 @@ class AppRouter {
         return '/employee';
       case UserRole.admin:
       case UserRole.superAdmin:
+      case UserRole.staff:
         return '/admin';
       case null:
         return '/donor';

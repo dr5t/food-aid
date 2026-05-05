@@ -371,9 +371,9 @@ class _RoleCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
+          border: Border.all(color: color.withOpacity(0.3), width: 1.5),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

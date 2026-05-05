@@ -92,7 +92,7 @@ class _AdminDashboardState extends State<AdminDashboard>
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+              border: Border.all(color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05)),
             ),
             child: TabBar(
               controller: _tabController,
@@ -205,7 +205,7 @@ class _OverviewTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: emeraldGreen.withValues(alpha: 0.2),
+                    color: emeraldGreen.withOpacity(0.2),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -216,7 +216,7 @@ class _OverviewTab extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: const Icon(Icons.shield_rounded, color: Colors.white, size: 28),
@@ -237,7 +237,7 @@ class _OverviewTab extends StatelessWidget {
                         Text(
                           'Full system access active',
                           style: GoogleFonts.inter(
-                            color: Colors.white.withValues(alpha: 0.8),
+                            color: Colors.white.withOpacity(0.8),
                             fontSize: 13,
                           ),
                         ),
@@ -417,7 +417,7 @@ class _OverviewTab extends StatelessWidget {
                   final u = users[i];
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: const Color(0xFF10B981).withValues(alpha: 0.1),
+                      backgroundColor: const Color(0xFF10B981).withOpacity(0.1),
                       child: Text(u.name[0], style: const TextStyle(color: Color(0xFF10B981))),
                     ),
                     title: Text(u.name, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
@@ -479,7 +479,7 @@ class _StatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+          border: Border.all(color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +488,7 @@ class _StatCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
+                color: color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: color, size: 20),
@@ -769,7 +769,7 @@ class _VerificationCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 22,
-                backgroundColor: accentColor.withValues(alpha: 0.1),
+                backgroundColor: accentColor.withOpacity(0.1),
                 child: Icon(
                   isNgo ? Icons.business_rounded : Icons.local_shipping_rounded,
                   color: accentColor,
@@ -798,7 +798,7 @@ class _VerificationCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.orange.withValues(alpha: 0.1),
+                  color: Colors.orange.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -894,7 +894,7 @@ class _TeamTab extends StatelessWidget {
                   Icon(
                     Icons.group_add_rounded,
                     size: 64,
-                    color: AppColors.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withOpacity(0.3),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
@@ -928,12 +928,12 @@ class _TeamTab extends StatelessWidget {
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withValues(alpha: 0.05)
+                        ? Colors.white.withOpacity(0.05)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: isDark
-                          ? Colors.white.withValues(alpha: 0.08)
+                          ? Colors.white.withOpacity(0.08)
                           : Colors.grey.shade200,
                     ),
                   ),
@@ -941,9 +941,7 @@ class _TeamTab extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 22,
-                        backgroundColor: AppColors.primary.withValues(
-                          alpha: 0.1,
-                        ),
+                        backgroundColor: AppColors.primary.withOpacity(0.1),
                         child: Text(
                           emp.initials,
                           style: GoogleFonts.inter(

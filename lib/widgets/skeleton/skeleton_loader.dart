@@ -31,7 +31,7 @@ class SkeletonLoader extends StatelessWidget {
         decoration: BoxDecoration(
           color: baseColor,
           borderRadius: BorderRadius.circular(borderRadius),
-          border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.05)) : null,
+          border: isDark ? Border.all(color: Colors.white.withOpacity(0.05)) : null,
         ),
       ),
     );
@@ -52,7 +52,7 @@ class SkeletonCard extends StatelessWidget {
         color: isDark ? AppColors.darkSurface : AppColors.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05),
+          color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
         ),
       ),
       child: Column(

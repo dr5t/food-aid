@@ -82,7 +82,7 @@ class PendingVerificationScreen extends StatelessWidget {
       height: 100,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
       ),
       child: Icon(
         icon,
@@ -175,7 +175,7 @@ class PendingVerificationScreen extends StatelessWidget {
                 await auth.resendVerificationEmail();
               },
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: emeraldGreen.withValues(alpha: 0.5)),
+                side: BorderSide(color: emeraldGreen.withOpacity(0.5)),
                 foregroundColor: emeraldGreen,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 padding: const EdgeInsets.symmetric(vertical: 16),

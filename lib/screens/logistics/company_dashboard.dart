@@ -358,7 +358,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                                   );
                                 },
                                 leading: CircleAvatar(
-                                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                                  backgroundColor: AppColors.primary.withOpacity(0.1),
                                   child: const Icon(Icons.person, size: 18, color: AppColors.primary),
                                 ),
                                 title: Text(employee.name),
@@ -366,7 +366,7 @@ class _CompanyDashboardState extends State<CompanyDashboard> {
                                 trailing: const Icon(Icons.chevron_right),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                                  side: BorderSide(color: AppColors.divider.withValues(alpha: 0.1)),
+                                  side: BorderSide(color: AppColors.divider.withOpacity(0.1)),
                                 ),
                               ),
                             );
@@ -511,7 +511,7 @@ class _UnassignedTab extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.statusPending.withValues(alpha: 0.1),
+                  color: AppColors.statusPending.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Text(
@@ -606,7 +606,7 @@ class _EmployeesTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.group_outlined, size: 48, color: AppColors.textHint.withValues(alpha: 0.3)),
+          Icon(Icons.group_outlined, size: 48, color: AppColors.textHint.withOpacity(0.3)),
           const SizedBox(height: AppSpacing.md),
           Text(
             message,
@@ -631,7 +631,7 @@ class _CompanyCompletedTab extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.history_rounded, size: 64, color: AppColors.textHint.withValues(alpha: 0.1)),
+            Icon(Icons.history_rounded, size: 64, color: AppColors.textHint.withOpacity(0.1)),
             const SizedBox(height: 16),
             Text('No completed deliveries', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint)),
           ],
@@ -708,7 +708,7 @@ class _DeliveryTile extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: statusColor.withValues(alpha: 0.1),
+                    color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: Text(
@@ -744,7 +744,7 @@ class _DeliveryTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor.withValues(alpha: 0.5),
+                  color: Theme.of(context).cardColor.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Row(
@@ -817,7 +817,7 @@ class _EmployeeTile extends StatelessWidget {
       child: AppCard(
         child: ListTile(
           leading: CircleAvatar(
-            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+            backgroundColor: AppColors.primary.withOpacity(0.1),
             child: const Icon(Icons.person, color: AppColors.primary, size: 20),
           ),
           title: Text(employee.name, style: AppTextStyles.bodyMedium),
@@ -880,10 +880,10 @@ class _MealTypeOption extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
+          color: isSelected ? color.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? color : AppColors.divider.withValues(alpha: 0.2),
+            color: isSelected ? color : AppColors.divider.withOpacity(0.2),
             width: 1.5,
           ),
         ),

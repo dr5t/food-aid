@@ -37,7 +37,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
               preferredSize: const Size.fromHeight(1),
               child: Divider(
                 height: 1,
-                color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+                color: Theme.of(context).dividerColor.withOpacity(0.1),
               ),
             )
           : null,

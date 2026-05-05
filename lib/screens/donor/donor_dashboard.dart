@@ -112,7 +112,7 @@ class _OverviewTab extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primary, AppColors.primary.withValues(alpha: 0.7)],
+              colors: [AppColors.primary, AppColors.primary.withOpacity(0.7)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -137,7 +137,7 @@ class _OverviewTab extends StatelessWidget {
                     Text(
                       'Your contributions are saving lives.',
                       style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.85), fontSize: 13)),
+                          color: Colors.white.withOpacity(0.85), fontSize: 13)),
                   ],
                 ),
               ),
@@ -257,7 +257,7 @@ class _DonationTile extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.1),
+            color: AppColors.primary.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(

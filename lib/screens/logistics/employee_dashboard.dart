@@ -85,7 +85,7 @@ class _ActiveTasksTab extends StatelessWidget {
             Icon(
               Icons.assignment_turned_in_outlined,
               size: 64,
-              color: AppColors.textHint.withValues(alpha: 0.3),
+              color: AppColors.textHint.withOpacity(0.3),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
@@ -128,7 +128,7 @@ class _CompletedTasksTab extends StatelessWidget {
             Icon(
               Icons.history_rounded,
               size: 64,
-              color: AppColors.textHint.withValues(alpha: 0.3),
+              color: AppColors.textHint.withOpacity(0.3),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
@@ -159,7 +159,7 @@ class _CompletedTasksTab extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.success.withValues(alpha: 0.1),
+                  color: AppColors.success.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: const Icon(
@@ -205,7 +205,7 @@ class _ActiveTaskCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: _statusColor.withValues(alpha: 0.1),
+                      color: _statusColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     ),
                     child: Icon(_statusIcon, color: _statusColor, size: 24),

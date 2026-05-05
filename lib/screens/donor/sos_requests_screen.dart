@@ -43,7 +43,7 @@ class _SOSRequestsScreenState extends State<SOSRequestsScreen> {
                         Icon(
                           Icons.check_circle_outline_rounded,
                           size: 64,
-                          color: AppColors.primary.withValues(alpha: 0.5),
+                          color: AppColors.primary.withOpacity(0.5),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -58,7 +58,7 @@ class _SOSRequestsScreenState extends State<SOSRequestsScreen> {
                         Text(
                           'Everything seems to be under control.',
                           style: GoogleFonts.inter(
-                            color: AppColors.textSecondary.withValues(alpha: 0.7),
+                            color: AppColors.textSecondary.withOpacity(0.7),
                           ),
                         ),
                       ],
@@ -112,9 +112,9 @@ class _SOSRequestCard extends StatelessWidget {
                     vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.error.withValues(alpha: 0.1),
+                    color: AppColors.error.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                    border: Border.all(color: AppColors.error.withOpacity(0.3)),
                   ),
                   child: Text(
                     'CRITICAL',

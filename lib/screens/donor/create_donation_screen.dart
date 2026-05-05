@@ -264,7 +264,7 @@ class _CreateDonationScreenState extends State<CreateDonationScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.success.withValues(alpha: 0.08),
+                  color: AppColors.success.withOpacity(0.08),
                   borderRadius:
                       BorderRadius.circular(AppSpacing.radiusSm),
                 ),
@@ -508,7 +508,7 @@ class _SelectCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
               vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: isSelected ? c.withValues(alpha: 0.08) : null,
+            color: isSelected ? c.withOpacity(0.08) : null,
             borderRadius:
                 BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(

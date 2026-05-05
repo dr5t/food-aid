@@ -34,7 +34,7 @@ class HitechLoader extends StatelessWidget {
           Text(
             text!,
             style: TextStyle(
-              color: primaryColor.withValues(alpha: 0.8),
+              color: primaryColor.withOpacity(0.8),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),

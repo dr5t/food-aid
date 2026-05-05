@@ -8,7 +8,7 @@ class ScanningOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black.withValues(alpha: 0.5),
+      color: Colors.black.withOpacity(0.5),
       child: Center(
         child: HitechLoader(
           text: label,

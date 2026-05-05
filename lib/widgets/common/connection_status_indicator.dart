@@ -37,7 +37,7 @@ class ConnectionStatusIndicator extends StatelessWidget {
           color: color,
           boxShadow: [
             BoxShadow(
-              color: color.withValues(alpha: 0.6),
+              color: color.withOpacity(0.6),
               blurRadius: 6,
               spreadRadius: 2,
             ),

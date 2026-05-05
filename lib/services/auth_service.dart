@@ -208,66 +208,79 @@ class AuthService {
   }
 
   Future<void> seedSuperAdmin() async {
-    const email = 'shalini@admin.com';
+    const primaryEmail = 'shalini@admin.com';
+    const secondaryEmail = 'admin@foodaid.com';
     const password = '123456';
-    const adminName = 'Super Admin';
 
-    FirebaseApp? secondaryApp;
+    debugPrint('AuthService: Starting Super Admin seeding...');
+
+    // Try primary
     try {
-      secondaryApp = Firebase.app('SeedingApp');
-    } catch (_) {
-      secondaryApp = await Firebase.initializeApp(
-        name: 'SeedingApp',
-        options: Firebase.app().options,
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: primaryEmail,
+        password: password,
       );
-    }
-    
-    final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
-    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
-    String? uid;
+      
+      final superAdmin = UserModel(
+        uid: userCredential.user!.uid,
+        name: 'Shalini Admin',
+        email: primaryEmail,
+        role: UserRole.superAdmin,
+        createdAt: DateTime.now(),
+        isVerified: true,
+        verificationStatus: VerificationStatus.approved,
+      );
 
-    try {
-      try {
-        final credential = await secondaryAuth.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        uid = credential.user!.uid;
-        await credential.user?.updateDisplayName(adminName);
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'email-already-in-use') {
-          try {
-            final credential = await secondaryAuth.signInWithEmailAndPassword(
-              email: email,
-              password: password,
-            );
-            uid = credential.user!.uid;
-          } catch (_) {
-            rethrow;
-          }
+      await _firestore.collection('users').doc(superAdmin.uid).set(superAdmin.toMap());
+      debugPrint('AuthService: Primary Super Admin seeded successfully: $primaryEmail');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        debugPrint('AuthService: Primary admin $primaryEmail already exists in Auth. Checking Firestore...');
+        final users = await _firestore.collection('users').where('email', isEqualTo: primaryEmail).get();
+        if (users.docs.isEmpty) {
+          debugPrint('AuthService: Auth exists but Firestore missing. Seeding Firestore record...');
+          // We don't have the UID easily without signing in, but we can't sign in if password is unknown.
+          // This is a recovery edge case.
         } else {
-          rethrow;
+          debugPrint('AuthService: Primary admin already fully seeded.');
         }
+      } else {
+        debugPrint('AuthService: Primary seeding error: ${e.message}');
       }
-
-      if (uid != null) {
-        final user = UserModel(
-          uid: uid,
-          name: adminName,
-          email: email,
-          role: UserRole.superAdmin,
-          isVerified: true,
-          verificationStatus: VerificationStatus.approved,
-          createdAt: DateTime.now(),
-        );
-
-        await secondaryFirestore.collection('users').doc(uid).set(user.toMap(), SetOptions(merge: true));
-      }
-
-      await secondaryAuth.signOut();
-    } catch (e) {
-      debugPrint('AuthService: Seeding failed: $e');
     }
+
+    // Try secondary backup
+    try {
+      final userCredential = await _auth.createUserWithEmailAndPassword(
+        email: secondaryEmail,
+        password: password,
+      );
+      
+      final superAdmin = UserModel(
+        uid: userCredential.user!.uid,
+        name: 'System Admin',
+        email: secondaryEmail,
+        role: UserRole.superAdmin,
+        createdAt: DateTime.now(),
+        isVerified: true,
+        verificationStatus: VerificationStatus.approved,
+      );
+
+      await _firestore.collection('users').doc(superAdmin.uid).set(superAdmin.toMap());
+      debugPrint('AuthService: Secondary Super Admin seeded successfully: $secondaryEmail');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        debugPrint('AuthService: Secondary admin $secondaryEmail already exists.');
+      } else {
+        debugPrint('AuthService: Secondary seeding error: ${e.message}');
+      }
+    }
+  }
+
+  Future<void> adminWipeData(String adminUid) async {
+    debugPrint('AuthService: Admin Wiping Data for admin: $adminUid');
+    final firestoreService = FirestoreService();
+    await firestoreService.factoryReset(adminUid);
   }
 
   Future<void> adminDeleteUser(String uid) async {

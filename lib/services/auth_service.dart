@@ -72,25 +72,42 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    final credential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final doc =
-        await _firestore.collection('users').doc(credential.user!.uid).get();
+      final doc =
+          await _firestore.collection('users').doc(credential.user!.uid).get();
 
-    if (!doc.exists) {
-      if (email == 'shalini@admin.com') {
-        debugPrint('AuthService: Super Admin profile missing in Firestore. Syncing...');
-        await seedSuperAdmin();
-        final retryDoc = await _firestore.collection('users').doc(credential.user!.uid).get();
-        if (retryDoc.exists) return UserModel.fromFirestore(retryDoc);
+      if (!doc.exists) {
+        if (email == 'shalini@admin.com') {
+          debugPrint('AuthService: Super Admin profile missing in Firestore. Syncing...');
+          await seedSuperAdmin();
+          final retryDoc = await _firestore.collection('users').doc(credential.user!.uid).get();
+          if (retryDoc.exists) return UserModel.fromFirestore(retryDoc);
+        }
+        throw Exception('User profile not found. Please sign up again.');
       }
-      throw Exception('User profile not found. Please sign up again.');
-    }
 
-    return UserModel.fromFirestore(doc);
+      return UserModel.fromFirestore(doc);
+    } on FirebaseAuthException catch (e) {
+      // If superadmin login fails because user doesn't exist, try seeding first
+      if (email == 'shalini@admin.com' && (e.code == 'user-not-found' || e.code == 'invalid-credential')) {
+        debugPrint('AuthService: Super Admin user not found or invalid. Attempting to seed...');
+        await seedSuperAdmin();
+        // After seeding, try signing in again with the original credentials
+        final credential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        final doc = await _firestore.collection('users').doc(credential.user!.uid).get();
+        if (doc.exists) return UserModel.fromFirestore(doc);
+        throw Exception('Super Admin profile could not be created.');
+      }
+      rethrow;
+    }
   }
 
   Future<void> signOut() async {

@@ -55,8 +55,8 @@ warning • Unused import: '../../models/user_model.dart' • lib/screens/ngo/ng
    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/screens/ngo/ngo_dashboard.dart:123:21 • deprecated_member_use
    info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/screens/ngo/ngo_dashboard.dart:128:21 • deprecated_member_use
    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/screens/ngo/ngo_dashboard.dart:129:21 • deprecated_member_use
-warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/services/auth_service.dart:222:23 • invalid_null_aware_operator
-warning • The '!' will have no effect because the receiver can't be null • lib/services/auth_service.dart:224:28 • unnecessary_non_null_assertion
+warning • The receiver can't be null, so the null-aware operator '?.' is unnecessary • lib/services/auth_service.dart:226:23 • invalid_null_aware_operator
+warning • The '!' will have no effect because the receiver can't be null • lib/services/auth_service.dart:228:28 • unnecessary_non_null_assertion
    info • 'dart:html' is deprecated and shouldn't be used. Use package:web and dart:js_interop instead • lib/utils/web_helper_web.dart:2:1 • deprecated_member_use
    info • Don't use web-only libraries outside Flutter web plugins • lib/utils/web_helper_web.dart:2:1 • avoid_web_libraries_in_flutter
 

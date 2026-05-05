@@ -72,42 +72,18 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    try {
-      final credential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    final credential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      final doc =
-          await _firestore.collection('users').doc(credential.user!.uid).get();
+    final doc = await _firestore.collection('users').doc(credential.user!.uid).get();
 
-      if (!doc.exists) {
-        if (email == 'shalini@admin.com') {
-          debugPrint('AuthService: Super Admin profile missing in Firestore. Syncing...');
-          await seedSuperAdmin();
-          final retryDoc = await _firestore.collection('users').doc(credential.user!.uid).get();
-          if (retryDoc.exists) return UserModel.fromFirestore(retryDoc);
-        }
-        throw Exception('User profile not found. Please sign up again.');
-      }
-
-      return UserModel.fromFirestore(doc);
-    } on FirebaseAuthException catch (e) {
-      // If superadmin login fails because user doesn't exist, try seeding first
-      if (email == 'shalini@admin.com' && (e.code == 'user-not-found' || e.code == 'invalid-credential')) {
-        debugPrint('AuthService: Super Admin user not found or invalid. Attempting to seed...');
-        await seedSuperAdmin();
-        // After seeding, try signing in again with the original credentials
-        final credential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        final doc = await _firestore.collection('users').doc(credential.user!.uid).get();
-        if (doc.exists) return UserModel.fromFirestore(doc);
-        throw Exception('Super Admin profile could not be created.');
-      }
-      rethrow;
+    if (!doc.exists) {
+      throw Exception('User profile not found in database.');
     }
+
+    return UserModel.fromFirestore(doc);
   }
 
   Future<void> signOut() async {
@@ -214,71 +190,56 @@ class AuthService {
 
     debugPrint('AuthService: Starting Super Admin seeding...');
 
-    // Try primary
-    try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: primaryEmail,
-        password: password,
-      );
-      
-      final superAdmin = UserModel(
-        uid: userCredential.user!.uid,
-        name: 'Shalini Admin',
-        email: primaryEmail,
-        role: UserRole.superAdmin,
-        createdAt: DateTime.now(),
-        isVerified: true,
-        verificationStatus: VerificationStatus.approved,
-      );
-
-      await _firestore.collection('users').doc(superAdmin.uid).set(superAdmin.toMap());
-      debugPrint('AuthService: Primary Super Admin seeded successfully: $primaryEmail');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        debugPrint('AuthService: Primary admin $primaryEmail already exists in Auth. Checking Firestore...');
-        final users = await _firestore.collection('users').where('email', isEqualTo: primaryEmail).get();
-        if (users.docs.isEmpty) {
-          debugPrint('AuthService: Auth exists but Firestore missing. Seeding Firestore record...');
-          // We don't have the UID easily without signing in, but we can't sign in if password is unknown.
-          // This is a recovery edge case.
-        } else {
-          debugPrint('AuthService: Primary admin already fully seeded.');
+    for (final email in [primaryEmail, secondaryEmail]) {
+      try {
+        UserCredential credential;
+        try {
+          credential = await _auth.createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+          debugPrint('AuthService: Created new Auth user for $email');
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'email-already-in-use') {
+            debugPrint('AuthService: Auth user $email already exists. Verifying Firestore...');
+            // Try to sign in to get the UID
+            credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
+          } else {
+            rethrow;
+          }
         }
-      } else {
-        debugPrint('AuthService: Primary seeding error: ${e.message}');
-      }
-    }
 
-    // Try secondary backup
-    try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: secondaryEmail,
-        password: password,
-      );
-      
-      final superAdmin = UserModel(
-        uid: userCredential.user!.uid,
-        name: 'System Admin',
-        email: secondaryEmail,
-        role: UserRole.superAdmin,
-        createdAt: DateTime.now(),
-        isVerified: true,
-        verificationStatus: VerificationStatus.approved,
-      );
-
-      await _firestore.collection('users').doc(superAdmin.uid).set(superAdmin.toMap());
-      debugPrint('AuthService: Secondary Super Admin seeded successfully: $secondaryEmail');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        debugPrint('AuthService: Secondary admin $secondaryEmail already exists.');
-      } else {
-        debugPrint('AuthService: Secondary seeding error: ${e.message}');
+        final uid = credential.user!.uid;
+        final doc = await _firestore.collection('users').doc(uid).get();
+        
+        if (!doc.exists) {
+          debugPrint('AuthService: Firestore record missing for $email. Creating...');
+          final superAdmin = UserModel(
+            uid: uid,
+            name: email == primaryEmail ? 'Shalini Admin' : 'System Admin',
+            email: email,
+            role: UserRole.superAdmin,
+            createdAt: DateTime.now(),
+            isVerified: true,
+            verificationStatus: VerificationStatus.approved,
+          );
+          await _firestore.collection('users').doc(uid).set(superAdmin.toMap());
+          debugPrint('AuthService: Firestore record created for $email');
+        } else {
+          debugPrint('AuthService: Super Admin $email is fully set up.');
+        }
+      } catch (e) {
+        debugPrint('AuthService: Error seeding $email: $e');
       }
     }
   }
 
   Future<void> adminWipeData(String adminUid) async {
-    debugPrint('AuthService: Admin Wiping Data for admin: $adminUid');
+    debugPrint('AuthService: Starting global data wipe for admin: $adminUid');
+    
+    // We use a secondary app to perform admin operations if needed, 
+    // but since we are already the admin here, we can just use the main firestore instance.
+    // However, the factoryReset in FirestoreService is designed for this.
     final firestoreService = FirestoreService();
     await firestoreService.factoryReset(adminUid);
   }
@@ -352,51 +313,4 @@ class AuthService {
     }
   }
 
-  Future<void> adminWipeData(String adminUid) async {
-    const email = 'shalini@admin.com';
-    const password = '123456';
-    
-    FirebaseApp? secondaryApp;
-    try {
-      secondaryApp = Firebase.app('WipeApp');
-    } catch (_) {
-      secondaryApp = await Firebase.initializeApp(
-        name: 'WipeApp',
-        options: Firebase.app().options,
-      );
-    }
-    
-    final secondaryAuth = FirebaseAuth.instanceFor(app: secondaryApp);
-    final secondaryFirestore = FirebaseFirestore.instanceFor(app: secondaryApp);
-    
-    try {
-      await secondaryAuth.signInWithEmailAndPassword(email: email, password: password);
-      
-      final batch = secondaryFirestore.batch();
-      final collections = ['donations', 'emergencyRequests', 'notifications', 'users'];
-      
-      for (final coll in collections) {
-        final querySnapshot = await secondaryFirestore.collection(coll).get(const GetOptions(source: Source.server));
-        
-        for (final doc in querySnapshot.docs) {
-          final data = doc.data();
-          final userEmail = data['email'] as String?;
-          
-          if (doc.id == adminUid || userEmail == email) {
-            if (doc.id == adminUid) continue;
-            batch.delete(doc.reference);
-          } else {
-            batch.delete(doc.reference);
-          }
-        }
-      }
-      
-      await batch.commit();
-      await secondaryAuth.signOut();
-      debugPrint('AuthService: Wipe complete.');
-    } catch (e) {
-      debugPrint('AuthService: Wipe failed: $e');
-      rethrow;
-    }
-  }
 }

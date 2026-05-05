@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../models/user_model.dart';
-import 'firestore_service.dart';
+import 'package:food_aid/services/firestore_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -166,6 +166,10 @@ class AuthService {
       );
 
       final data = user.toMap();
+      // Use main firestore instance for saving user doc to ensure listeners are triggered
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set(data);
+      
+      // Also save to secondary just in case, but primary is important for the app's real-time state
       await secondaryFirestore.collection('users').doc(user.uid).set(data);
       await secondaryAuth.signOut();
       return user;
@@ -248,8 +252,9 @@ class AuthService {
     // We use a secondary app to perform admin operations if needed, 
     // but since we are already the admin here, we can just use the main firestore instance.
     // However, the factoryReset in FirestoreService is designed for this.
-    final firestoreService = FirestoreService();
-    await firestoreService.factoryReset(adminUid);
+    // Fix: Using the correct FirestoreService instance
+    final fs = FirestoreService();
+    await fs.factoryReset(adminUid);
   }
 
   Future<void> adminDeleteUser(String uid) async {

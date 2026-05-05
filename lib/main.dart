@@ -12,12 +12,16 @@ import 'providers/theme_provider.dart';
 import 'providers/connection_provider.dart';
 import 'config/navigation/navigator_key.dart';
 import 'services/firestore_service.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Seed Super Admin if not exists
+  await AuthService().seedSuperAdmin();
 
   final firestoreService = FirestoreService();
 

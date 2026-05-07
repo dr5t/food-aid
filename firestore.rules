@@ -1,7 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
+    
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -18,7 +18,7 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.verificationStatus == 'approved';
     }
 
-    // Users collection
+    
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isOwner(userId);
@@ -26,7 +26,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Donations collection
+    
     match /donations/{donationId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated();
@@ -34,7 +34,7 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && isAdmin();
     }
 
-    // Notifications collection
+    
     match /notifications/{notificationId} {
       allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
       allow create: if isAuthenticated();

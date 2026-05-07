@@ -1,6 +1,6 @@
--- Food Aid Relational Database Schema
 
--- Users Table
+
+
 CREATE TABLE users (
     uid VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Donations Table
+
 CREATE TABLE donations (
     id VARCHAR(255) PRIMARY KEY,
     donor_id VARCHAR(255),
@@ -27,7 +27,7 @@ CREATE TABLE donations (
     FOREIGN KEY (donor_id) REFERENCES users(uid)
 );
 
--- Emergency Requests Table
+
 CREATE TABLE emergency_requests (
     id VARCHAR(255) PRIMARY KEY,
     ngo_id VARCHAR(255),

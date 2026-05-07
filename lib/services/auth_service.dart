@@ -166,10 +166,10 @@ class AuthService {
       );
 
       final data = user.toMap();
-      // Use main firestore instance for saving user doc to ensure listeners are triggered
+      
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set(data);
       
-      // Also save to secondary just in case, but primary is important for the app's real-time state
+      
       await secondaryFirestore.collection('users').doc(user.uid).set(data);
       await secondaryAuth.signOut();
       return user;
@@ -215,7 +215,7 @@ class AuthService {
               debugPrint('AuthService: SuperAdmin $email signed in successfully.');
             } catch (signInError) {
               debugPrint('AuthService: WARNING - SuperAdmin $email exists but password "123456" is incorrect. Please delete this user from Firebase Auth manually.');
-              continue; // Move to next email
+              continue; 
             }
           } else {
             debugPrint('AuthService: FirebaseAuthException seeding $email: ${e.code} - ${e.message}');
@@ -249,10 +249,10 @@ class AuthService {
   Future<void> adminWipeData(String adminUid) async {
     debugPrint('AuthService: Starting global data wipe for admin: $adminUid');
     
-    // We use a secondary app to perform admin operations if needed, 
-    // but since we are already the admin here, we can just use the main firestore instance.
-    // However, the factoryReset in FirestoreService is designed for this.
-    // Fix: Using the correct FirestoreService instance
+    
+    
+    
+    
     final fs = FirestoreService();
     await fs.factoryReset(adminUid);
   }

@@ -20,7 +20,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Seed Super Admin if not exists
+  
   await AuthService().seedSuperAdmin();
 
   final firestoreService = FirestoreService();

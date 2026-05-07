@@ -166,6 +166,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               }),
             ),
             _RoleCard(
+              role: UserRole.logisticsCompany,
+              icon: Icons.local_shipping_rounded,
+              label: 'Logistics',
+              color: Colors.indigo,
+              onTap: () => setState(() {
+                _selectedRole = UserRole.logisticsCompany;
+              }),
+            ),
+            _RoleCard(
               role: UserRole.logisticsEmployee,
               icon: Icons.delivery_dining_rounded,
               label: 'Delivery',
@@ -311,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           ),
           const SizedBox(height: 16),
         ],
-        if (_selectedRole == UserRole.ngo) ...[
+        if (_selectedRole == UserRole.ngo || _selectedRole == UserRole.logisticsCompany) ...[
           AppInput(label: 'Organization Name', controller: _orgNameCtrl, prefixIcon: Icons.business),
           const SizedBox(height: 16),
         ],
@@ -349,6 +358,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       case UserRole.admin: return const Color(0xFF10B981);
       case UserRole.ngo: return Colors.teal;
       case UserRole.donor: return Colors.orange;
+      case UserRole.logisticsCompany: return Colors.indigo;
       case UserRole.logisticsEmployee: return Colors.deepOrange;
       default: return AppColors.primary;
     }

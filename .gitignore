@@ -43,3 +43,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment variables
+.env
+.env*
+!.env.example
+
+# Credentials & Keys
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+*.pem
+*.key
+credentials.json
+users.json
+admins_to_import.json
+firestore.indexes.json

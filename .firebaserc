@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "food-aid-2026"
+  },
   "targets": {},
   "etags": {}
 }
